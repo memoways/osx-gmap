@@ -24,6 +24,8 @@
 	<string>1</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2012 Goyman SA. All rights reserved.</string>
+	<key>GMDefaultTileURLFormat</key>
+	<string>http://otile1.mqcdn.com/tiles/1.0.0/osm/%d/%d/%d.png</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
