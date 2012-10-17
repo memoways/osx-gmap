@@ -4,7 +4,7 @@
 @interface GMMapView : NSView
 
 
-@property NSString *tileURLFormat;
++ (NSString *)tileURLFormat;
 
 @property GMCoordinate centerCoordinate;
 @property CGFloat zoomLevel;
