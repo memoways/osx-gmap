@@ -34,16 +34,24 @@
 
     CGPoint center = GMCoordinateToPoint(self.mapView.centerCoordinate);
 
-    NSInteger zoomLevel = self.tileZoomLevel;
-    NSInteger n = 1 << zoomLevel;
+    CGFloat scale = CGContextGetCTM(context).a;
+    
+    int level = log(scale) / log(2); 
+    
+    
+    NSInteger n = 1 << level;
     NSInteger tileX = floor(center.x * n);
     NSInteger tileY = floor(center.y * n);
 
-    NSLog(@"%f", layer.contentsScale);
-    CGRect tileBounds = CGContextGetClipBoundingBox(context);
-    NSLog(@"%@", NSStringFromRect(tileBounds));
-    NSInteger x = tileBounds.origin.x / layer.tileSize.width;
-    NSInteger y = tileBounds.origin.y / layer.tileSize.height;
+    CGSize tileSize = layer.tileSize;
+    tileSize.width /= scale;
+    tileSize.height /= scale;
+    
+    CGRect rect = CGContextGetClipBoundingBox(context);
+          NSLog(@"%@", NSStringFromSize(layer.tileSize));
+        //    NSLog(@"%@", NSStringFromRect(tileBounds));
+    NSInteger x = rect.origin.x / tileSize.width;
+    NSInteger y = rect.origin.y / tileSize.height;
 
     tileX += x;
     tileY -= y;
@@ -53,10 +61,10 @@
     
     CGImageRef image;
     
-    if ((image = [self.tileManager tileImageForX:tileX y:tileY zoomLevel:zoomLevel]))
+    if ((image = [self.tileManager tileImageForX:tileX y:tileY zoomLevel:level]))
     {
         //tileBounds.size = layer.tileSize;
-        CGContextDrawImage(context, tileBounds, image);
+        CGContextDrawImage(context, rect, image);
         CFRelease(image);
     }
     
