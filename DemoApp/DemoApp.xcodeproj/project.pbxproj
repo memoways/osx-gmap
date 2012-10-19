@@ -314,6 +314,7 @@
 				36D68A2F162D8F250072667D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
