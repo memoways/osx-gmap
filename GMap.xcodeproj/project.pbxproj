@@ -16,8 +16,6 @@
 		36D68A44162DD5C00072667D /* GMUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 36D68A42162DD5C00072667D /* GMUtil.m */; };
 		36D68A58162E0C930072667D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D68A57162E0C930072667D /* QuartzCore.framework */; };
 		36D68A5A162E10F30072667D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D68A59162E10F30072667D /* Quartz.framework */; };
-		36D68A5D162E13340072667D /* GMDrawDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 36D68A5B162E13340072667D /* GMDrawDelegate.h */; };
-		36D68A5E162E13340072667D /* GMDrawDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 36D68A5C162E13340072667D /* GMDrawDelegate.m */; };
 		36D68A61162EBD660072667D /* GMTileManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 36D68A5F162EBD660072667D /* GMTileManager.h */; };
 		36D68A62162EBD660072667D /* GMTileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 36D68A60162EBD660072667D /* GMTileManager.m */; };
 /* End PBXBuildFile section */
@@ -49,8 +47,6 @@
 		36D68A42162DD5C00072667D /* GMUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMUtil.m; sourceTree = "<group>"; };
 		36D68A57162E0C930072667D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		36D68A59162E10F30072667D /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
-		36D68A5B162E13340072667D /* GMDrawDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMDrawDelegate.h; sourceTree = "<group>"; };
-		36D68A5C162E13340072667D /* GMDrawDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMDrawDelegate.m; sourceTree = "<group>"; };
 		36D68A5F162EBD660072667D /* GMTileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMTileManager.h; sourceTree = "<group>"; };
 		36D68A60162EBD660072667D /* GMTileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMTileManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -116,8 +112,6 @@
 				36D68A42162DD5C00072667D /* GMUtil.m */,
 				36D68A36162D902F0072667D /* GMMapView.h */,
 				36D68A37162D902F0072667D /* GMMapView.m */,
-				36D68A5B162E13340072667D /* GMDrawDelegate.h */,
-				36D68A5C162E13340072667D /* GMDrawDelegate.m */,
 				36D68A5F162EBD660072667D /* GMTileManager.h */,
 				36D68A60162EBD660072667D /* GMTileManager.m */,
 				36D689F6162D8EDD0072667D /* Supporting Files */,
@@ -153,7 +147,6 @@
 				36D68A38162D902F0072667D /* GMMapView.h in Headers */,
 				36D68A3C162D91520072667D /* GMap.h in Headers */,
 				36D68A43162DD5C00072667D /* GMUtil.h in Headers */,
-				36D68A5D162E13340072667D /* GMDrawDelegate.h in Headers */,
 				36D68A61162EBD660072667D /* GMTileManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -239,7 +232,6 @@
 			files = (
 				36D68A39162D902F0072667D /* GMMapView.m in Sources */,
 				36D68A44162DD5C00072667D /* GMUtil.m in Sources */,
-				36D68A5E162E13340072667D /* GMDrawDelegate.m in Sources */,
 				36D68A62162EBD660072667D /* GMTileManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -4,36 +4,15 @@
 
 @interface GMMapView ()
 
-@property GMTileManager *tileManager;
 
 @end
 
 @implementation GMMapView
 
-+ (NSString *)tileURLFormat
-{
-    static void *volatile tileURLFormat;
-
-    if (!tileURLFormat)
-    {
-        NSString *s = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GMTileURLFormat"];
-
-        if (!s)
-            s = [[NSBundle bundleForClass:[GMMapView class]]
-                 objectForInfoDictionaryKey:@"GMTileURLFormat"];
-
-        if (OSAtomicCompareAndSwapPtrBarrier(NULL, (__bridge void *)(s), &tileURLFormat))
-            return s;
-    }
-
-    return (__bridge NSString *)tileURLFormat;
-}
 
 - (id)initWithFrame:(NSRect)frame
 {
-    self = [super initWithFrame:frame];
-
-    if (!self)
+    if (!(self = [super initWithFrame:frame]))
         return nil;
 
     self.tileManager = [GMTileManager new];
@@ -48,13 +27,8 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     [self setNeedsDisplay:YES];
-
-    //[self.tiledLayer setNeedsDisplay];
 }
 
-- (void)viewDidEndLiveResize
-{
-}
 
 - (void)drawRect:(CGRect)rect
 {
@@ -74,13 +48,15 @@
     CGFloat tileScale = scale / (CGFloat)n;
     CGFloat tileSize = tileScale * kTileSize;
 
-    CGPoint worldOffset = CGPointMake(centerPoint.x * kTileSize, worldSize - centerPoint.y * kTileSize);
+    CGPoint worldOffset = CGPointMake(centerPoint.x * kTileSize,
+                                      worldSize - centerPoint.y * kTileSize);
 
 
     NSInteger centralTileX = floor(center.x * n);
     NSInteger centralTileY = floor(center.y * n);
 
-    CGPoint centralTilePoint = CGPointMake((CGFloat)centralTileX * tileSize, worldSize - (CGFloat)centralTileY * tileSize - tileSize);
+    CGPoint centralTilePoint = CGPointMake((CGFloat)centralTileX * tileSize,
+                                           worldSize - (CGFloat)centralTileY * tileSize - tileSize);
 
     CGPoint centralTileOrigin = CGPointMake(size.width / 2 + centralTilePoint.x - worldOffset.x,
                                             size.height / 2 + centralTilePoint.y - worldOffset.y);
@@ -109,7 +85,8 @@
 
             CGRect tileRect;
             tileRect.size = CGSizeMake(tileSize, tileSize);
-            tileRect.origin = CGPointMake(centralTileOrigin.x + offsetX * tileSize, centralTileOrigin.y - offsetY * tileSize);
+            tileRect.origin = CGPointMake(centralTileOrigin.x + offsetX * tileSize,
+                                          centralTileOrigin.y - offsetY * tileSize);
 
             if (!CGRectIntersectsRect(tileRect, rect))
                 goto next;
@@ -128,26 +105,6 @@ next:
 
         offsetY++;
     }
-
-/*
-    NSInteger tileX = floor(center.x * n);
-    NSInteger tileY = floor(center.y * n);
-
-    CGPoint tilePoint = CGPointMake((CGFloat)tileX * tileSize, worldSize - (CGFloat)tileY * tileSize - tileSize);
-
-
-    CGRect tileRect;
-    tileRect.size = CGSizeMake(tileSize, tileSize);
-    tileRect.origin = CGPointMake(size.width / 2 + tilePoint.x - worldOffset.x, size.height / 2 + tilePoint.y - worldOffset.y);
-
-    CGImageRef image;
-
-    if ((image = [self.tileManager tileImageForX:tileX y:tileY zoomLevel:level]))
-    {
-        CGContextDrawImage(ctx, tileRect, image);
-        CFRelease(image);
-    }
- */
 }
 
 @end

@@ -1,10 +1,10 @@
-
 #import <Cocoa/Cocoa.h>
+
+@class GMTileManager;
 
 @interface GMMapView : NSView
 
-
-+ (NSString *)tileURLFormat;
+@property GMTileManager *tileManager;
 
 @property GMCoordinate centerCoordinate;
 @property CGFloat zoomLevel;

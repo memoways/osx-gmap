@@ -3,17 +3,37 @@
 
 @interface GMTileManager ()
 
-- (NSString *)cacheDirectoryPath;
+@property (readonly) NSString *cacheDirectoryPath;
+@property (readonly) NSString *defaultTileURLFormat;
 
 @end
 
 @implementation GMTileManager
 
+- (id)init
+{
+    if (!(self = [super init]))
+        return nil;
+
+    self.tileURLFormat = self.defaultTileURLFormat;
+
+    return self;
+}
+
+- (NSString *)defaultTileURLFormat
+{
+    NSString *s = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GMTileURLFormat"];
+
+    if (!s)
+        s = [[NSBundle bundleForClass:[GMTileManager class]] objectForInfoDictionaryKey:@"GMTileURLFormat"];
+
+    return s;
+}
+
 - (NSString *)cacheDirectoryPath
 {
     NSString *path = nil;
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(
-        NSCachesDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 
     if ([paths count])
     {
@@ -24,6 +44,7 @@
 
     assert(path);
     path = [path stringByAppendingPathComponent:@"GMap-tiles/"];
+
     if (![[NSFileManager defaultManager] fileExistsAtPath:path])
         [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
 
@@ -42,14 +63,16 @@
     {
         if (![[NSFileManager defaultManager] fileExistsAtPath:path])
         {
-            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:GMMapView.tileURLFormat, (long)zoomLevel, (long)x, (long)y]];
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:self.tileURLFormat, (long)zoomLevel, (long)x, (long)y]];
             NSData *data = [NSData dataWithContentsOfURL:url];
             [data writeToFile:path atomically:YES];
         }
+
         if (![[NSFileManager defaultManager] fileExistsAtPath:path])
         {
             return NULL;
         }
+
         NSURL *fileURL = [NSURL fileURLWithPath:path];
         CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)fileURL, NULL);
         image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
