@@ -33,7 +33,7 @@
 
 - (CGImageRef)tileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel
 {
-    NSString *filename = [NSString stringWithFormat:@"%ld-%ld-%ld.png", (long)zoomLevel, (long)x, (long)y];
+    NSString *filename = [NSString stringWithFormat:@"%ld-%ld-%ld.jpg", (long)zoomLevel, (long)x, (long)y];
     NSString *path = [self.cacheDirectoryPath stringByAppendingPathComponent:filename];
 
     CGImageRef image;

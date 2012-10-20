@@ -1,22 +1,11 @@
 #import <QuartzCore/QuartzCore.h>
 #import "GMMapView.h"
-#import "GMDrawDelegate.h"
-
-@interface FastCATiledLayer : CATiledLayer
-@end
-
-@implementation FastCATiledLayer
-+(CFTimeInterval)fadeDuration {
-    return 0.0;
-}
-@end
+#import "GMTileManager.h"
 
 @interface GMMapView ()
 
-@property GMDrawDelegate *drawDelegate;
-@property CATiledLayer *tiledLayer;
 
-@property CGFloat previousZoomLevel;
+@property GMTileManager *tileManager;
 
 @end
 
@@ -48,66 +37,114 @@
     if (!self)
         return nil;
 
-    self.wantsLayer = YES;
-
-    CALayer *baseLayer = [CALayer layer];
-    self.layer = baseLayer;
-
-    self.drawDelegate = [[GMDrawDelegate alloc] initWithMapView:self];
-
-    self.tiledLayer = [FastCATiledLayer layer];
-    [baseLayer addSublayer:self.tiledLayer];
-    self.tiledLayer.delegate = self.drawDelegate;
-    self.tiledLayer.tileSize = CGSizeMake(256, 256);
-    self.tiledLayer.masksToBounds = YES;
-    self.tiledLayer.levelsOfDetail = 1;
-    self.tiledLayer.levelsOfDetailBias = 100;
-    self.tiledLayer.frame = CGRectMake(0, 0, 256, 256);
-        //self.tiledLayer.autoresizingMask = kCALayerWidthSizable; // | kCALayerHeightSizable;
-    self.tiledLayer.needsDisplayOnBoundsChange = YES;
-    [self.tiledLayer setNeedsDisplay];
+    self.tileManager = [GMTileManager new];
 
     [self addObserver:self forKeyPath:@"zoomLevel" options:0 context:nil];
     [self addObserver:self forKeyPath:@"centerCoordinate" options:0 context:nil];
 
-    [self updateLayerTransform];
-    
+
     return self;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    [self updateLayerTransform];
+    [self setNeedsDisplay:YES];
 
     //[self.tiledLayer setNeedsDisplay];
 }
 
 - (void)viewDidEndLiveResize
 {
-    [self.tiledLayer setNeedsDisplay];
 }
 
-- (void)updateLayerTransform
+- (void)drawRect:(CGRect)rect
 {
+    CGFloat kTileSize = 256.0;
+
+    CGContextRef ctx = NSGraphicsContext.currentContext.graphicsPort;
     CGPoint center = GMCoordinateToPoint(self.centerCoordinate);
 
-    CGAffineTransform t = CGAffineTransformIdentity;
+    CGSize size = self.frame.size;
+    CGFloat scale = pow(2, self.zoomLevel);
+    NSInteger level = ceil(self.zoomLevel);
+    NSInteger n = 1 << level;
 
-    
-    CGFloat scale = pow(2, fmod(self.zoomLevel, 4)) * 4;
-    t = CGAffineTransformScale(t, scale, scale);
-        //    t = CGAffineTransformTranslate(t, 0.5 * 256, -0.5 * 256);
-        //t = CGAffineTransformTranslate(t, -center.x * 256, center.y * 256);
+    CGFloat worldSize = kTileSize * scale;
 
-    [CATransaction begin];
-    [CATransaction setAnimationDuration:0];
-    self.layer.affineTransform = t;
-    [CATransaction commit];
-    
-    if (floor(self.previousZoomLevel / 4.0) != floor(self.zoomLevel / 4.0))
-        [self.tiledLayer setNeedsDisplay];
-    
-    self.previousZoomLevel = self.zoomLevel;
+    CGPoint centerPoint = CGPointMake(center.x * scale, center.y * scale);
+    CGFloat tileScale = scale / (CGFloat)n;
+    CGFloat tileSize = tileScale * kTileSize;
+
+    CGPoint worldOffset = CGPointMake(centerPoint.x * kTileSize, worldSize - centerPoint.y * kTileSize);
+
+
+    NSInteger centralTileX = floor(center.x * n);
+    NSInteger centralTileY = floor(center.y * n);
+
+    CGPoint centralTilePoint = CGPointMake((CGFloat)centralTileX * tileSize, worldSize - (CGFloat)centralTileY * tileSize - tileSize);
+
+    CGPoint centralTileOrigin = CGPointMake(size.width / 2 + centralTilePoint.x - worldOffset.x,
+                                            size.height / 2 + centralTilePoint.y - worldOffset.y);
+
+
+    NSInteger offsetX = -(size.width / 2.0) / tileSize - 1;
+    NSInteger offsetY = -(size.height / 2.0) / tileSize - 1;
+
+    NSInteger maxOffsetX = -offsetX;
+    NSInteger maxOffsetY = -offsetY;
+
+
+
+    while (offsetY <= maxOffsetY)
+    {
+        offsetX = -maxOffsetX;
+        while (offsetX <= maxOffsetX)
+        {
+
+            NSInteger tileX = centralTileX + offsetX;
+            NSInteger tileY = centralTileY + offsetY;
+
+            if (tileX < 0 || tileY < 0 || tileX >= n || tileY >= n)
+                goto next;
+
+            CGRect tileRect;
+            tileRect.size = CGSizeMake(tileSize, tileSize);
+            tileRect.origin = CGPointMake(centralTileOrigin.x + offsetX * tileSize, centralTileOrigin.y - offsetY * tileSize);
+        
+            CGImageRef image;
+
+            if ((image = [self.tileManager tileImageForX:tileX y:tileY zoomLevel:level]))
+            {
+                CGContextDrawImage(ctx, tileRect, image);
+                CFRelease(image);
+            }
+        
+        next:
+            offsetX++;
+        }
+
+        offsetY++;
+    }
+
+/*
+    NSInteger tileX = floor(center.x * n);
+    NSInteger tileY = floor(center.y * n);
+
+    CGPoint tilePoint = CGPointMake((CGFloat)tileX * tileSize, worldSize - (CGFloat)tileY * tileSize - tileSize);
+
+
+    CGRect tileRect;
+    tileRect.size = CGSizeMake(tileSize, tileSize);
+    tileRect.origin = CGPointMake(size.width / 2 + tilePoint.x - worldOffset.x, size.height / 2 + tilePoint.y - worldOffset.y);
+
+    CGImageRef image;
+
+    if ((image = [self.tileManager tileImageForX:tileX y:tileY zoomLevel:level]))
+    {
+        CGContextDrawImage(ctx, tileRect, image);
+        CFRelease(image);
+    }
+ */
 }
 
 @end

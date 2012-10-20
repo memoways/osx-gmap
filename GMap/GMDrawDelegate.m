@@ -64,16 +64,14 @@
 
     //tileX %= n;
 
-    if (tileY >= n || tileY < 0)
-    {
-        return;
-    }
-    if (tileX >= n || tileX < 0)
-        {
-        return;
-        }
-
         // NSLog(@"X:%d, Y:%d, N:%d", tileX, tileY, n);
+/*
+    CGContextSetFillColorWithColor(context, [NSColor colorWithCalibratedRed:((CGFloat)rand() / (CGFloat)RAND_MAX) green:((CGFloat)rand() / (CGFloat)RAND_MAX) blue:0 alpha:1].CGColor);
+    CGContextFillRect(context, rect);
+    return;
+*/
+    if (tileY >= n || tileY < 0 || tileX >= n || tileX < 0)
+        return;
     
     CGImageRef image;
 
