@@ -4,7 +4,6 @@
 
 @interface GMMapView ()
 
-
 @property GMTileManager *tileManager;
 
 @end
@@ -87,8 +86,8 @@
                                             size.height / 2 + centralTilePoint.y - worldOffset.y);
 
 
-    NSInteger offsetX = -(size.width / 2.0) / tileSize - 1;
-    NSInteger offsetY = -(size.height / 2.0) / tileSize - 1;
+    NSInteger offsetX = -ceil((size.width / 2.0) / tileSize);
+    NSInteger offsetY = -ceil((size.height / 2.0) / tileSize);
 
     NSInteger maxOffsetX = -offsetX;
     NSInteger maxOffsetY = -offsetY;
@@ -98,6 +97,7 @@
     while (offsetY <= maxOffsetY)
     {
         offsetX = -maxOffsetX;
+
         while (offsetX <= maxOffsetX)
         {
 
@@ -110,7 +110,10 @@
             CGRect tileRect;
             tileRect.size = CGSizeMake(tileSize, tileSize);
             tileRect.origin = CGPointMake(centralTileOrigin.x + offsetX * tileSize, centralTileOrigin.y - offsetY * tileSize);
-        
+
+            if (!CGRectIntersectsRect(tileRect, rect))
+                goto next;
+
             CGImageRef image;
 
             if ((image = [self.tileManager tileImageForX:tileX y:tileY zoomLevel:level]))
@@ -118,8 +121,8 @@
                 CGContextDrawImage(ctx, tileRect, image);
                 CFRelease(image);
             }
-        
-        next:
+
+next:
             offsetX++;
         }
 
