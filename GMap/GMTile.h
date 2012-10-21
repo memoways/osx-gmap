@@ -13,7 +13,7 @@
 @property BOOL loading;
 @property CGImageRef image;
 
-@property (copy) void(^completion)(void);
+@property (copy) void (^completion)(void);
 
 
 - (id)initWithX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel;
@@ -21,4 +21,3 @@
 + (NSString *)tileKeyForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel;
 
 @end
-

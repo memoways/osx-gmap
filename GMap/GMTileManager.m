@@ -10,6 +10,8 @@ const NSString *kCacheArrayKey = @"cacheArray";
 @property (readonly) NSString *defaultCacheDirectoryPath;
 @property (readonly) NSString *defaultTileURLFormat;
 
+@property CGImageRef invalidSpriteImage;
+
 @property NSMutableDictionary *tileCache;
 
 @property NSOperationQueue *tileLoadQueue;
@@ -31,6 +33,12 @@ const NSString *kCacheArrayKey = @"cacheArray";
     self.tileCache = NSMutableDictionary.new;
 
     self.tileLoadQueue = NSOperationQueue.new;
+
+
+    NSURL *url = [[NSBundle bundleForClass:GMTileManager.class] URLForImageResource:@"InvalidSprite.jpg"];
+    CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)url, NULL);
+    self.invalidSpriteImage = CGImageSourceCreateImageAtIndex(source, 0, NULL);
+    CFRelease(source);
 
     return self;
 }
@@ -135,26 +143,36 @@ const NSString *kCacheArrayKey = @"cacheArray";
     NSLog(@"Loading tile %@", tile.key);
     NSString *filename = [NSString stringWithFormat:@"%@.jpg", tile.key];
     NSString *path = [self.cacheDirectoryPath stringByAppendingPathComponent:filename];
+    NSURL *fileURL = [NSURL fileURLWithPath:path];
 
-    CGImageRef image;
+    CGImageRef image = NULL;
 
     if (![NSFileManager.defaultManager fileExistsAtPath:path])
     {
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:self.tileURLFormat, (long)tile.zoomLevel, (long)tile.x, (long)tile.y]];
-        NSData *data = [NSData dataWithContentsOfURL:url];
-        [data writeToFile:path atomically:YES];
-    }
 
-    if (![[NSFileManager defaultManager] fileExistsAtPath:path])
+        for (int i = 0; i < 5; i++)
+        {
+            NSData *data = [NSData dataWithContentsOfURL:url];
+            [data writeToFile:path atomically:YES];
+
+            CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)fileURL, NULL);
+            image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
+            CFRelease(source);
+
+            if (image)
+                break;
+        }
+
+    }
+    else
     {
-        // Try again
-        return;
+        CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)fileURL, NULL);
+        image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
+        CFRelease(source);
     }
-
-    NSURL *fileURL = [NSURL fileURLWithPath:path];
-    CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)fileURL, NULL);
-    image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
-    CFRelease(source);
+    if (!image)
+        image = self.invalidSpriteImage;
 
     tile.image = image;
     tile.loaded = YES;

@@ -74,7 +74,6 @@
 
     CGContextFillRect(ctx, rect);
 
-
     while (offsetY <= maxOffsetY)
     {
         offsetX = -maxOffsetX;

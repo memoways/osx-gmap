@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		363AE2CD16342C4800970D21 /* GMTile.h in Headers */ = {isa = PBXBuildFile; fileRef = 363AE2CB16342C4800970D21 /* GMTile.h */; };
 		363AE2CE16342C4800970D21 /* GMTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 363AE2CC16342C4800970D21 /* GMTile.m */; };
+		363AE2D0163462DE00970D21 /* InvalidSprite.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 363AE2CF163462DE00970D21 /* InvalidSprite.jpg */; };
 		36D689F0162D8EDD0072667D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D689EF162D8EDD0072667D /* Cocoa.framework */; };
 		36D689FA162D8EDD0072667D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 36D689F8162D8EDD0072667D /* InfoPlist.strings */; };
 		36D68A38162D902F0072667D /* GMMapView.h in Headers */ = {isa = PBXBuildFile; fileRef = 36D68A36162D902F0072667D /* GMMapView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -35,6 +36,7 @@
 /* Begin PBXFileReference section */
 		363AE2CB16342C4800970D21 /* GMTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMTile.h; sourceTree = "<group>"; };
 		363AE2CC16342C4800970D21 /* GMTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMTile.m; sourceTree = "<group>"; };
+		363AE2CF163462DE00970D21 /* InvalidSprite.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = InvalidSprite.jpg; sourceTree = "<group>"; };
 		36D689EC162D8EDD0072667D /* GMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		36D689EF162D8EDD0072667D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		36D689F2162D8EDD0072667D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -128,6 +130,7 @@
 		36D689F6162D8EDD0072667D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				363AE2CF163462DE00970D21 /* InvalidSprite.jpg */,
 				36D689F7162D8EDD0072667D /* GMap-Info.plist */,
 				36D689F8162D8EDD0072667D /* InfoPlist.strings */,
 				36D689FB162D8EDD0072667D /* GMap-Prefix.pch */,
@@ -227,6 +230,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				36D689FA162D8EDD0072667D /* InfoPlist.strings in Resources */,
+				363AE2D0163462DE00970D21 /* InvalidSprite.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
