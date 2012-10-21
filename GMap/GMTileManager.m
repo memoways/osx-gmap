@@ -3,7 +3,7 @@
 
 @interface GMTileManager ()
 
-@property (readonly) NSString *cacheDirectoryPath;
+@property (readonly) NSString *defaultCacheDirectoryPath;
 @property (readonly) NSString *defaultTileURLFormat;
 
 @end
@@ -16,6 +16,7 @@
         return nil;
 
     self.tileURLFormat = self.defaultTileURLFormat;
+    self.cacheDirectoryPath = self.defaultCacheDirectoryPath;
 
     return self;
 }
@@ -30,7 +31,7 @@
     return s;
 }
 
-- (NSString *)cacheDirectoryPath
+- (NSString *)defaultCacheDirectoryPath
 {
     NSString *path = nil;
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
