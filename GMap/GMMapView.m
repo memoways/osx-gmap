@@ -15,7 +15,7 @@
     if (!(self = [super initWithFrame:frame]))
         return nil;
 
-    self.tileManager = [GMTileManager new];
+    self.tileManager = GMTileManager.new;
 
     [self addObserver:self forKeyPath:@"zoomLevel" options:0 context:nil];
     [self addObserver:self forKeyPath:@"centerCoordinate" options:0 context:nil];
@@ -29,6 +29,10 @@
     [self setNeedsDisplay:YES];
 }
 
+- (BOOL)isOpaque
+{
+    return YES;
+}
 
 - (void)drawRect:(CGRect)rect
 {
@@ -68,6 +72,7 @@
     NSInteger maxOffsetX = -offsetX;
     NSInteger maxOffsetY = -offsetY;
 
+    CGContextFillRect(ctx, rect);
 
 
     while (offsetY <= maxOffsetY)
@@ -81,25 +86,34 @@
             NSInteger tileY = centralTileY + offsetY;
 
             if (tileX < 0 || tileY < 0 || tileX >= n || tileY >= n)
-                goto next;
+            {
+                offsetX++;
+                continue;
+            }
 
             CGRect tileRect;
-            tileRect.size = CGSizeMake(tileSize, tileSize);
-            tileRect.origin = CGPointMake(centralTileOrigin.x + offsetX * tileSize,
-                                          centralTileOrigin.y - offsetY * tileSize);
+            tileRect.size = CGSizeMake(ceil(tileSize), ceil(tileSize));
+            tileRect.origin = CGPointMake(floor(centralTileOrigin.x + offsetX * tileSize),
+                                          floor(centralTileOrigin.y - offsetY * tileSize));
 
-            if (!CGRectIntersectsRect(tileRect, rect))
-                goto next;
+            if (![self needsToDrawRect:tileRect])
+            {
+                offsetX++;
+                continue;
+            }
 
             CGImageRef image;
 
-            if ((image = [self.tileManager tileImageForX:tileX y:tileY zoomLevel:level]))
+            void (^redraw)(void) = ^{
+                [self setNeedsDisplayInRect:tileRect];
+            };
+
+            if ((image = [self.tileManager createTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
             {
                 CGContextDrawImage(ctx, tileRect, image);
-                CFRelease(image);
+                CGImageRelease(image);
             }
 
-next:
             offsetX++;
         }
 

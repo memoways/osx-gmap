@@ -5,6 +5,6 @@
 @property NSString *tileURLFormat;
 @property NSString *cacheDirectoryPath;
 
-- (CGImageRef)tileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel;
+- (CGImageRef)createTileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel completion:(void (^)(void))completion;
 
 @end

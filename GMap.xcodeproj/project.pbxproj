@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		363AE2CD16342C4800970D21 /* GMTile.h in Headers */ = {isa = PBXBuildFile; fileRef = 363AE2CB16342C4800970D21 /* GMTile.h */; };
+		363AE2CE16342C4800970D21 /* GMTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 363AE2CC16342C4800970D21 /* GMTile.m */; };
 		36D689F0162D8EDD0072667D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D689EF162D8EDD0072667D /* Cocoa.framework */; };
 		36D689FA162D8EDD0072667D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 36D689F8162D8EDD0072667D /* InfoPlist.strings */; };
 		36D68A38162D902F0072667D /* GMMapView.h in Headers */ = {isa = PBXBuildFile; fileRef = 36D68A36162D902F0072667D /* GMMapView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -31,6 +33,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		363AE2CB16342C4800970D21 /* GMTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMTile.h; sourceTree = "<group>"; };
+		363AE2CC16342C4800970D21 /* GMTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMTile.m; sourceTree = "<group>"; };
 		36D689EC162D8EDD0072667D /* GMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		36D689EF162D8EDD0072667D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		36D689F2162D8EDD0072667D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -114,6 +118,8 @@
 				36D68A37162D902F0072667D /* GMMapView.m */,
 				36D68A5F162EBD660072667D /* GMTileManager.h */,
 				36D68A60162EBD660072667D /* GMTileManager.m */,
+				363AE2CB16342C4800970D21 /* GMTile.h */,
+				363AE2CC16342C4800970D21 /* GMTile.m */,
 				36D689F6162D8EDD0072667D /* Supporting Files */,
 			);
 			path = GMap;
@@ -148,6 +154,7 @@
 				36D68A3C162D91520072667D /* GMap.h in Headers */,
 				36D68A43162DD5C00072667D /* GMUtil.h in Headers */,
 				36D68A61162EBD660072667D /* GMTileManager.h in Headers */,
+				363AE2CD16342C4800970D21 /* GMTile.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +240,7 @@
 				36D68A39162D902F0072667D /* GMMapView.m in Sources */,
 				36D68A44162DD5C00072667D /* GMUtil.m in Sources */,
 				36D68A62162EBD660072667D /* GMTileManager.m in Sources */,
+				363AE2CE16342C4800970D21 /* GMTile.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
