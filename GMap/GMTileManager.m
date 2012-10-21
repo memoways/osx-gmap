@@ -163,7 +163,6 @@ const NSString *kCacheArrayKey = @"cacheArray";
             if (image)
                 break;
         }
-
     }
     else
     {
@@ -171,6 +170,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
         image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
         CFRelease(source);
     }
+
     if (!image)
         image = self.invalidSpriteImage;
 
