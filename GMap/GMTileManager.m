@@ -34,13 +34,17 @@ const NSString *kCacheArrayKey = @"cacheArray";
 
     self.tileLoadQueue = NSOperationQueue.new;
 
-
     NSURL *url = [[NSBundle bundleForClass:GMTileManager.class] URLForImageResource:@"InvalidSprite.jpg"];
     CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)url, NULL);
     self.invalidSpriteImage = CGImageSourceCreateImageAtIndex(source, 0, NULL);
     CFRelease(source);
 
     return self;
+}
+
+- (void)dealloc
+{
+    CGImageRelease(self.invalidSpriteImage);
 }
 
 - (NSString *)defaultTileURLFormat
