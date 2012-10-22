@@ -26,6 +26,8 @@
 	<string>Copyright © 2012 Goyman SA. All rights reserved.</string>
 	<key>GMTileURLFormat</key>
 	<string>http://otile1.mqcdn.com/tiles/1.0.0/osm/%ld/%ld/%ld.jpg</string>
+	<key>GMTileFileFormat</key>
+	<string>JPEG</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>

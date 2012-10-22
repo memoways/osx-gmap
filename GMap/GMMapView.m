@@ -25,20 +25,20 @@
     self.layer = CALayer.new;
     self.wantsLayer = YES;
 
-        self.layer.delegate = self;
+    self.layer.delegate = self;
 
     self.tileLayer = CALayer.new;
     self.tileLayer.delegate = self;
     [self.layer addSublayer:self.tileLayer];
-    
-    
+
+
     [self addObserver:self forKeyPath:@"zoomLevel" options:0 context:nil];
     [self addObserver:self forKeyPath:@"centerCoordinate" options:0 context:nil];
 
     [self updateTileLayerBounds];
     [self updateTileLayerTransform];
     [self.tileLayer setNeedsDisplay];
-    
+
     return self;
 }
 
@@ -48,6 +48,7 @@
 
     if (![self inLiveResize])
         [self updateTileLayerBounds];
+
     [self updateTileLayerTransform];
 }
 
@@ -65,7 +66,8 @@
 
 - (void)updateTileLayerTransform
 {
-    CGFloat scale = pow(2, fmod(self.zoomLevel, 1)) / 2.0;
+    CGFloat f = fmod(self.zoomLevel, 1);
+    CGFloat scale = pow(2, f);
     CGAffineTransform t = CGAffineTransformIdentity;
 
     t = CGAffineTransformTranslate(t, self.layer.bounds.size.width / 2.0, self.layer.bounds.size.height / 2.0);
@@ -78,25 +80,32 @@
 {
     if ([keyPath isEqualToString:@"zoomLevel"])
     {
-        NSInteger zoomLevel = ceil(self.zoomLevel);
+        NSInteger zoomLevel = floor(self.zoomLevel);
 
         [self updateTileLayerTransform];
-    
+
         if (zoomLevel != self.renderedZoomLevel)
         {
             self.renderedZoomLevel = zoomLevel;
             [self.tileLayer setNeedsDisplay];
         }
     }
-
-    //[self setNeedsDisplay:YES];
+    else if ([keyPath isEqualToString:@"centerCoordinate"])
+    {
+        [self.tileLayer setNeedsDisplay];
+    }
 }
-/*
-   - (BOOL)isOpaque
-   {
-    return YES;
-   }
- */
+
+- (void)mouseDown:(NSEvent *)event
+{
+    NSLog(@"Start panning");
+}
+
+- (void)mouseUp:(NSEvent *)event
+{
+    NSLog(@"Stop panning");
+}
+
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx
 {
     CGRect rect = CGContextGetClipBoundingBox(ctx);
@@ -107,13 +116,13 @@
         CGContextSetFillColorWithColor(ctx, NSColor.greenColor.CGColor);
     CGContextFillRect(ctx, rect);
     return;
-  */  
+ */
     CGFloat kTileSize = 256.0;
 
     CGPoint center = GMCoordinateToPoint(self.centerCoordinate);
 
     CGSize size = layer.bounds.size;
-    NSInteger level = ceil(self.zoomLevel);
+    NSInteger level = floor(self.zoomLevel);
     NSInteger n = 1 << level;
 
     CGFloat worldSize = kTileSize * n;
@@ -183,90 +192,5 @@
     }
 }
 
-- (void)___drawRect:(CGRect)rect
-{
-    CGFloat kTileSize = 256.0;
-
-    CGContextRef ctx = NSGraphicsContext.currentContext.graphicsPort;
-    CGPoint center = GMCoordinateToPoint(self.centerCoordinate);
-
-    CGSize size = self.frame.size;
-    CGFloat scale = pow(2, self.zoomLevel);
-    NSInteger level = ceil(self.zoomLevel);
-    NSInteger n = 1 << level;
-
-    CGFloat worldSize = kTileSize * scale;
-
-    CGPoint centerPoint = CGPointMake(center.x * scale, center.y * scale);
-    CGFloat tileScale = scale / (CGFloat)n;
-    CGFloat tileSize = tileScale * kTileSize;
-
-    CGPoint worldOffset = CGPointMake(centerPoint.x * kTileSize,
-                                      worldSize - centerPoint.y * kTileSize);
-
-
-    NSInteger centralTileX = floor(center.x * n);
-    NSInteger centralTileY = floor(center.y * n);
-
-    CGPoint centralTilePoint = CGPointMake((CGFloat)centralTileX * tileSize,
-                                           worldSize - (CGFloat)centralTileY * tileSize - tileSize);
-
-    CGPoint centralTileOrigin = CGPointMake(size.width / 2 + centralTilePoint.x - worldOffset.x,
-                                            size.height / 2 + centralTilePoint.y - worldOffset.y);
-
-
-    NSInteger offsetX = -ceil((size.width / 2.0) / tileSize);
-    NSInteger offsetY = -ceil((size.height / 2.0) / tileSize);
-
-    NSInteger maxOffsetX = -offsetX;
-    NSInteger maxOffsetY = -offsetY;
-
-    CGContextFillRect(ctx, rect);
-
-    while (offsetY <= maxOffsetY)
-    {
-        offsetX = -maxOffsetX;
-
-        while (offsetX <= maxOffsetX)
-        {
-
-            NSInteger tileX = centralTileX + offsetX;
-            NSInteger tileY = centralTileY + offsetY;
-
-            if (tileX < 0 || tileY < 0 || tileX >= n || tileY >= n)
-            {
-                offsetX++;
-                continue;
-            }
-
-            CGRect tileRect;
-            tileRect.size = CGSizeMake(ceil(tileSize), ceil(tileSize));
-            tileRect.origin = CGPointMake(floor(centralTileOrigin.x + offsetX * tileSize),
-                                          floor(centralTileOrigin.y - offsetY * tileSize));
-
-            if (![self needsToDrawRect:tileRect])
-            {
-                offsetX++;
-                continue;
-            }
-
-            CGImageRef image;
-
-            void (^redraw)(void) = ^{
-                [self setNeedsDisplayInRect:tileRect];
-            };
-
-            if ((image = [self.tileManager createTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
-            {
-                CGContextDrawImage(ctx, tileRect, image);
-                CGImageRelease(image);
-            }
-
-            offsetX++;
-        }
-
-        offsetY++;
-    }
-}
 
 @end

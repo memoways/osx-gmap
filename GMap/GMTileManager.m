@@ -145,6 +145,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
 - (void)loadTile:(GMTile *)tile
 {
     NSLog(@"Loading tile %@", tile.key);
+    
     NSString *filename = [NSString stringWithFormat:@"%@.jpg", tile.key];
     NSString *path = [self.cacheDirectoryPath stringByAppendingPathComponent:filename];
     NSURL *fileURL = [NSURL fileURLWithPath:path];
@@ -176,7 +177,10 @@ const NSString *kCacheArrayKey = @"cacheArray";
     }
 
     if (!image)
+    {
         image = self.invalidSpriteImage;
+        NSLog(@"Unable to load tile %@", tile.key);
+    }
 
     tile.image = image;
     tile.loaded = YES;
