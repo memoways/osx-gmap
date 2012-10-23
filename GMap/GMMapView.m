@@ -2,6 +2,9 @@
 #import "GMMapView.h"
 #import "GMTileManager.h"
 
+
+const CGFloat kTileSize = 256.0;
+
 @interface GMMapView ()
 
 @property NSInteger renderedZoomLevel;
@@ -61,7 +64,7 @@
 
 - (void)updateTileLayerBounds
 {
-    self.tileLayer.bounds = CGRectMake(0, 0, self.frame.size.width * 2, self.frame.size.height * 2);
+    self.tileLayer.bounds = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
 }
 
 - (void)updateTileLayerTransform
@@ -117,7 +120,6 @@
     CGContextFillRect(ctx, rect);
     return;
  */
-    CGFloat kTileSize = 256.0;
 
     CGPoint center = GMCoordinateToPoint(self.centerCoordinate);
 
@@ -131,7 +133,6 @@
 
     CGPoint worldOffset = CGPointMake(centerPoint.x * kTileSize,
                                       worldSize - centerPoint.y * kTileSize);
-
 
     NSInteger centralTileX = floor(center.x * n);
     NSInteger centralTileY = floor(center.y * n);
@@ -148,30 +149,34 @@
 
     NSInteger maxOffsetX = -offsetX;
     NSInteger maxOffsetY = -offsetY;
+    
+    CGContextSetFillColorWithColor(ctx, NSColor.windowBackgroundColor.CGColor);
 
     CGContextFillRect(ctx, rect);
 
-    while (offsetY <= maxOffsetY)
+    for (; offsetY <= maxOffsetY; offsetY++)
     {
         offsetX = -maxOffsetX;
 
-        while (offsetX <= maxOffsetX)
+        for (; offsetX <= maxOffsetX; offsetX++)
         {
 
             NSInteger tileX = centralTileX + offsetX;
             NSInteger tileY = centralTileY + offsetY;
 
+
+
             if (tileX < 0 || tileY < 0 || tileX >= n || tileY >= n)
-            {
-                offsetX++;
                 continue;
-            }
+
 
             CGRect tileRect;
             tileRect.size = CGSizeMake(kTileSize, kTileSize);
             tileRect.origin = CGPointMake(floor(centralTileOrigin.x + offsetX * kTileSize),
                                           floor(centralTileOrigin.y - offsetY * kTileSize));
 
+            if (!CGRectIntersectsRect(rect, tileRect))
+                continue;    
 
             CGImageRef image;
 
@@ -184,11 +189,7 @@
                 CGContextDrawImage(ctx, tileRect, image);
                 CGImageRelease(image);
             }
-
-            offsetX++;
         }
-
-        offsetY++;
     }
 }
 

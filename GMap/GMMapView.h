@@ -4,10 +4,10 @@
 
 @interface GMMapView : NSView
 
-@property GMTileManager *tileManager;
+@property (nonatomic) GMTileManager *tileManager;
 
-@property GMCoordinate centerCoordinate;
-@property CGFloat zoomLevel;
+@property (nonatomic) GMCoordinate centerCoordinate;
+@property (nonatomic) CGFloat zoomLevel;
 
 
 @end

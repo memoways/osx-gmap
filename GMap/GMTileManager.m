@@ -10,13 +10,16 @@ const NSString *kCacheArrayKey = @"cacheArray";
 @property (readonly) NSString *defaultCacheDirectoryPath;
 @property (readonly) NSString *defaultTileURLFormat;
 
-@property CGImageRef invalidSpriteImage;
+@property CGImageRef errorTileImage;
 
-@property NSMutableDictionary *tileCache;
+@property NSMutableDictionary *tileCacheDictionary;
+@property NSMutableArray *tileCacheArray;
 
 @property NSOperationQueue *tileLoadQueue;
 
-- (void)loadTile:(GMTile *)tile;
+- (void)cacheTile:(GMTile *)tile;
+- (void)loadTileFromCache:(GMTile *)tile;
+- (NSString *)cachePathForTile:(GMTile *)tile;
 
 @end
 
@@ -30,13 +33,15 @@ const NSString *kCacheArrayKey = @"cacheArray";
     self.tileURLFormat = self.defaultTileURLFormat;
     self.cacheDirectoryPath = self.defaultCacheDirectoryPath;
 
-    self.tileCache = NSMutableDictionary.new;
+    self.tileCacheDictionary = NSMutableDictionary.new;
+    self.tileCacheArray = NSMutableArray.new;
 
     self.tileLoadQueue = NSOperationQueue.new;
+    self.tileLoadQueue.maxConcurrentOperationCount = 50;
 
-    NSURL *url = [[NSBundle bundleForClass:GMTileManager.class] URLForImageResource:@"InvalidSprite.jpg"];
+    NSURL *url = [[NSBundle bundleForClass:GMTileManager.class] URLForImageResource:@"ErrorTileImage.png"];
     CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)url, NULL);
-    self.invalidSpriteImage = CGImageSourceCreateImageAtIndex(source, 0, NULL);
+    self.errorTileImage = CGImageSourceCreateImageAtIndex(source, 0, NULL);
     CFRelease(source);
 
     return self;
@@ -44,7 +49,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
 
 - (void)dealloc
 {
-    CGImageRelease(self.invalidSpriteImage);
+    CGImageRelease(self.errorTileImage);
 }
 
 - (NSString *)defaultTileURLFormat
@@ -80,44 +85,26 @@ const NSString *kCacheArrayKey = @"cacheArray";
 - (CGImageRef)createTileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel completion:(void (^)(void))completion
 {
     NSString *tileKey = [GMTile tileKeyForX:x y:y zoomLevel:zoomLevel];
-    NSNumber *key = [NSNumber numberWithInteger:zoomLevel];
-
-    NSMutableDictionary *cacheDictionary;
-    NSMutableArray *cacheArray;
-
-    cacheDictionary = [self.tileCache objectForKey:key];
-
-    if (!cacheDictionary)
-    {
-        cacheDictionary = NSMutableDictionary.new;
-        [self.tileCache setObject:cacheDictionary forKey:key];
-
-        cacheArray = NSMutableArray.new;
-        [cacheDictionary setObject:cacheArray forKey:kCacheArrayKey];
-    }
-    else
-    {
-        cacheArray = [cacheDictionary objectForKey:kCacheArrayKey];
-    }
 
     GMTile *tile;
 
-    tile = [cacheDictionary objectForKey:tileKey];
+    tile = [self.tileCacheDictionary objectForKey:tileKey];
 
     if (!tile)
     {
         tile = [GMTile.alloc initWithX:x y:y zoomLevel:zoomLevel];
-        [cacheDictionary setObject:tile forKey:tileKey];
+        [self loadTileFromCache:tile];
+        [self.tileCacheDictionary setObject:tile forKey:tileKey];
     }
 
-    [cacheArray removeObject:tile];
-    [cacheArray insertObject:tile atIndex:0];
+    [self.tileCacheArray removeObject:tile];
+    [self.tileCacheArray insertObject:tile atIndex:0];
 
-    if (cacheArray.count > 1000)
+    if (self.tileCacheArray.count > 1000)
     {
-        GMTile *tileToFlush = cacheArray.lastObject;
-        [cacheArray removeLastObject];
-        [cacheDictionary removeObjectForKey:tileToFlush.key];
+        GMTile *tileToFlush = self.tileCacheArray.lastObject;
+        [self.tileCacheArray removeLastObject];
+        [self.tileCacheDictionary removeObjectForKey:tileToFlush.key];
     }
 
     if (tile.loaded)
@@ -132,8 +119,9 @@ const NSString *kCacheArrayKey = @"cacheArray";
         if (!tile.loading)
         {
             tile.loading = YES;
+
             [self.tileLoadQueue addOperationWithBlock:^{
-                 [self loadTile:tile];
+                 [self cacheTile:tile];
              }];
         }
     }
@@ -141,51 +129,69 @@ const NSString *kCacheArrayKey = @"cacheArray";
     return NULL;
 }
 
-
-- (void)loadTile:(GMTile *)tile
+- (NSString *)cachePathForTile:(GMTile *)tile
 {
-    NSLog(@"Loading tile %@", tile.key);
-    
-    NSString *filename = [NSString stringWithFormat:@"%@.jpg", tile.key];
-    NSString *path = [self.cacheDirectoryPath stringByAppendingPathComponent:filename];
-    NSURL *fileURL = [NSURL fileURLWithPath:path];
+    return [self.cacheDirectoryPath stringByAppendingPathComponent:(NSString *)tile.key];
+}
 
-    CGImageRef image = NULL;
+- (void)loadTileFromCache:(GMTile *)tile
+{
+    NSString *path = [self cachePathForTile:tile];
 
     if (![NSFileManager.defaultManager fileExistsAtPath:path])
-    {
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:self.tileURLFormat, (long)tile.zoomLevel, (long)tile.x, (long)tile.y]];
+        return;
 
-        for (int i = 0; i < 5; i++)
-        {
-            NSData *data = [NSData dataWithContentsOfURL:url];
-            [data writeToFile:path atomically:YES];
+    NSURL *fileURL = [NSURL fileURLWithPath:path];
 
-            CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)fileURL, NULL);
-            image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
-            CFRelease(source);
-
-            if (image)
-                break;
-        }
-    }
-    else
-    {
-        CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)fileURL, NULL);
-        image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
-        CFRelease(source);
-    }
-
-    if (!image)
-    {
-        image = self.invalidSpriteImage;
-        NSLog(@"Unable to load tile %@", tile.key);
-    }
-
-    tile.image = image;
+    CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)fileURL, NULL);
+    tile.image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
+    CFRelease(source);
     tile.loaded = YES;
-    tile.loading = NO;
-    [NSOperationQueue.mainQueue addOperationWithBlock:tile.completion];
+}
+
+- (void)cacheTile:(GMTile *)tile
+{
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:self.tileURLFormat, (long)tile.zoomLevel, (long)tile.x, (long)tile.y]];
+
+    NSURLRequest *req = [NSURLRequest requestWithURL:url];
+
+
+    [NSURLConnection sendAsynchronousRequest:req queue:self.tileLoadQueue completionHandler:^(NSURLResponse * response, NSData * data, NSError * error) {
+
+         NSString *path = [self cachePathForTile:tile];
+
+         CGImageRef image = NULL;
+         CFStringRef MIMEType = (__bridge CFStringRef)response.MIMEType;
+         CFStringRef type = UTTypeCreatePreferredIdentifierForTag (kUTTagClassMIMEType, MIMEType, kUTTypeImage);
+
+         if (UTTypeEqual (type, kUTTypeJPEG) || UTTypeEqual (type, kUTTypePNG))
+         {
+             CGDataProviderRef provider = CGDataProviderCreateWithCFData ((__bridge CFDataRef)data);
+
+             if (UTTypeEqual (type, kUTTypePNG))
+                 image = CGImageCreateWithPNGDataProvider (provider, NULL, NO, kCGRenderingIntentDefault);
+             else
+                 image = CGImageCreateWithJPEGDataProvider (provider, NULL, NO, kCGRenderingIntentDefault);
+
+             CFRelease (provider);
+
+             if (image)
+                 [data writeToFile:path atomically:YES];
+         }
+
+         CFRelease (type);
+
+         if (!image)
+         {
+             image = self.errorTileImage;
+             NSLog (@"Unable to load tile %@", tile.key);
+         }
+
+         tile.image = image;
+         tile.loaded = YES;
+         tile.loading = NO;
+         [NSOperationQueue.mainQueue addOperationWithBlock:(void (^)(void))tile.completion];
+     }];
 
 }
 

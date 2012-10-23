@@ -4226,7 +4226,7 @@
 				<string key="644.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="645.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1041" key="646.IBNumberFormatterBehaviorMetadataKey"/>
-				<boolean value="NO" key="646.IBNumberFormatterLocalizesFormatMetadataKey"/>
+				<boolean value="YES" key="646.IBNumberFormatterLocalizesFormatMetadataKey"/>
 				<string key="646.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="652.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="653.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>

@@ -3,9 +3,10 @@
 
 @interface GMTile ()
 
-@property NSInteger x;
-@property NSInteger y;
-@property NSInteger zoomLevel;
+@property volatile NSInteger x;
+@property volatile NSInteger y;
+@property volatile NSInteger zoomLevel;
+@property volatile NSString *key;
 
 @end
 
@@ -24,18 +25,13 @@
     self.x = x;
     self.y = y;
     self.zoomLevel = zoomLevel;
+    self.key = [GMTile tileKeyForX:self.x y:self.y zoomLevel:self.zoomLevel];
 
     return self;
 }
 
-- (NSString *)key
-{
-    return [GMTile tileKeyForX:self.x y:self.y zoomLevel:self.zoomLevel];
-}
-
 - (void)dealloc
 {
-    NSLog(@"Cleaning tile %@", self.key);
     CGImageRelease(self.image);
 }
 
