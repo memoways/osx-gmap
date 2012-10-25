@@ -1324,7 +1324,7 @@
 						<object class="NSSlider" id="228967240">
 							<reference key="NSNextResponder" ref="439893737"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{18, 58}, {665, 21}}</string>
+							<string key="NSFrame">{{18, 59}, {665, 25}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="739198905"/>
@@ -1340,8 +1340,8 @@
 								<double key="NSMinValue">0.0</double>
 								<double key="NSValue">18</double>
 								<double key="NSAltIncValue">0.0</double>
-								<int key="NSNumberOfTickMarks">0</int>
-								<int key="NSTickMarkPosition">1</int>
+								<int key="NSNumberOfTickMarks">19</int>
+								<int key="NSTickMarkPosition">0</int>
 								<bool key="NSAllowsTickMarkValuesOnly">NO</bool>
 								<bool key="NSVertical">NO</bool>
 							</object>
@@ -1350,7 +1350,7 @@
 						<object class="NSTextField" id="241647912">
 							<reference key="NSNextResponder" ref="439893737"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{20, 85}, {45, 17}}</string>
+							<string key="NSFrame">{{20, 90}, {45, 17}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="264987841"/>
@@ -1492,7 +1492,7 @@
 						<object class="NSTextField" id="264987841">
 							<reference key="NSNextResponder" ref="439893737"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{70, 83}, {131, 22}}</string>
+							<string key="NSFrame">{{70, 88}, {131, 22}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="228967240"/>
@@ -2339,19 +2339,19 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: self.zoomLevel</string>
+						<string key="label">value: self.mapView.zoomLevel</string>
 						<reference key="source" ref="228967240"/>
 						<reference key="destination" ref="976324537"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="228967240"/>
 							<reference key="NSDestination" ref="976324537"/>
-							<string key="NSLabel">value: self.zoomLevel</string>
+							<string key="NSLabel">value: self.mapView.zoomLevel</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">self.zoomLevel</string>
+							<string key="NSKeyPath">self.mapView.zoomLevel</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">575</int>
+					<int key="connectionID">657</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -2387,19 +2387,19 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: self.zoomLevel</string>
+						<string key="label">value: self.mapView.zoomLevel</string>
 						<reference key="source" ref="264987841"/>
 						<reference key="destination" ref="976324537"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="264987841"/>
 							<reference key="NSDestination" ref="976324537"/>
-							<string key="NSLabel">value: self.zoomLevel</string>
+							<string key="NSLabel">value: self.mapView.zoomLevel</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">self.zoomLevel</string>
+							<string key="NSKeyPath">self.mapView.zoomLevel</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">654</int>
+					<int key="connectionID">659</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -4246,7 +4246,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">654</int>
+			<int key="maxID">659</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

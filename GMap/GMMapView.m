@@ -7,8 +7,9 @@ const CGFloat kTileSize = 256.0;
 
 @interface GMMapView ()
 
-@property NSInteger renderedZoomLevel;
-@property CALayer *tileLayer;
+@property (nonatomic) NSInteger renderedZoomLevel;
+@property (nonatomic) CALayer *tileLayer;
+@property (nonatomic) CGPoint centerPoint;
 
 - (void)updateTileLayerTransform;
 - (void)updateTileLayerBounds;
@@ -34,10 +35,7 @@ const CGFloat kTileSize = 256.0;
     self.tileLayer.delegate = self;
     [self.layer addSublayer:self.tileLayer];
 
-
-    [self addObserver:self forKeyPath:@"zoomLevel" options:0 context:nil];
-    [self addObserver:self forKeyPath:@"centerCoordinate" options:0 context:nil];
-
+    
     [self updateTileLayerBounds];
     [self updateTileLayerTransform];
     [self.tileLayer setNeedsDisplay];
@@ -79,34 +77,26 @@ const CGFloat kTileSize = 256.0;
     self.tileLayer.affineTransform = t;
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+- (void)setZoomLevel:(CGFloat)zoomLevel
 {
-    if ([keyPath isEqualToString:@"zoomLevel"])
-    {
-        NSInteger zoomLevel = floor(self.zoomLevel);
+    _zoomLevel = MAX(0, MIN(18, zoomLevel));
+    
+    NSInteger renderZoomLevel = floor(zoomLevel);
 
-        [self updateTileLayerTransform];
+    [self updateTileLayerTransform];
 
-        if (zoomLevel != self.renderedZoomLevel)
-        {
-            self.renderedZoomLevel = zoomLevel;
-            [self.tileLayer setNeedsDisplay];
-        }
-    }
-    else if ([keyPath isEqualToString:@"centerCoordinate"])
+    if (renderZoomLevel != self.renderedZoomLevel)
     {
+        self.renderedZoomLevel = renderZoomLevel;
         [self.tileLayer setNeedsDisplay];
     }
 }
 
-- (void)mouseDown:(NSEvent *)event
+- (void)setCenterCoordinate:(GMCoordinate)coordinate
 {
-    NSLog(@"Start panning");
-}
-
-- (void)mouseUp:(NSEvent *)event
-{
-    NSLog(@"Stop panning");
+    _centerCoordinate = coordinate;
+    self.centerPoint = GMCoordinateToPoint(self.centerCoordinate);
+    [self.tileLayer setNeedsDisplay];
 }
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx
@@ -121,7 +111,7 @@ const CGFloat kTileSize = 256.0;
     return;
  */
 
-    CGPoint center = GMCoordinateToPoint(self.centerCoordinate);
+    CGPoint center = self.centerPoint;
 
     CGSize size = layer.bounds.size;
     NSInteger level = floor(self.zoomLevel);
@@ -149,7 +139,7 @@ const CGFloat kTileSize = 256.0;
 
     NSInteger maxOffsetX = -offsetX;
     NSInteger maxOffsetY = -offsetY;
-    
+
     CGContextSetFillColorWithColor(ctx, NSColor.windowBackgroundColor.CGColor);
 
     CGContextFillRect(ctx, rect);
@@ -164,11 +154,8 @@ const CGFloat kTileSize = 256.0;
             NSInteger tileX = centralTileX + offsetX;
             NSInteger tileY = centralTileY + offsetY;
 
-
-
             if (tileX < 0 || tileY < 0 || tileX >= n || tileY >= n)
                 continue;
-
 
             CGRect tileRect;
             tileRect.size = CGSizeMake(kTileSize, kTileSize);
@@ -176,7 +163,7 @@ const CGFloat kTileSize = 256.0;
                                           floor(centralTileOrigin.y - offsetY * kTileSize));
 
             if (!CGRectIntersectsRect(rect, tileRect))
-                continue;    
+                continue;
 
             CGImageRef image;
 
@@ -193,5 +180,42 @@ const CGFloat kTileSize = 256.0;
     }
 }
 
+
+@end
+
+
+@implementation GMMapView (Events)
+
+- (void)mouseDown:(NSEvent *)evt
+{
+    NSLog(@"Start panning");
+}
+
+- (void)mouseDragged:(NSEvent *)evt
+{
+    CGFloat scale = pow(2, self.zoomLevel);
+    CGPoint point = CGPointMake(evt.deltaX / scale / kTileSize, evt.deltaY / scale / kTileSize);
+
+    _centerPoint.x -= point.x;
+    _centerPoint.y -= point.y;
+
+    [self willChangeValueForKey:@"centerCoordinate"];
+    _centerCoordinate = GMPointToCoordinate(_centerPoint);
+    [self didChangeValueForKey:@"centerCoordinate"];
+    
+    [self.tileLayer setNeedsDisplay];
+}
+
+- (void)scrollWheel:(NSEvent *)evt
+{
+    self.zoomLevel += evt.scrollingDeltaY / 10.0;
+        //NSLog(@"Wheel by %g %d", evt.scrollingDeltaY, evt.hasPreciseScrollingDeltas);
+    
+}
+
+- (void)mouseUp:(NSEvent *)evt
+{
+    NSLog(@"Stop panning");
+}
 
 @end
