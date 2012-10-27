@@ -11,8 +11,11 @@ const CGFloat kTileSize = 256.0;
 @property (nonatomic) CALayer *tileLayer;
 @property (nonatomic) CGPoint centerPoint;
 
-- (void)updateTileLayerTransform;
-- (void)updateTileLayerBounds;
+- (void)reflectCenterPointOnCenterCoordinate;
+
+- (void)updateLayerTransform;
+- (void)updateLayerBounds;
+
 
 @end
 
@@ -35,37 +38,25 @@ const CGFloat kTileSize = 256.0;
     self.tileLayer.delegate = self;
     [self.layer addSublayer:self.tileLayer];
 
-    
-    [self updateTileLayerBounds];
-    [self updateTileLayerTransform];
+    [self updateLayerBounds];
+    [self updateLayerTransform];
     [self.tileLayer setNeedsDisplay];
 
     return self;
 }
-
-- (void)setFrame:(CGRect)frame
-{
-    super.frame = frame;
-
-    if (![self inLiveResize])
-        [self updateTileLayerBounds];
-
-    [self updateTileLayerTransform];
-}
-
 - (void)viewDidEndLiveResize
 {
-    [self updateTileLayerBounds];
-    [self updateTileLayerTransform];
+    [self updateLayerBounds];
+    [self updateLayerTransform];
     [self.tileLayer setNeedsDisplay];
 }
 
-- (void)updateTileLayerBounds
+- (void)updateLayerBounds
 {
     self.tileLayer.bounds = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
 }
 
-- (void)updateTileLayerTransform
+- (void)updateLayerTransform
 {
     CGFloat f = fmod(self.zoomLevel, 1);
     CGFloat scale = pow(2, f);
@@ -77,19 +68,34 @@ const CGFloat kTileSize = 256.0;
     self.tileLayer.affineTransform = t;
 }
 
+
+// ################################################################################
+// Properties
+
+- (void)setFrame:(CGRect)frame
+{
+    super.frame = frame;
+
+    if (![self inLiveResize])
+        [self updateLayerBounds];
+
+    [self updateLayerTransform];
+}
+
 - (void)setZoomLevel:(CGFloat)zoomLevel
 {
     _zoomLevel = MAX(0, MIN(18, zoomLevel));
-    
-    NSInteger renderZoomLevel = floor(zoomLevel);
 
-    [self updateTileLayerTransform];
+    NSInteger renderZoomLevel = floor(zoomLevel);
 
     if (renderZoomLevel != self.renderedZoomLevel)
     {
         self.renderedZoomLevel = renderZoomLevel;
+        [self updateLayerTransform];
         [self.tileLayer setNeedsDisplay];
     }
+    else
+        [self updateLayerTransform];
 }
 
 - (void)setCenterCoordinate:(GMCoordinate)coordinate
@@ -98,6 +104,21 @@ const CGFloat kTileSize = 256.0;
     self.centerPoint = GMCoordinateToPoint(self.centerCoordinate);
     [self.tileLayer setNeedsDisplay];
 }
+
+- (void)reflectCenterPointOnCenterCoordinate
+{
+    _centerPoint.x = MAX(0, MIN(1.0, _centerPoint.x));
+    _centerPoint.y = MAX(0, MIN(1.0, _centerPoint.y));
+
+    [self willChangeValueForKey:@"centerCoordinate"];
+    _centerCoordinate = GMPointToCoordinate(_centerPoint);
+    [self didChangeValueForKey:@"centerCoordinate"];
+}
+
+
+
+// ################################################################################
+// Drawing
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx
 {
@@ -180,11 +201,8 @@ const CGFloat kTileSize = 256.0;
     }
 }
 
-
-@end
-
-
-@implementation GMMapView (Events)
+// ################################################################################
+// Events
 
 - (void)mouseDown:(NSEvent *)evt
 {
@@ -199,18 +217,37 @@ const CGFloat kTileSize = 256.0;
     _centerPoint.x -= point.x;
     _centerPoint.y -= point.y;
 
-    [self willChangeValueForKey:@"centerCoordinate"];
-    _centerCoordinate = GMPointToCoordinate(_centerPoint);
-    [self didChangeValueForKey:@"centerCoordinate"];
-    
+    [self reflectCenterPointOnCenterCoordinate];
+
     [self.tileLayer setNeedsDisplay];
 }
 
 - (void)scrollWheel:(NSEvent *)evt
 {
-    self.zoomLevel += evt.scrollingDeltaY / 10.0;
-        //NSLog(@"Wheel by %g %d", evt.scrollingDeltaY, evt.hasPreciseScrollingDeltas);
-    
+    CGFloat zoomDelta = evt.scrollingDeltaY / 10.0;
+
+        CGFloat scale = pow(2, zoomDelta);
+
+        CGPoint relativeCenter = [self convertPoint:evt.locationInWindow fromView:nil];
+
+        relativeCenter.x -= self.frame.size.width / 2.0;
+        relativeCenter.y -= self.frame.size.height / 2.0;
+
+        CGPoint offset = CGPointMake(relativeCenter.x * scale - relativeCenter.x, relativeCenter.y * scale - relativeCenter.y );
+
+
+    self.zoomLevel += zoomDelta;
+    scale = pow(2, self.zoomLevel);
+
+    offset.x = offset.x / scale / kTileSize;
+    offset.y = offset.y / scale / kTileSize;
+
+    _centerPoint.x += offset.x;
+    _centerPoint.y -= offset.y;
+
+    [self reflectCenterPointOnCenterCoordinate];
+
+    [self.tileLayer setNeedsDisplay];
 }
 
 - (void)mouseUp:(NSEvent *)evt

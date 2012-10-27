@@ -37,7 +37,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
     self.tileCacheArray = NSMutableArray.new;
 
     self.tileLoadQueue = NSOperationQueue.new;
-    self.tileLoadQueue.maxConcurrentOperationCount = 50;
+    self.tileLoadQueue.maxConcurrentOperationCount = 5;
 
     NSURL *url = [[NSBundle bundleForClass:GMTileManager.class] URLForImageResource:@"ErrorTileImage.png"];
     CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)url, NULL);
@@ -183,7 +183,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
 
          if (!image)
          {
-             image = self.errorTileImage;
+             image = CGImageRetain(self.errorTileImage);
              NSLog (@"Unable to load tile %@", tile.key);
          }
 
