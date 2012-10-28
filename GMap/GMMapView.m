@@ -11,7 +11,6 @@ const CGFloat kTileSize = 256.0;
 @property (nonatomic) CALayer *tileLayer;
 @property (nonatomic) CGPoint centerPoint;
 
-- (void)reflectCenterPointOnCenterCoordinate;
 
 - (void)updateLayerTransform;
 - (void)updateLayerBounds;
@@ -101,18 +100,24 @@ const CGFloat kTileSize = 256.0;
 - (void)setCenterCoordinate:(GMCoordinate)coordinate
 {
     _centerCoordinate = coordinate;
-    self.centerPoint = GMCoordinateToPoint(self.centerCoordinate);
+
+    [self willChangeValueForKey:@"centerPoint"];
+    _centerPoint = GMCoordinateToPoint(self.centerCoordinate);
+    [self didChangeValueForKey:@"centerPoint"];
+
     [self.tileLayer setNeedsDisplay];
 }
 
-- (void)reflectCenterPointOnCenterCoordinate
+- (void)setCenterPoint:(CGPoint)point
 {
-    _centerPoint.x = MAX(0, MIN(1.0, _centerPoint.x));
-    _centerPoint.y = MAX(0, MIN(1.0, _centerPoint.y));
+    _centerPoint.x = MAX(0, MIN(1.0, point.x));
+    _centerPoint.y = MAX(0, MIN(1.0, point.y));
 
     [self willChangeValueForKey:@"centerCoordinate"];
     _centerCoordinate = GMPointToCoordinate(_centerPoint);
     [self didChangeValueForKey:@"centerCoordinate"];
+
+    [self.tileLayer setNeedsDisplay];
 }
 
 
@@ -123,14 +128,6 @@ const CGFloat kTileSize = 256.0;
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx
 {
     CGRect rect = CGContextGetClipBoundingBox(ctx);
-/*
-    if (layer == self.layer)
-    CGContextSetFillColorWithColor(ctx, NSColor.redColor.CGColor);
-    else
-        CGContextSetFillColorWithColor(ctx, NSColor.greenColor.CGColor);
-    CGContextFillRect(ctx, rect);
-    return;
- */
 
     CGPoint center = self.centerPoint;
 
@@ -165,6 +162,35 @@ const CGFloat kTileSize = 256.0;
 
     CGContextFillRect(ctx, rect);
 
+    void (^drawTile)(NSInteger offsetX, NSInteger offsetY) = ^(NSInteger offsetX, NSInteger offsetY) {
+
+        NSInteger tileX = centralTileX + offsetX;
+        NSInteger tileY = centralTileY + offsetY;
+
+        if (tileX < 0 || tileY < 0 || tileX >= n || tileY >= n)
+            return;
+
+        CGRect tileRect;
+        tileRect.size = CGSizeMake (kTileSize, kTileSize);
+        tileRect.origin = CGPointMake (floor (centralTileOrigin.x + offsetX * kTileSize),
+                                       floor (centralTileOrigin.y - offsetY * kTileSize));
+
+        if (!CGRectIntersectsRect (rect, tileRect))
+            return;
+
+        CGImageRef image;
+
+        void (^redraw)(void) = ^{
+            [self.tileLayer setNeedsDisplayInRect:tileRect];
+        };
+
+        if ((image = [self.tileManager createTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
+        {
+            CGContextDrawImage (ctx, tileRect, image);
+            CGImageRelease (image);
+        }
+    };
+
     for (; offsetY <= maxOffsetY; offsetY++)
     {
         offsetX = -maxOffsetX;
@@ -172,31 +198,7 @@ const CGFloat kTileSize = 256.0;
         for (; offsetX <= maxOffsetX; offsetX++)
         {
 
-            NSInteger tileX = centralTileX + offsetX;
-            NSInteger tileY = centralTileY + offsetY;
-
-            if (tileX < 0 || tileY < 0 || tileX >= n || tileY >= n)
-                continue;
-
-            CGRect tileRect;
-            tileRect.size = CGSizeMake(kTileSize, kTileSize);
-            tileRect.origin = CGPointMake(floor(centralTileOrigin.x + offsetX * kTileSize),
-                                          floor(centralTileOrigin.y - offsetY * kTileSize));
-
-            if (!CGRectIntersectsRect(rect, tileRect))
-                continue;
-
-            CGImageRef image;
-
-            void (^redraw)(void) = ^{
-                [self.tileLayer setNeedsDisplayInRect:tileRect];
-            };
-
-            if ((image = [self.tileManager createTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
-            {
-                CGContextDrawImage(ctx, tileRect, image);
-                CGImageRelease(image);
-            }
+            drawTile (offsetX, offsetY);
         }
     }
 }
@@ -214,26 +216,21 @@ const CGFloat kTileSize = 256.0;
     CGFloat scale = pow(2, self.zoomLevel);
     CGPoint point = CGPointMake(evt.deltaX / scale / kTileSize, evt.deltaY / scale / kTileSize);
 
-    _centerPoint.x -= point.x;
-    _centerPoint.y -= point.y;
-
-    [self reflectCenterPointOnCenterCoordinate];
-
-    [self.tileLayer setNeedsDisplay];
+    self.centerPoint = CGPointMake(self.centerPoint.x - point.x, self.centerPoint.y - point.y);
 }
 
 - (void)scrollWheel:(NSEvent *)evt
 {
     CGFloat zoomDelta = evt.scrollingDeltaY / 10.0;
 
-        CGFloat scale = pow(2, zoomDelta);
+    CGFloat scale = pow(2, zoomDelta);
 
-        CGPoint relativeCenter = [self convertPoint:evt.locationInWindow fromView:nil];
+    CGPoint relativeCenter = [self convertPoint:evt.locationInWindow fromView:nil];
 
-        relativeCenter.x -= self.frame.size.width / 2.0;
-        relativeCenter.y -= self.frame.size.height / 2.0;
+    relativeCenter.x -= self.frame.size.width / 2.0;
+    relativeCenter.y -= self.frame.size.height / 2.0;
 
-        CGPoint offset = CGPointMake(relativeCenter.x * scale - relativeCenter.x, relativeCenter.y * scale - relativeCenter.y );
+    CGPoint offset = CGPointMake(relativeCenter.x * scale - relativeCenter.x, relativeCenter.y * scale - relativeCenter.y );
 
 
     self.zoomLevel += zoomDelta;
@@ -242,12 +239,8 @@ const CGFloat kTileSize = 256.0;
     offset.x = offset.x / scale / kTileSize;
     offset.y = offset.y / scale / kTileSize;
 
-    _centerPoint.x += offset.x;
-    _centerPoint.y -= offset.y;
+    self.centerPoint = CGPointMake(self.centerPoint.x + offset.x, self.centerPoint.y - offset.y);
 
-    [self reflectCenterPointOnCenterCoordinate];
-
-    [self.tileLayer setNeedsDisplay];
 }
 
 - (void)mouseUp:(NSEvent *)evt

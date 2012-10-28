@@ -24,9 +24,9 @@
 	<string>1</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2012 Goyman SA. All rights reserved.</string>
-	<key>GMTileURLFormat-</key>
-	<string>http://a.tile.openstreetmap.org/%ld/%ld/%ld.png</string>
 	<key>GMTileURLFormat</key>
+	<string>http://a.tile.openstreetmap.org/%ld/%ld/%ld.png</string>
+	<key>GMTileURLFormat--</key>
 	<string>http://otile1.mqcdn.com/tiles/1.0.0/osm/%ld/%ld/%ld.jpg</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
