@@ -7,16 +7,49 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36B440DA163DEC1D000B8281 /* GMap.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 36B440D8163DEC10000B8281 /* GMap.framework */; };
+		36B440DB163DEC43000B8281 /* GMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B440D8163DEC10000B8281 /* GMap.framework */; };
 		36D68A14162D8F240072667D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D68A13162D8F240072667D /* Cocoa.framework */; };
 		36D68A1E162D8F240072667D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 36D68A1C162D8F240072667D /* InfoPlist.strings */; };
 		36D68A20162D8F240072667D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 36D68A1F162D8F240072667D /* main.m */; };
 		36D68A24162D8F240072667D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 36D68A22162D8F240072667D /* Credits.rtf */; };
 		36D68A27162D8F240072667D /* GNAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 36D68A26162D8F240072667D /* GNAppDelegate.m */; };
 		36D68A2A162D8F250072667D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 36D68A28162D8F250072667D /* MainMenu.xib */; };
-		36D68A48162DFF5E0072667D /* GMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D68A47162DFF5E0072667D /* GMap.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		36B440E7163DECEE000B8281 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36B440E0163DECEE000B8281 /* GMap.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 36D689EC162D8EDD0072667D;
+			remoteInfo = GMap;
+		};
+		36B440EA163DECFA000B8281 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36B440E0163DECEE000B8281 /* GMap.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 36D689EB162D8EDD0072667D;
+			remoteInfo = GMap;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		36B440D3163DE92D000B8281 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				36B440DA163DEC1D000B8281 /* GMap.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		36B440D8163DEC10000B8281 /* GMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = GMap.framework; path = "/Users/kuon/Library/Developer/Xcode/DerivedData/GMap-dtmegwabjswcauhkkhcpgrrfdpto/Build/Products/Debug/GMap.framework"; sourceTree = "<absolute>"; };
+		36B440E0163DECEE000B8281 /* GMap.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GMap.xcodeproj; path = ../GMap.xcodeproj; sourceTree = "<group>"; };
 		36D68A0F162D8F240072667D /* DemoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36D68A13162D8F240072667D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		36D68A16162D8F240072667D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -31,7 +64,6 @@
 		36D68A26162D8F240072667D /* GNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNAppDelegate.m; sourceTree = "<group>"; };
 		36D68A29162D8F250072667D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		36D68A3A162D91460072667D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = "../../../Library/Developer/Xcode/DerivedData/MapKit-cpmupaaayiogcgfhuaxndesycjta/Build/Products/Debug/MapKit.framework"; sourceTree = "<group>"; };
-		36D68A47162DFF5E0072667D /* GMap.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GMap.framework; path = "../../../Library/Developer/Xcode/DerivedData/GMap-gbkrndokeinqvheducbbsqgipqhg/Build/Products/Debug/GMap.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,16 +72,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				36D68A14162D8F240072667D /* Cocoa.framework in Frameworks */,
-				36D68A48162DFF5E0072667D /* GMap.framework in Frameworks */,
+				36B440DB163DEC43000B8281 /* GMap.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		36B440E1163DECEE000B8281 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				36B440E8163DECEE000B8281 /* GMap.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		36D68A04162D8F240072667D = {
 			isa = PBXGroup;
 			children = (
+				36B440E0163DECEE000B8281 /* GMap.xcodeproj */,
 				36D68A19162D8F240072667D /* DemoApp */,
 				36D68A12162D8F240072667D /* Frameworks */,
 				36D68A10162D8F240072667D /* Products */,
@@ -67,7 +108,7 @@
 		36D68A12162D8F240072667D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				36D68A47162DFF5E0072667D /* GMap.framework */,
+				36B440D8163DEC10000B8281 /* GMap.framework */,
 				36D68A3A162D91460072667D /* MapKit.framework */,
 				36D68A13162D8F240072667D /* Cocoa.framework */,
 				36D68A15162D8F240072667D /* Other Frameworks */,
@@ -118,10 +159,12 @@
 				36D68A0B162D8F240072667D /* Sources */,
 				36D68A0C162D8F240072667D /* Frameworks */,
 				36D68A0D162D8F240072667D /* Resources */,
+				36B440D3163DE92D000B8281 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				36B440EB163DECFA000B8281 /* PBXTargetDependency */,
 			);
 			name = DemoApp;
 			productName = DemoApp;
@@ -148,12 +191,28 @@
 			mainGroup = 36D68A04162D8F240072667D;
 			productRefGroup = 36D68A10162D8F240072667D /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 36B440E1163DECEE000B8281 /* Products */;
+					ProjectRef = 36B440E0163DECEE000B8281 /* GMap.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				36D68A0E162D8F240072667D /* DemoApp */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		36B440E8163DECEE000B8281 /* GMap.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = GMap.framework;
+			remoteRef = 36B440E7163DECEE000B8281 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		36D68A0D162D8F240072667D /* Resources */ = {
@@ -179,6 +238,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		36B440EB163DECFA000B8281 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GMap;
+			targetProxy = 36B440EA163DECFA000B8281 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		36D68A1C162D8F240072667D /* InfoPlist.strings */ = {
@@ -269,6 +336,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/MapKit-cpmupaaayiogcgfhuaxndesycjta/Build/Products/Debug\"",
 					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/GMap-gbkrndokeinqvheducbbsqgipqhg/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/GMap-dtmegwabjswcauhkkhcpgrrfdpto/Build/Products/Debug\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DemoApp/DemoApp-Prefix.pch";
@@ -286,6 +354,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/MapKit-cpmupaaayiogcgfhuaxndesycjta/Build/Products/Debug\"",
 					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/GMap-gbkrndokeinqvheducbbsqgipqhg/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/GMap-dtmegwabjswcauhkkhcpgrrfdpto/Build/Products/Debug\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DemoApp/DemoApp-Prefix.pch";
