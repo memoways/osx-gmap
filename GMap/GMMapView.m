@@ -3,7 +3,6 @@
 #import "GMTileManager.h"
 
 
-const CGFloat kTileSize = 256.0;
 
 @interface GMMapView ()
 
@@ -25,8 +24,6 @@ const CGFloat kTileSize = 256.0;
 {
     if (!(self = [super initWithFrame:frame]))
         return nil;
-
-    self.tileManager = GMTileManager.new;
 
     self.layer = CALayer.new;
     self.wantsLayer = YES;
@@ -184,7 +181,7 @@ const CGFloat kTileSize = 256.0;
             [self.tileLayer setNeedsDisplayInRect:tileRect];
         };
 
-        if ((image = [self.tileManager createTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
+        if ((image = [GMTileManager.sharedTileManager createTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
         {
             CGContextDrawImage (ctx, tileRect, image);
             CGImageRelease (image);
@@ -197,7 +194,6 @@ const CGFloat kTileSize = 256.0;
 
         for (; offsetX <= maxOffsetX; offsetX++)
         {
-
             drawTile (offsetX, offsetY);
         }
     }
@@ -208,7 +204,6 @@ const CGFloat kTileSize = 256.0;
 
 - (void)mouseDown:(NSEvent *)evt
 {
-    NSLog(@"Start panning");
 }
 
 - (void)mouseDragged:(NSEvent *)evt
@@ -232,8 +227,12 @@ const CGFloat kTileSize = 256.0;
 
     CGPoint offset = CGPointMake(relativeCenter.x * scale - relativeCenter.x, relativeCenter.y * scale - relativeCenter.y );
 
-
+    CGFloat previousZoomLevel = self.zoomLevel;
     self.zoomLevel += zoomDelta;
+
+    if (previousZoomLevel == self.zoomLevel)
+        return;
+
     scale = pow(2, self.zoomLevel);
 
     offset.x = offset.x / scale / kTileSize;
@@ -245,7 +244,6 @@ const CGFloat kTileSize = 256.0;
 
 - (void)mouseUp:(NSEvent *)evt
 {
-    NSLog(@"Stop panning");
 }
 
 @end

@@ -2,8 +2,12 @@
 
 @interface GMTileManager : NSObject
 
-@property (nonatomic) NSString *tileURLFormat;
-@property (nonatomic) NSString *cacheDirectoryPath;
++ (id)sharedTileManager;
+
+@property NSString *tileURLFormat;
+@property NSString *cacheDirectoryPath;
+@property BOOL diskCacheEnabled;
+
 
 - (CGImageRef)createTileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel completion:(void (^)(void))completion;
 

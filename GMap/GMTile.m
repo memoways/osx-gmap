@@ -3,10 +3,10 @@
 
 @interface GMTile ()
 
-@property volatile NSInteger x;
-@property volatile NSInteger y;
-@property volatile NSInteger zoomLevel;
-@property volatile NSString *key;
+@property (nonatomic) NSInteger x;
+@property (nonatomic) NSInteger y;
+@property (nonatomic) NSInteger zoomLevel;
+@property (nonatomic) NSString *key;
 
 @end
 

@@ -3,17 +3,22 @@
 
 @interface GMTile : NSObject
 
-@property (readonly) volatile NSInteger x;
-@property (readonly) volatile NSInteger y;
-@property (readonly) volatile NSInteger zoomLevel;
-@property (readonly) volatile NSString *key;
+@property (nonatomic, readonly) NSInteger x;
+@property (nonatomic, readonly) NSInteger y;
+@property (nonatomic, readonly) NSInteger zoomLevel;
+@property (nonatomic, readonly) NSString *key;
 
 
-@property volatile BOOL loaded;
-@property volatile BOOL loading;
-@property volatile CGImageRef image;
+@property (nonatomic) BOOL loaded;
+@property (nonatomic) BOOL loading;
+@property (nonatomic) CGImageRef image;
 
-@property (copy) volatile void (^completion)(void);
+
+@property (nonatomic) NSURLResponse *loadResponse;
+@property (nonatomic) NSMutableData *loadData;
+@property (nonatomic) CFStringRef UTType;
+
+@property (nonatomic, copy) void (^completion)(void);
 
 
 - (id)initWithX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel;

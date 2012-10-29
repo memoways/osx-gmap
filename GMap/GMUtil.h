@@ -1,5 +1,9 @@
 #import <Cocoa/Cocoa.h>
 
+
+static const CGFloat kTileSize = 256.0;
+
+
 typedef struct
 {
     CGFloat latitude;
