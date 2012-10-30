@@ -11,10 +11,9 @@ const NSString *kCacheArrayKey = @"cacheArray";
 @property (readonly) NSString *defaultTileURLFormat;
 
 @property CGImageRef errorTileImage;
-
 @property NSMutableDictionary *tileCache;
-
 @property NSOperationQueue *tileLoadQueue;
+@property NSInteger currentZoomLevel;
 
 - (void)loadTileFromDiskCache:(GMTile *)tile;
 - (void)downloadTile:(GMTile *)tile;
@@ -24,15 +23,6 @@ const NSString *kCacheArrayKey = @"cacheArray";
 
 @implementation GMTileManager
 
-+ (GMTileManager *)sharedTileManager
-{
-    static GMTileManager *sharedTileManager;
-
-    if (!sharedTileManager)
-        sharedTileManager = GMTileManager.new;
-
-    return sharedTileManager;
-}
 
 - (id)init
 {
@@ -45,7 +35,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
     self.tileCache = NSMutableDictionary.new;
 
     self.tileLoadQueue = NSOperationQueue.new;
-    self.tileLoadQueue.maxConcurrentOperationCount = 8;
+    self.tileLoadQueue.maxConcurrentOperationCount = 16;
 
 
     NSURL *url = [[NSBundle bundleForClass:GMTileManager.class] URLForImageResource:@"ErrorTileImage.png"];
@@ -94,6 +84,8 @@ const NSString *kCacheArrayKey = @"cacheArray";
 - (CGImageRef)createTileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel completion:(void (^)(void))completion
 {
     NSString *tileKey = [GMTile tileKeyForX:x y:y zoomLevel:zoomLevel];
+
+    self.currentZoomLevel = zoomLevel;
 
     NSMutableDictionary *cacheDictionary = [self.tileCache objectForKey:[NSNumber numberWithInteger:zoomLevel]];
     NSMutableArray *cacheArray;
@@ -170,7 +162,9 @@ const NSString *kCacheArrayKey = @"cacheArray";
         {
             tile.loading = YES;
 
-            [self downloadTile:tile];
+            [self.tileLoadQueue addOperationWithBlock:^{
+                 [self downloadTile:tile];
+             }];
         }
     }
 
@@ -202,10 +196,17 @@ const NSString *kCacheArrayKey = @"cacheArray";
 
 - (void)downloadTile:(GMTile *)tile
 {
+    if (tile.zoomLevel != self.currentZoomLevel)
+    {
+        tile.loading = NO;
+        return;
+    }
+
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:self.tileURLFormat, (long)tile.zoomLevel, (long)tile.x, (long)tile.y]];
 
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:120.0];
 
+    req.HTTPShouldUsePipelining = YES;
 
     [NSURLConnection sendAsynchronousRequest:req queue:self.tileLoadQueue completionHandler:^(NSURLResponse * response, NSData * data, NSError * error) {
 

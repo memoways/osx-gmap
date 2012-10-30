@@ -25,6 +25,8 @@
     if (!(self = [super initWithFrame:frame]))
         return nil;
 
+    self.tileManager = GMTileManager.new;
+
     self.layer = CALayer.new;
     self.wantsLayer = YES;
 
@@ -182,7 +184,7 @@
             [self.tileLayer setNeedsDisplayInRect:tileRect];
         };
 
-        if ((image = [GMTileManager.sharedTileManager createTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
+        if ((image = [self.tileManager createTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
         {
             CGContextDrawImage (ctx, tileRect, image);
             CGImageRelease (image);

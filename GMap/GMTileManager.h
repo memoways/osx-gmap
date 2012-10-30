@@ -2,7 +2,6 @@
 
 @interface GMTileManager : NSObject
 
-+ (GMTileManager *)sharedTileManager;
 
 @property NSString *tileURLFormat;
 @property NSString *cacheDirectoryPath;
