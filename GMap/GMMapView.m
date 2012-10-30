@@ -85,7 +85,7 @@
 {
     _zoomLevel = MAX(0, MIN(18, zoomLevel));
 
-    if (self.roundZoomLevel)
+    if (self.shouldRoundZoomLevel)
         _zoomLevel = round(_zoomLevel);
 
     NSInteger renderZoomLevel = floor(_zoomLevel);
@@ -210,6 +210,7 @@
 
 - (void)mouseDown:(NSEvent *)evt
 {
+
 }
 
 - (void)mouseDragged:(NSEvent *)evt
@@ -224,7 +225,7 @@
 {
     CGFloat zoomDelta = evt.scrollingDeltaY / 10.0;
 
-    if (self.roundZoomLevel)
+    if (self.shouldRoundZoomLevel)
         zoomDelta = zoomDelta > 0 ? ceil(zoomDelta) : floor(zoomDelta);
 
     CGFloat scale = pow(2, zoomDelta);
@@ -248,11 +249,11 @@
     offset.y = offset.y / scale / kTileSize;
 
     self.centerPoint = CGPointMake(self.centerPoint.x + offset.x, self.centerPoint.y - offset.y);
-
 }
 
 - (void)mouseUp:(NSEvent *)evt
 {
+
 }
 
 @end

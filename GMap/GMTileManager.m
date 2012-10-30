@@ -23,7 +23,6 @@ const NSString *kCacheArrayKey = @"cacheArray";
 
 @implementation GMTileManager
 
-
 - (id)init
 {
     if (!(self = super.init))
