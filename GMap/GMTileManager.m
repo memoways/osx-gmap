@@ -240,10 +240,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
          }
 
          if (!image)
-         {
              image = CGImageRetain (self.errorTileImage);
-             NSLog (@"Unable to load tile %@", tile.key);
-         }
 
          [NSOperationQueue.mainQueue addOperationWithBlock:^{
               CGImageRelease (tile.image);
