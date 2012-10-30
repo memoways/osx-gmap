@@ -1,12 +1,9 @@
 #import "GMTileManager.h"
 #import "GMMapView.h"
 #import "GMTile.h"
-#import <objc/runtime.h>
-#import <curl/curl.h>
 
 const NSString *kCacheArrayKey = @"cacheArray";
 
-const char *TILE_KEY = "tile";
 
 @interface GMTileManager ()
 
@@ -15,25 +12,22 @@ const char *TILE_KEY = "tile";
 
 @property CGImageRef errorTileImage;
 
-@property NSMutableDictionary *tileCacheDictionary;
-@property NSMutableDictionary *loadingTiles;
-@property NSMutableArray *tileCacheArray;
+@property NSMutableDictionary *tileCache;
 
 @property NSOperationQueue *tileLoadQueue;
 
 - (void)loadTileFromDiskCache:(GMTile *)tile;
-- (void)loadTile:(GMTile *)tile;
-- (void)tileDidLoad:(GMTile *)tile withImage:(CGImageRef)image;
+- (void)downloadTile:(GMTile *)tile;
 - (NSString *)cachePathForTile:(GMTile *)tile;
 
 @end
 
 @implementation GMTileManager
 
-+ (id)sharedTileManager
++ (GMTileManager *)sharedTileManager
 {
     static GMTileManager *sharedTileManager;
-    
+
     if (!sharedTileManager)
         sharedTileManager = GMTileManager.new;
 
@@ -45,18 +39,14 @@ const char *TILE_KEY = "tile";
     if (!(self = super.init))
         return nil;
 
-    if (curl_global_init(CURL_GLOBAL_ALL))
-        return nil;
-
     self.tileURLFormat = self.defaultTileURLFormat;
     self.cacheDirectoryPath = self.defaultCacheDirectoryPath;
 
-    self.loadingTiles = NSMutableDictionary.new;
-    self.tileCacheDictionary = NSMutableDictionary.new;
-    self.tileCacheArray = NSMutableArray.new;
+    self.tileCache = NSMutableDictionary.new;
 
     self.tileLoadQueue = NSOperationQueue.new;
-    self.tileLoadQueue.maxConcurrentOperationCount = 10;
+    self.tileLoadQueue.maxConcurrentOperationCount = 8;
+
 
     NSURL *url = [[NSBundle bundleForClass:GMTileManager.class] URLForImageResource:@"ErrorTileImage.png"];
     CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)url, NULL);
@@ -105,28 +95,41 @@ const char *TILE_KEY = "tile";
 {
     NSString *tileKey = [GMTile tileKeyForX:x y:y zoomLevel:zoomLevel];
 
+    NSMutableDictionary *cacheDictionary = [self.tileCache objectForKey:[NSNumber numberWithInteger:zoomLevel]];
+    NSMutableArray *cacheArray;
+
+    if (!cacheDictionary)
+    {
+        cacheDictionary = NSMutableDictionary.new;
+        [self.tileCache setObject:cacheDictionary forKey:[NSNumber numberWithInteger:zoomLevel]];
+        cacheArray = NSMutableArray.new;
+        [cacheDictionary setObject:cacheArray forKey:kCacheArrayKey];
+    }
+    else
+        cacheArray = [cacheDictionary objectForKey:kCacheArrayKey];
+
     GMTile *tile;
 
-    tile = [self.tileCacheDictionary objectForKey:tileKey];
+    tile = [cacheDictionary objectForKey:tileKey];
 
     if (!tile)
     {
         tile = [GMTile.alloc initWithX:x y:y zoomLevel:zoomLevel];
         [self loadTileFromDiskCache:tile];
-        [self.tileCacheDictionary setObject:tile forKey:tileKey];
+        [cacheDictionary setObject:tile forKey:tileKey];
     }
 
     if (tile.zoomLevel > 4)
     {
-        [self.tileCacheArray removeObject:tile];
-        [self.tileCacheArray insertObject:tile atIndex:0];
+        [cacheArray removeObject:tile];
+        [cacheArray insertObject:tile atIndex:0];
     }
 
-    if (self.tileCacheArray.count > 1000)
+    if (cacheArray.count > 200)
     {
-        GMTile *tileToFlush = self.tileCacheArray.lastObject;
-        [self.tileCacheArray removeLastObject];
-        [self.tileCacheDictionary removeObjectForKey:tileToFlush.key];
+        GMTile *tileToFlush = cacheArray.lastObject;
+        [cacheArray removeLastObject];
+        [cacheDictionary removeObjectForKey:tileToFlush.key];
     }
 
     CGImageRef image;
@@ -147,7 +150,7 @@ const char *TILE_KEY = "tile";
                 NSInteger parentY = floor((CGFloat)y / factor);
                 NSString *parentTileKey = [GMTile tileKeyForX:parentX y:parentY zoomLevel:parentZoomLevel];
 
-                GMTile *parentTile = [self.tileCacheDictionary objectForKey:parentTileKey];
+                GMTile *parentTile = [[self.tileCache objectForKey:[NSNumber numberWithInteger:parentZoomLevel]] objectForKey:parentTileKey];
 
                 if (parentTile.loaded)
                 {
@@ -167,7 +170,7 @@ const char *TILE_KEY = "tile";
         {
             tile.loading = YES;
 
-            [self loadTile:tile];
+            [self downloadTile:tile];
         }
     }
 
@@ -197,15 +200,13 @@ const char *TILE_KEY = "tile";
     tile.loaded = YES;
 }
 
-- (void)loadTile:(GMTile *)tile
+- (void)downloadTile:(GMTile *)tile
 {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:self.tileURLFormat, (long)tile.zoomLevel, (long)tile.x, (long)tile.y]];
 
-    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:60.0];
-    
-    [req setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/536.26.14 (KHTML, like Gecko) Version/6.0.1 Safari/536.26.14" forHTTPHeaderField:@"User-Agent"];
-    [req setValue:@"gzip, deflate" forHTTPHeaderField:@"Accept-Encoding"];
-    
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:120.0];
+
+
     [NSURLConnection sendAsynchronousRequest:req queue:self.tileLoadQueue completionHandler:^(NSURLResponse * response, NSData * data, NSError * error) {
 
          NSString *path = [self cachePathForTile:tile];
@@ -244,19 +245,14 @@ const char *TILE_KEY = "tile";
          }
 
          [NSOperationQueue.mainQueue addOperationWithBlock:^{
-              [self tileDidLoad:tile withImage:image];
+              CGImageRelease (tile.image);
+              tile.image = image;
+              tile.loaded = YES;
+              tile.loading = NO;
+              tile.completion ();
           }];
      }];
 
-}
-
-- (void)tileDidLoad:(GMTile *)tile withImage:(CGImageRef)image
-{
-    CGImageRelease (tile.image);
-    tile.image = image;
-    tile.loaded = YES;
-    tile.loading = NO;
-    tile.completion();
 }
 
 @end

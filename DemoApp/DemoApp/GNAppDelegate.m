@@ -5,7 +5,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    sranddev();
+
+    GMTileManager.sharedTileManager.diskCacheEnabled = YES;
     [self addObserver:self forKeyPath:@"latitude" options:0 context:nil];
     [self addObserver:self forKeyPath:@"longitude" options:0 context:nil];
     [self addObserver:self forKeyPath:@"zoomLevel" options:0 context:nil];

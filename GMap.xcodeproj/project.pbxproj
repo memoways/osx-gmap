@@ -10,7 +10,6 @@
 		3610600A1637424C0076B905 /* ErrorTileImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 361060091637424C0076B905 /* ErrorTileImage.png */; };
 		363AE2CD16342C4800970D21 /* GMTile.h in Headers */ = {isa = PBXBuildFile; fileRef = 363AE2CB16342C4800970D21 /* GMTile.h */; };
 		363AE2CE16342C4800970D21 /* GMTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 363AE2CC16342C4800970D21 /* GMTile.m */; };
-		36781DCE163F41A00083CC15 /* libcurl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 36781DCD163F41A00083CC15 /* libcurl.dylib */; };
 		36D689F0162D8EDD0072667D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D689EF162D8EDD0072667D /* Cocoa.framework */; };
 		36D689FA162D8EDD0072667D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 36D689F8162D8EDD0072667D /* InfoPlist.strings */; };
 		36D68A38162D902F0072667D /* GMMapView.h in Headers */ = {isa = PBXBuildFile; fileRef = 36D68A36162D902F0072667D /* GMMapView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -28,7 +27,6 @@
 		361060091637424C0076B905 /* ErrorTileImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ErrorTileImage.png; sourceTree = "<group>"; };
 		363AE2CB16342C4800970D21 /* GMTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMTile.h; sourceTree = "<group>"; };
 		363AE2CC16342C4800970D21 /* GMTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMTile.m; sourceTree = "<group>"; };
-		36781DCD163F41A00083CC15 /* libcurl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurl.dylib; path = usr/lib/libcurl.dylib; sourceTree = SDKROOT; };
 		36D689EC162D8EDD0072667D /* GMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		36D689EF162D8EDD0072667D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		36D689F2162D8EDD0072667D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -56,7 +54,6 @@
 				36D689F0162D8EDD0072667D /* Cocoa.framework in Frameworks */,
 				36D68A58162E0C930072667D /* QuartzCore.framework in Frameworks */,
 				36D68A5A162E10F30072667D /* Quartz.framework in Frameworks */,
-				36781DCE163F41A00083CC15 /* libcurl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,7 +80,6 @@
 		36D689EE162D8EDD0072667D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				36781DCD163F41A00083CC15 /* libcurl.dylib */,
 				36D68A59162E10F30072667D /* Quartz.framework */,
 				36D68A57162E0C930072667D /* QuartzCore.framework */,
 				36D689EF162D8EDD0072667D /* Cocoa.framework */,

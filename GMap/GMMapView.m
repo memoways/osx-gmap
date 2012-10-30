@@ -40,6 +40,7 @@
 
     return self;
 }
+
 - (void)viewDidEndLiveResize
 {
     [self updateLayerBounds];
