@@ -85,7 +85,10 @@
 {
     _zoomLevel = MAX(0, MIN(18, zoomLevel));
 
-    NSInteger renderZoomLevel = floor(zoomLevel);
+    if (self.roundZoomLevel)
+        _zoomLevel = round(_zoomLevel);
+
+    NSInteger renderZoomLevel = floor(_zoomLevel);
 
     if (renderZoomLevel != self.renderedZoomLevel)
     {
@@ -220,6 +223,9 @@
 - (void)scrollWheel:(NSEvent *)evt
 {
     CGFloat zoomDelta = evt.scrollingDeltaY / 10.0;
+
+    if (self.roundZoomLevel)
+        zoomDelta = zoomDelta > 0 ? ceil(zoomDelta) : floor(zoomDelta);
 
     CGFloat scale = pow(2, zoomDelta);
 

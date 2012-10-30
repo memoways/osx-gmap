@@ -7,6 +7,7 @@
 @property (nonatomic) GMTileManager *tileManager;
 @property (nonatomic) GMCoordinate centerCoordinate;
 @property (nonatomic) CGFloat zoomLevel;
+@property (nonatomic) BOOL roundZoomLevel;
 
 
 @end
