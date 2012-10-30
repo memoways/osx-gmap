@@ -29,7 +29,7 @@
 	<key>GMTileURLFormat--</key>
 	<string>http://otile2.mqcdn.com/tiles/1.0.0/osm/%ld/%ld/%ld.jpg</string>
 	<key>GMTileURLFormat</key>
-	<string>https://mts1.google.com/vt/lyrs=m@186112443&amp;hl=x-local&amp;src=app&amp;z=%ld&amp;x=%ld&amp;y=%ld&amp;s=Galile</string>
+	<string>http://mts1.google.com/vt/lyrs=m@186112443&amp;hl=x-local&amp;src=app&amp;z=%ld&amp;x=%ld&amp;y=%ld&amp;s=Galile</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
