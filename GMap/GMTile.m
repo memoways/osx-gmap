@@ -35,4 +35,13 @@
     CGImageRelease(self.image);
 }
 
+- (void)setImage:(CGImageRef)newImage
+{
+    if (_image == newImage)
+        return;
+
+    CGImageRelease (_image);
+    _image = CGImageRetain(newImage);
+}
+
 @end

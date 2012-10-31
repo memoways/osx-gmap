@@ -4,6 +4,8 @@
 #import <curl/curl.h>
 
 const NSString *kCacheArrayKey = @"cacheArray";
+const NSInteger kMaxHTTPConnectionCount = 16;
+const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
 @interface GMConnection : NSObject
 
@@ -69,7 +71,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
 
     self.connections = NSMutableArray.new;
 
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < kMaxHTTPConnectionCount; i++)
     {
         GMConnection *con = GMConnection.new;
 
@@ -108,7 +110,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
     }
 
     assert(path);
-    path = [path stringByAppendingPathComponent:@"GMap-tiles/"];
+    path = [path stringByAppendingPathComponent:@"GMapTiles/"];
 
     if (![NSFileManager.defaultManager fileExistsAtPath:path])
         [NSFileManager.defaultManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
@@ -152,7 +154,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
         [cacheArray insertObject:tile atIndex:0];
     }
 
-    if (cacheArray.count > 200)
+    if (cacheArray.count > kNumberOfCachedTilesPerZoomLevel)
     {
         GMTile *tileToFlush = cacheArray.lastObject;
         [cacheArray removeLastObject];
@@ -335,8 +337,8 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
     }
 
     [NSOperationQueue.mainQueue addOperationWithBlock:^{
-         CGImageRelease (tile.image);
          tile.image = image;
+         CGImageRelease (image);
          tile.loaded = image != NULL;
          tile.loading = NO;
 
