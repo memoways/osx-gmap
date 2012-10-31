@@ -43,6 +43,12 @@
     return self;
 }
 
+- (void)dealloc
+{
+    self.layer.delegate = nil;
+    self.tileLayer.delegate = nil;
+}
+
 - (void)viewDidEndLiveResize
 {
     [self updateLayerBounds];

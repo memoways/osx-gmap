@@ -1,21 +1,52 @@
 #import "GMTileManager.h"
 #import "GMMapView.h"
 #import "GMTile.h"
+#import <curl/curl.h>
 
 const NSString *kCacheArrayKey = @"cacheArray";
 
+@interface GMConnection : NSObject
+
+@property CURL *CURLHandle;
+
+@end
+
+@implementation GMConnection
+
+- (id)init
+{
+    if (!(self = super.init))
+        return nil;
+
+    self.CURLHandle = curl_easy_init();
+
+    if (!self.CURLHandle)
+        return nil;
+
+    return self;
+}
+
+- (void)dealloc
+{
+    curl_easy_cleanup(self.CURLHandle);
+}
+
+@end
 
 @interface GMTileManager ()
 
 @property (readonly) NSString *defaultCacheDirectoryPath;
 @property (readonly) NSString *defaultTileURLFormat;
 
-@property CGImageRef errorTileImage;
-@property NSMutableDictionary *tileCache;
-@property NSOperationQueue *tileLoadQueue;
 @property NSInteger currentZoomLevel;
 
+@property NSMutableDictionary *tileCache;
+@property NSOperationQueue *tileLoadQueue;
+@property NSMutableArray *connections;
+@property NSInteger connectionIndex;
+
 - (void)loadTileFromDiskCache:(GMTile *)tile;
+- (void)queueTileDownload:(GMTile *)tile;
 - (void)downloadTile:(GMTile *)tile;
 - (NSString *)cachePathForTile:(GMTile *)tile;
 
@@ -36,19 +67,24 @@ const NSString *kCacheArrayKey = @"cacheArray";
     self.tileLoadQueue = NSOperationQueue.new;
     self.tileLoadQueue.maxConcurrentOperationCount = 16;
 
+    self.connections = NSMutableArray.new;
 
-    NSURL *url = [[NSBundle bundleForClass:GMTileManager.class] URLForImageResource:@"ErrorTileImage.png"];
-    CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)url, NULL);
-    self.errorTileImage = CGImageSourceCreateImageAtIndex(source, 0, NULL);
-    CFRelease(source);
+    for (int i = 0; i < 16; i++)
+    {
+        GMConnection *con = GMConnection.new;
+
+        if (!con)
+        {
+            self.connections = nil;
+            return nil;
+        }
+
+        [self.connections addObject:con];
+    }
 
     return self;
 }
 
-- (void)dealloc
-{
-    CGImageRelease(self.errorTileImage);
-}
 
 - (NSString *)defaultTileURLFormat
 {
@@ -162,7 +198,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
             tile.loading = YES;
 
             [self.tileLoadQueue addOperationWithBlock:^{
-                 [self downloadTile:tile];
+                 [self queueTileDownload:tile];
              }];
         }
     }
@@ -193,7 +229,7 @@ const NSString *kCacheArrayKey = @"cacheArray";
     tile.loaded = YES;
 }
 
-- (void)downloadTile:(GMTile *)tile
+- (void)queueTileDownload:(GMTile *)tile
 {
     if (tile.zoomLevel != self.currentZoomLevel)
     {
@@ -201,53 +237,114 @@ const NSString *kCacheArrayKey = @"cacheArray";
         return;
     }
 
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:self.tileURLFormat, (long)tile.zoomLevel, (long)tile.x, (long)tile.y]];
-
-    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:120.0];
-
-    req.HTTPShouldUsePipelining = YES;
-
-    [NSURLConnection sendAsynchronousRequest:req queue:self.tileLoadQueue completionHandler:^(NSURLResponse * response, NSData * data, NSError * error) {
-
-         NSString *path = [self cachePathForTile:tile];
-
-         CGImageRef image = NULL;
-         CFStringRef MIMEType = (__bridge CFStringRef)response.MIMEType;
-         CFStringRef type = UTTypeCreatePreferredIdentifierForTag (kUTTagClassMIMEType, MIMEType, kUTTypeImage);
-
-         if (type && data)
-         {
-             if (UTTypeEqual (type, kUTTypeJPEG) || UTTypeEqual (type, kUTTypePNG))
-             {
-                 CGDataProviderRef provider = CGDataProviderCreateWithCFData ((__bridge CFDataRef)data);
-
-                 if (provider)
-                 {
-                     if (UTTypeEqual (type, kUTTypePNG))
-                         image = CGImageCreateWithPNGDataProvider (provider, NULL, NO, kCGRenderingIntentDefault);
-                     else
-                         image = CGImageCreateWithJPEGDataProvider (provider, NULL, NO, kCGRenderingIntentDefault);
-
-                     CFRelease (provider);
-                 }
-
-                 if (image && self.diskCacheEnabled)
-                     [data writeToFile:path atomically:YES];
-             }
-
-             CFRelease (type);
+    [self.tileLoadQueue addOperationWithBlock:^{
+         @autoreleasepool {
+             [self downloadTile:tile];
          }
+     }];
+}
 
-         if (!image)
-             image = CGImageRetain (self.errorTileImage);
 
-         [NSOperationQueue.mainQueue addOperationWithBlock:^{
-              CGImageRelease (tile.image);
-              tile.image = image;
-              tile.loaded = YES;
-              tile.loading = NO;
-              tile.completion ();
-          }];
+static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
+{
+    size_t len = size * nmemb;
+    NSMutableData *data = (__bridge NSMutableData *)userdata;
+
+    [data appendBytes:ptr length:len];
+
+    return len;
+}
+
+- (const CFStringRef)fetchTileImageAtURL:(NSString *)urlString writeInData:(NSMutableData *)data
+{
+    CFStringRef type = NULL;
+
+    GMConnection *con;
+
+    @synchronized(self.connections)
+    {
+        self.connectionIndex = (self.connectionIndex + 1) % self.connections.count;
+        con = self.connections[self.connectionIndex];
+    }
+
+    @synchronized(con)
+    {
+
+        CURL *handle = con.CURLHandle;
+
+
+        curl_easy_setopt(handle, CURLOPT_URL, [urlString cStringUsingEncoding:NSUTF8StringEncoding]);
+        curl_easy_setopt(handle, CURLOPT_WRITEDATA, data);
+        curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, writeData);
+        curl_easy_setopt(handle, CURLOPT_TIMEOUT, 5);
+
+        if (!curl_easy_perform(handle))
+        {
+            char *contentType;
+            curl_easy_getinfo(handle, CURLINFO_CONTENT_TYPE, &contentType);
+
+            if (contentType)
+            {
+                CFStringRef MIMEType = CFStringCreateWithCStringNoCopy(NULL, contentType, kCFStringEncodingUTF8, kCFAllocatorNull);
+                CFStringRef UTType = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, MIMEType, kUTTypeImage);
+
+                if (UTType && UTTypeEqual(UTType, kUTTypeJPEG))
+                    type = kUTTypeJPEG;
+                else if (UTType && UTTypeEqual(UTType, kUTTypePNG))
+                    type = kUTTypePNG;
+
+                CFRelease(UTType);
+                CFRelease(MIMEType);
+            }
+        }
+    }
+
+    return type;
+}
+
+
+- (void)downloadTile:(GMTile *)tile
+{
+    CGImageRef image = NULL;
+
+    if (tile.zoomLevel != self.currentZoomLevel)
+    {
+        tile.loading = NO;
+        return;
+    }
+
+    NSString *path = [self cachePathForTile:tile];
+    NSString *url = [NSString stringWithFormat:self.tileURLFormat, (long)tile.zoomLevel, (long)tile.x, (long)tile.y];
+
+    NSMutableData *data = NSMutableData.new;
+    const CFStringRef imageType = [self fetchTileImageAtURL:url writeInData:data];
+
+    if (imageType && data.length)
+    {
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+
+        if (provider)
+        {
+            if (imageType == kUTTypePNG)
+                image = CGImageCreateWithPNGDataProvider(provider, NULL, NO, kCGRenderingIntentDefault);
+            else
+                image = CGImageCreateWithJPEGDataProvider(provider, NULL, NO, kCGRenderingIntentDefault);
+
+            CFRelease(provider);
+        }
+
+        if (image && self.diskCacheEnabled)
+            [data writeToFile:path atomically:YES];
+    }
+
+    [NSOperationQueue.mainQueue addOperationWithBlock:^{
+         CGImageRelease (tile.image);
+         tile.image = image;
+         tile.loaded = image != NULL;
+         tile.loading = NO;
+
+         if (image)
+             tile.completion ();
      }];
 
 }
