@@ -44,6 +44,16 @@
 @property (nonatomic) GMCoordinate centerCoordinate;
 
 /**
+ Convenience property to manage latitude.
+ */
+@property (nonatomic) CGFloat centerLatitude;
+
+/**
+ Convenience property to manage longitude.
+ */
+@property (nonatomic) CGFloat centerLongitude;
+
+/**
  The zoom level between 0 and 18, inclusive.
  If you set a value outside those bounds it will be clamped.
  */

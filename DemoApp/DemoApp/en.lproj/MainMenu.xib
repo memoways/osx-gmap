@@ -1430,13 +1430,15 @@
 										<object class="NSLocale" key="locale" id="965743687">
 											<string key="NS.identifier"/>
 										</object>
+										<string key="negativeFormat">#,##0.#########</string>
 										<string key="negativeInfinitySymbol">-∞</string>
 										<string key="nilSymbol"/>
 										<integer value="1" key="numberStyle"/>
+										<string key="positiveFormat">#,##0.#########</string>
 										<string key="positiveInfinitySymbol">+∞</string>
 									</dictionary>
-									<string key="NS.positiveformat">#,##0.###</string>
-									<string key="NS.negativeformat">#,##0.###</string>
+									<string key="NS.positiveformat">#,##0.#########</string>
+									<string key="NS.negativeformat">#,##0.#########</string>
 									<nil key="NS.positiveattrs"/>
 									<nil key="NS.negativeattrs"/>
 									<nil key="NS.zero"/>
@@ -1553,6 +1555,7 @@
 							<string key="NSFrame">{{298, 24}, {131, 22}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="798121226">
@@ -1565,13 +1568,15 @@
 										<boolean value="YES" key="allowsFloats"/>
 										<integer value="1040" key="formatterBehavior"/>
 										<reference key="locale" ref="965743687"/>
+										<string key="negativeFormat">#,##0.#########</string>
 										<string key="negativeInfinitySymbol">-∞</string>
 										<string key="nilSymbol"/>
 										<integer value="1" key="numberStyle"/>
+										<string key="positiveFormat">#,##0.#########</string>
 										<string key="positiveInfinitySymbol">+∞</string>
 									</dictionary>
-									<string key="NS.positiveformat">#,##0.###</string>
-									<string key="NS.negativeformat">#,##0.###</string>
+									<string key="NS.positiveformat">#,##0.#########</string>
+									<string key="NS.negativeformat">#,##0.#########</string>
 									<nil key="NS.positiveattrs"/>
 									<nil key="NS.negativeattrs"/>
 									<nil key="NS.zero"/>
@@ -2354,35 +2359,35 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: self.latitude</string>
+						<string key="label">value: self.mapView.centerLatitude</string>
 						<reference key="source" ref="24173506"/>
 						<reference key="destination" ref="976324537"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="24173506"/>
 							<reference key="NSDestination" ref="976324537"/>
-							<string key="NSLabel">value: self.latitude</string>
+							<string key="NSLabel">value: self.mapView.centerLatitude</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">self.latitude</string>
+							<string key="NSKeyPath">self.mapView.centerLatitude</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">638</int>
+					<int key="connectionID">663</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: self.longitude</string>
+						<string key="label">value: self.mapView.centerLongitude</string>
 						<reference key="source" ref="536979654"/>
 						<reference key="destination" ref="976324537"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="536979654"/>
 							<reference key="NSDestination" ref="976324537"/>
-							<string key="NSLabel">value: self.longitude</string>
+							<string key="NSLabel">value: self.mapView.centerLongitude</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">self.longitude</string>
+							<string key="NSKeyPath">self.mapView.centerLongitude</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">641</int>
+					<int key="connectionID">665</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -4193,10 +4198,11 @@
 				<boolean value="NO" key="604.IBNSViewMetadataTranslatesAutoresizingMaskIntoConstraints"/>
 				<string key="604.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="606.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<integer value="1041" key="609.IBNumberFormatterBehaviorMetadataKey"/>
+				<integer value="1040" key="609.IBNumberFormatterBehaviorMetadataKey"/>
 				<boolean value="NO" key="609.IBNumberFormatterLocalizesFormatMetadataKey"/>
+				<real value="1.1234568899999999" key="609.IBNumberFormatterSampleNumberKey"/>
 				<string key="609.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<integer value="1041" key="610.IBNumberFormatterBehaviorMetadataKey"/>
+				<integer value="1040" key="610.IBNumberFormatterBehaviorMetadataKey"/>
 				<boolean value="NO" key="610.IBNumberFormatterLocalizesFormatMetadataKey"/>
 				<string key="610.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="NO" key="611.IBNSViewMetadataTranslatesAutoresizingMaskIntoConstraints"/>
@@ -4245,7 +4251,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">659</int>
+			<int key="maxID">665</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

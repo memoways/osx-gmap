@@ -106,9 +106,33 @@
         [self updateLayerTransform];
 }
 
+- (void)setCenterLatitude:(CGFloat)latitude
+{
+    self.centerCoordinate = GMCoordinateMake(latitude, self.centerCoordinate.longitude);
+}
+
+- (void)setCenterLongitude:(CGFloat)longitude
+{
+    self.centerCoordinate = GMCoordinateMake(self.centerCoordinate.latitude, longitude);
+}
+
+- (CGFloat)centerLatitude
+{
+    return self.centerCoordinate.latitude;
+}
+
+- (CGFloat)centerLongitude
+{
+    return self.centerCoordinate.longitude;
+}
+
 - (void)setCenterCoordinate:(GMCoordinate)coordinate
 {
+    [self willChangeValueForKey:@"centerLatitude"];
+    [self willChangeValueForKey:@"centerLongitude"];
     _centerCoordinate = coordinate;
+    [self didChangeValueForKey:@"centerLongitude"];
+    [self didChangeValueForKey:@"centerLatitude"];
 
     [self willChangeValueForKey:@"centerPoint"];
     _centerPoint = GMCoordinateToPoint(self.centerCoordinate);
@@ -123,7 +147,11 @@
     _centerPoint.y = MAX(0, MIN(1.0, point.y));
 
     [self willChangeValueForKey:@"centerCoordinate"];
+    [self willChangeValueForKey:@"centerLatitude"];
+    [self willChangeValueForKey:@"centerLongitude"];
     _centerCoordinate = GMPointToCoordinate(_centerPoint);
+    [self didChangeValueForKey:@"centerLongitude"];
+    [self didChangeValueForKey:@"centerLatitude"];
     [self didChangeValueForKey:@"centerCoordinate"];
 
     [self.tileLayer setNeedsDisplay];
