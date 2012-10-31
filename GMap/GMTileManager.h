@@ -42,7 +42,23 @@
  */
 @property BOOL diskCacheEnabled;
 
+/**
+ Returns a tile image.
 
+ If the tile is not available in the cache, it will be downloaded,
+ this function does not block, it will return an image of a tile at a lower
+ zoom level matching the requested tile.
+
+ When a download occurs, `completionBlock` will be called when the download
+ succeed. If the download fails, the block will not be called.
+
+ @return A newly created image that you must release when done, or NULL if no acceptable tile was found.
+
+ @param x X coordinate of the tile
+ @param y Y coordinate of the tile
+ @param zoomLevel Zoom level of the tile
+ @param completionBlock A block to call if the tile is not available and a download is triggered
+ */
 - (CGImageRef)createTileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel completion:(void (^)(void))completionBlock;
 
 @end
