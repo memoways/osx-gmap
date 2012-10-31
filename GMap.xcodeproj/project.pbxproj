@@ -9,6 +9,16 @@
 /* Begin PBXBuildFile section */
 		363AE2CD16342C4800970D21 /* GMTile.h in Headers */ = {isa = PBXBuildFile; fileRef = 363AE2CB16342C4800970D21 /* GMTile.h */; };
 		363AE2CE16342C4800970D21 /* GMTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 363AE2CC16342C4800970D21 /* GMTile.m */; };
+		3660FBE71641CEB900C9CFF7 /* GMOverlayManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 3660FBE51641CEB900C9CFF7 /* GMOverlayManager.h */; };
+		3660FBE81641CEB900C9CFF7 /* GMOverlayManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3660FBE61641CEB900C9CFF7 /* GMOverlayManager.m */; };
+		3660FBEC1641CEC300C9CFF7 /* GMOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = 3660FBEA1641CEC300C9CFF7 /* GMOverlay.h */; };
+		3660FBED1641CEC300C9CFF7 /* GMOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 3660FBEB1641CEC300C9CFF7 /* GMOverlay.m */; };
+		3660FBF01641CED100C9CFF7 /* GMCircle.h in Headers */ = {isa = PBXBuildFile; fileRef = 3660FBEE1641CED100C9CFF7 /* GMCircle.h */; };
+		3660FBF11641CED100C9CFF7 /* GMCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 3660FBEF1641CED100C9CFF7 /* GMCircle.m */; };
+		3660FBF41641CEEB00C9CFF7 /* GMPolygon.h in Headers */ = {isa = PBXBuildFile; fileRef = 3660FBF21641CEEB00C9CFF7 /* GMPolygon.h */; };
+		3660FBF51641CEEB00C9CFF7 /* GMPolygon.m in Sources */ = {isa = PBXBuildFile; fileRef = 3660FBF31641CEEB00C9CFF7 /* GMPolygon.m */; };
+		3660FBF81641CF0900C9CFF7 /* GMMarker.h in Headers */ = {isa = PBXBuildFile; fileRef = 3660FBF61641CF0800C9CFF7 /* GMMarker.h */; };
+		3660FBF91641CF0900C9CFF7 /* GMMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 3660FBF71641CF0800C9CFF7 /* GMMarker.m */; };
 		3675CE5516414E2A00ECBAB7 /* libcurl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3675CE5416414E2A00ECBAB7 /* libcurl.dylib */; };
 		36D689F0162D8EDD0072667D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D689EF162D8EDD0072667D /* Cocoa.framework */; };
 		36D689FA162D8EDD0072667D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 36D689F8162D8EDD0072667D /* InfoPlist.strings */; };
@@ -26,6 +36,16 @@
 /* Begin PBXFileReference section */
 		363AE2CB16342C4800970D21 /* GMTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMTile.h; sourceTree = "<group>"; };
 		363AE2CC16342C4800970D21 /* GMTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMTile.m; sourceTree = "<group>"; };
+		3660FBE51641CEB900C9CFF7 /* GMOverlayManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMOverlayManager.h; sourceTree = "<group>"; };
+		3660FBE61641CEB900C9CFF7 /* GMOverlayManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMOverlayManager.m; sourceTree = "<group>"; };
+		3660FBEA1641CEC300C9CFF7 /* GMOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMOverlay.h; sourceTree = "<group>"; };
+		3660FBEB1641CEC300C9CFF7 /* GMOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMOverlay.m; sourceTree = "<group>"; };
+		3660FBEE1641CED100C9CFF7 /* GMCircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMCircle.h; sourceTree = "<group>"; };
+		3660FBEF1641CED100C9CFF7 /* GMCircle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMCircle.m; sourceTree = "<group>"; };
+		3660FBF21641CEEB00C9CFF7 /* GMPolygon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMPolygon.h; sourceTree = "<group>"; };
+		3660FBF31641CEEB00C9CFF7 /* GMPolygon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMPolygon.m; sourceTree = "<group>"; };
+		3660FBF61641CF0800C9CFF7 /* GMMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMMarker.h; sourceTree = "<group>"; };
+		3660FBF71641CF0800C9CFF7 /* GMMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMMarker.m; sourceTree = "<group>"; };
 		3675CE5416414E2A00ECBAB7 /* libcurl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurl.dylib; path = usr/lib/libcurl.dylib; sourceTree = SDKROOT; };
 		36D689EC162D8EDD0072667D /* GMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		36D689EF162D8EDD0072667D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -112,6 +132,16 @@
 				36D68A60162EBD660072667D /* GMTileManager.m */,
 				363AE2CB16342C4800970D21 /* GMTile.h */,
 				363AE2CC16342C4800970D21 /* GMTile.m */,
+				3660FBE51641CEB900C9CFF7 /* GMOverlayManager.h */,
+				3660FBE61641CEB900C9CFF7 /* GMOverlayManager.m */,
+				3660FBEA1641CEC300C9CFF7 /* GMOverlay.h */,
+				3660FBEB1641CEC300C9CFF7 /* GMOverlay.m */,
+				3660FBF21641CEEB00C9CFF7 /* GMPolygon.h */,
+				3660FBF31641CEEB00C9CFF7 /* GMPolygon.m */,
+				3660FBEE1641CED100C9CFF7 /* GMCircle.h */,
+				3660FBEF1641CED100C9CFF7 /* GMCircle.m */,
+				3660FBF61641CF0800C9CFF7 /* GMMarker.h */,
+				3660FBF71641CF0800C9CFF7 /* GMMarker.m */,
 				36D689F6162D8EDD0072667D /* Supporting Files */,
 			);
 			path = GMap;
@@ -139,6 +169,11 @@
 				36D68A43162DD5C00072667D /* GMUtil.h in Headers */,
 				36D68A61162EBD660072667D /* GMTileManager.h in Headers */,
 				363AE2CD16342C4800970D21 /* GMTile.h in Headers */,
+				3660FBE71641CEB900C9CFF7 /* GMOverlayManager.h in Headers */,
+				3660FBEC1641CEC300C9CFF7 /* GMOverlay.h in Headers */,
+				3660FBF01641CED100C9CFF7 /* GMCircle.h in Headers */,
+				3660FBF41641CEEB00C9CFF7 /* GMPolygon.h in Headers */,
+				3660FBF81641CF0900C9CFF7 /* GMMarker.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +244,11 @@
 				36D68A44162DD5C00072667D /* GMUtil.m in Sources */,
 				36D68A62162EBD660072667D /* GMTileManager.m in Sources */,
 				363AE2CE16342C4800970D21 /* GMTile.m in Sources */,
+				3660FBE81641CEB900C9CFF7 /* GMOverlayManager.m in Sources */,
+				3660FBED1641CEC300C9CFF7 /* GMOverlay.m in Sources */,
+				3660FBF11641CED100C9CFF7 /* GMCircle.m in Sources */,
+				3660FBF51641CEEB00C9CFF7 /* GMPolygon.m in Sources */,
+				3660FBF91641CF0900C9CFF7 /* GMMarker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
