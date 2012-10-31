@@ -181,7 +181,6 @@ const NSString *kCacheArrayKey = @"cacheArray";
 
                 if (parentTile.loaded)
                 {
-
                     CGRect rect;
 
                     rect.origin = CGPointMake(fmod((CGFloat)x / factor, 1.0) * kTileSize, fmod((CGFloat)y / factor, 1.0) * kTileSize);
@@ -269,9 +268,7 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 
     @synchronized(con)
     {
-
         CURL *handle = con.CURLHandle;
-
 
         curl_easy_setopt(handle, CURLOPT_URL, [urlString cStringUsingEncoding:NSUTF8StringEncoding]);
         curl_easy_setopt(handle, CURLOPT_WRITEDATA, data);
