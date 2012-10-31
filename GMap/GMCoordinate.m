@@ -1,0 +1,2 @@
+#import "GMCoordinate.h"
+
