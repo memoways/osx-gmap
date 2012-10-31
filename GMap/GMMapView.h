@@ -15,12 +15,14 @@
 
 @interface GMMapView : NSView
 
-///-----------------------------
+///-------------------------
 /// @name Base configuration
-///-----------------------------
+///-------------------------
 
 /**
  The tile manager instance providing tile to this map view.
+
+ You usually do not need to override this.
  */
 @property (nonatomic) GMTileManager *tileManager;
 
@@ -31,8 +33,24 @@
 /**
  If set to `YES`, zoomLevel will be rounded to the nearest integer.
  This is usefull if you want to provide a map that is never interpolated.
+
+ `NO` by default.
  */
 @property (nonatomic) BOOL shouldRoundZoomLevel;
+
+/**
+ If set to `YES`, panning will be enabled by dragging the map.
+
+ `YES` by default.
+ */
+@property (nonatomic) BOOL panningEnabled;
+
+/**
+ If set to `YES`, zooming with the mouse scroll will be enabled.
+
+ `YES` by default.
+ */
+@property (nonatomic) BOOL scrollZoomEnabled;
 
 ///------------
 /// @name State

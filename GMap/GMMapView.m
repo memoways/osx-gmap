@@ -25,6 +25,9 @@
     if (!(self = [super initWithFrame:frame]))
         return nil;
 
+    self.panningEnabled = YES;
+    self.scrollZoomEnabled = YES;
+
     self.tileManager = GMTileManager.new;
 
     self.layer = CALayer.new;
@@ -249,6 +252,9 @@
 
 - (void)mouseDragged:(NSEvent *)evt
 {
+    if (!self.panningEnabled)
+        return;
+
     CGFloat scale = pow(2, self.zoomLevel);
     CGPoint point = CGPointMake(evt.deltaX / scale / kTileSize, evt.deltaY / scale / kTileSize);
 
@@ -257,6 +263,9 @@
 
 - (void)scrollWheel:(NSEvent *)evt
 {
+    if (!self.scrollZoomEnabled)
+        return;
+
     CGFloat zoomDelta = evt.scrollingDeltaY / 10.0;
 
     if (self.shouldRoundZoomLevel)
