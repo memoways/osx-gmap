@@ -1,13 +1,9 @@
-//
-//  GMOverlay.h
-//  GMap
-//
-//  Created by Nicolas Goy on 31.10.12.
-//  Copyright (c) 2012 Goyman SA. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 
+@class GMMapView;
+
 @interface GMOverlay : NSObject
+
+- (void)drawOnMapView:(GMMapView *)mapView inContext:(CGContextRef)ctx;
 
 @end

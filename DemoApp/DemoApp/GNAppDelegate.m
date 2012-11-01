@@ -5,23 +5,14 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    self.mapView = [GMMapView.alloc initWithFrame:(CGRect){CGPointZero, self.wrapperView.frame.size}];
+    self.mapView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    [self.wrapperView addSubview:self.mapView];
         // self.mapView.roundZoomLevel = YES;
     self.mapView.tileManager.diskCacheEnabled = YES;
-    [self addObserver:self forKeyPath:@"latitude" options:0 context:nil];
-    [self addObserver:self forKeyPath:@"longitude" options:0 context:nil];
-    [self addObserver:self forKeyPath:@"zoomLevel" options:0 context:nil];
-
-    self.latitude = 46.779441;
-    self.longitude = 6.644787;
+    self.mapView.zoomLevel = 14;
+    self.mapView.centerCoordinate = GMCoordinateMake(46.536264571, 6.599329227);
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if ([keyPath isEqualToString:@"zoomLevel"])
-        self.mapView.zoomLevel = self.zoomLevel;
-    else
-        self.mapView.centerCoordinate = GMCoordinateMake(self.latitude, self.longitude);
-
-}
 
 @end

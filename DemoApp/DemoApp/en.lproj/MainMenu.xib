@@ -1319,7 +1319,7 @@
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="241647912"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
-							<string key="NSClassName">GMMapView</string>
+							<string key="NSClassName">NSView</string>
 						</object>
 						<object class="NSSlider" id="228967240">
 							<reference key="NSNextResponder" ref="439893737"/>
@@ -1555,7 +1555,6 @@
 							<string key="NSFrame">{{298, 24}, {131, 22}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="798121226">
@@ -2335,11 +2334,11 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">mapView</string>
+						<string key="label">wrapperView</string>
 						<reference key="source" ref="976324537"/>
 						<reference key="destination" ref="150488294"/>
 					</object>
-					<int key="connectionID">543</int>
+					<int key="connectionID">666</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -4251,33 +4250,25 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">665</int>
+			<int key="maxID">666</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
-					<string key="className">GMMapView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/GMMapView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">GNAppDelegate</string>
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="mapView">GMMapView</string>
 						<string key="window">NSWindow</string>
+						<string key="wrapperView">NSView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="mapView">
-							<string key="name">mapView</string>
-							<string key="candidateClassName">GMMapView</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="window">
 							<string key="name">window</string>
 							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="wrapperView">
+							<string key="name">wrapperView</string>
+							<string key="candidateClassName">NSView</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">

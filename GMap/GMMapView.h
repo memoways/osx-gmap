@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
+#import "GMOverlay.h"
 
-@class GMTileManager;
+@class GMTileManager, GMOverlayManager;
 
 /**
  `GMMapView` is the base of GMap. It renders the map and manage it's overlays.
@@ -25,6 +26,8 @@
  You usually do not need to override this.
  */
 @property (nonatomic) GMTileManager *tileManager;
+
+@property (nonatomic) GMOverlayManager *overlayManager;
 
 ///----------------
 /// @name Behaviour
@@ -77,5 +80,12 @@
  */
 @property (nonatomic) CGFloat zoomLevel;
 
+
+///---------------
+/// @name Overlays
+///---------------
+
+
+@property (nonatomic) BOOL shouldDrawOverlays;
 
 @end

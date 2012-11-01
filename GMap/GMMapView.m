@@ -1,7 +1,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "GMMapView.h"
 #import "GMTileManager.h"
-
+#import "GMOverlayManager.h"
 
 
 @interface GMMapView ()
@@ -29,6 +29,7 @@
     self.scrollZoomEnabled = YES;
 
     self.tileManager = GMTileManager.new;
+    self.overlayManager = GMOverlayManager.new;
 
     self.layer = CALayer.new;
     self.wantsLayer = YES;

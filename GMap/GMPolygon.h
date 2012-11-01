@@ -1,14 +1,16 @@
-//
-//  GMPolygon.h
-//  GMap
-//
-//  Created by Nicolas Goy on 31.10.12.
-//  Copyright (c) 2012 Goyman SA. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 #import "GMOverlay.h"
 
 @interface GMPolygon : GMOverlay
+
+- (void)addPoint:(GMCoordinate)coordinate;
+
+@property (nonatomic) NSMutableArray *points;
+
+@property (nonatomic) BOOL shouldClose;
+@property (nonatomic) NSColor *fillColor;
+
+@property (nonatomic) CGFloat strokeWidth;
+@property (nonatomic) NSColor *strokeColor;
 
 @end
