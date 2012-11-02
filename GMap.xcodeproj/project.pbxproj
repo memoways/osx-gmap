@@ -10,7 +10,7 @@
 		361CDF431643223C009BF877 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 361CDF421643223C009BF877 /* libsqlite3.dylib */; };
 		363AE2CD16342C4800970D21 /* GMTile.h in Headers */ = {isa = PBXBuildFile; fileRef = 363AE2CB16342C4800970D21 /* GMTile.h */; };
 		363AE2CE16342C4800970D21 /* GMTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 363AE2CC16342C4800970D21 /* GMTile.m */; };
-		3660FBE71641CEB900C9CFF7 /* GMOverlayManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 3660FBE51641CEB900C9CFF7 /* GMOverlayManager.h */; };
+		3660FBE71641CEB900C9CFF7 /* GMOverlayManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 3660FBE51641CEB900C9CFF7 /* GMOverlayManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3660FBE81641CEB900C9CFF7 /* GMOverlayManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3660FBE61641CEB900C9CFF7 /* GMOverlayManager.m */; };
 		3660FBEC1641CEC300C9CFF7 /* GMOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = 3660FBEA1641CEC300C9CFF7 /* GMOverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3660FBED1641CEC300C9CFF7 /* GMOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 3660FBEB1641CEC300C9CFF7 /* GMOverlay.m */; };
@@ -84,6 +84,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		364E2B181644155D0065D5DB /* Overlays */ = {
+			isa = PBXGroup;
+			children = (
+				3660FBE51641CEB900C9CFF7 /* GMOverlayManager.h */,
+				3660FBE61641CEB900C9CFF7 /* GMOverlayManager.m */,
+				3660FBEA1641CEC300C9CFF7 /* GMOverlay.h */,
+				3660FBEB1641CEC300C9CFF7 /* GMOverlay.m */,
+				3660FBF21641CEEB00C9CFF7 /* GMPolygon.h */,
+				3660FBF31641CEEB00C9CFF7 /* GMPolygon.m */,
+				3660FBEE1641CED100C9CFF7 /* GMCircle.h */,
+				3660FBEF1641CED100C9CFF7 /* GMCircle.m */,
+				3660FBF61641CF0800C9CFF7 /* GMMarker.h */,
+				3660FBF71641CF0800C9CFF7 /* GMMarker.m */,
+			);
+			name = Overlays;
+			sourceTree = "<group>";
+		};
+		364E2B19164415650065D5DB /* Tiles */ = {
+			isa = PBXGroup;
+			children = (
+				36D68A5F162EBD660072667D /* GMTileManager.h */,
+				36D68A60162EBD660072667D /* GMTileManager.m */,
+				363AE2CB16342C4800970D21 /* GMTile.h */,
+				363AE2CC16342C4800970D21 /* GMTile.m */,
+			);
+			name = Tiles;
+			sourceTree = "<group>";
+		};
 		36D689E0162D8EDD0072667D = {
 			isa = PBXGroup;
 			children = (
@@ -132,20 +160,8 @@
 				3660FBFB1641D07200C9CFF7 /* GMCoordinate.m */,
 				36D68A36162D902F0072667D /* GMMapView.h */,
 				36D68A37162D902F0072667D /* GMMapView.m */,
-				36D68A5F162EBD660072667D /* GMTileManager.h */,
-				36D68A60162EBD660072667D /* GMTileManager.m */,
-				363AE2CB16342C4800970D21 /* GMTile.h */,
-				363AE2CC16342C4800970D21 /* GMTile.m */,
-				3660FBE51641CEB900C9CFF7 /* GMOverlayManager.h */,
-				3660FBE61641CEB900C9CFF7 /* GMOverlayManager.m */,
-				3660FBEA1641CEC300C9CFF7 /* GMOverlay.h */,
-				3660FBEB1641CEC300C9CFF7 /* GMOverlay.m */,
-				3660FBF21641CEEB00C9CFF7 /* GMPolygon.h */,
-				3660FBF31641CEEB00C9CFF7 /* GMPolygon.m */,
-				3660FBEE1641CED100C9CFF7 /* GMCircle.h */,
-				3660FBEF1641CED100C9CFF7 /* GMCircle.m */,
-				3660FBF61641CF0800C9CFF7 /* GMMarker.h */,
-				3660FBF71641CF0800C9CFF7 /* GMMarker.m */,
+				364E2B19164415650065D5DB /* Tiles */,
+				364E2B181644155D0065D5DB /* Overlays */,
 				36D689F6162D8EDD0072667D /* Supporting Files */,
 			);
 			path = GMap;
@@ -172,12 +188,12 @@
 				36D68A3C162D91520072667D /* GMap.h in Headers */,
 				36D68A61162EBD660072667D /* GMTileManager.h in Headers */,
 				3660FBEC1641CEC300C9CFF7 /* GMOverlay.h in Headers */,
+				3660FBE71641CEB900C9CFF7 /* GMOverlayManager.h in Headers */,
 				3660FBF01641CED100C9CFF7 /* GMCircle.h in Headers */,
 				3660FBF41641CEEB00C9CFF7 /* GMPolygon.h in Headers */,
 				3660FBF81641CF0900C9CFF7 /* GMMarker.h in Headers */,
 				3660FBFC1641D07200C9CFF7 /* GMCoordinate.h in Headers */,
 				363AE2CD16342C4800970D21 /* GMTile.h in Headers */,
-				3660FBE71641CEB900C9CFF7 /* GMOverlayManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

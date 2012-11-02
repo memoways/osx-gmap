@@ -8,12 +8,15 @@
 
 @property (nonatomic) NSInteger renderedZoomLevel;
 @property (nonatomic) CALayer *tileLayer;
+@property (nonatomic) CALayer *overlayLayer;
 @property (nonatomic) CGPoint centerPoint;
 
 
 - (void)updateLayerTransform;
 - (void)updateLayerBounds;
 
+- (void)drawTilesInContext:(CGContextRef)ctx;
+- (void)drawOverlaysInContext:(CGContextRef)ctx;
 
 @end
 
@@ -34,15 +37,20 @@
     self.layer = CALayer.new;
     self.wantsLayer = YES;
 
-    self.layer.delegate = self;
-
     self.tileLayer = CALayer.new;
     self.tileLayer.delegate = self;
+    self.tileLayer.needsDisplayOnBoundsChange = YES;
     [self.layer addSublayer:self.tileLayer];
+
+    self.overlayLayer = CALayer.new;
+    self.overlayLayer.delegate = self;
+    self.overlayLayer.needsDisplayOnBoundsChange = YES;
+        //self.overlayLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
+    [self.layer addSublayer:self.overlayLayer];
 
     [self updateLayerBounds];
     [self updateLayerTransform];
-    [self.tileLayer setNeedsDisplay];
+
 
     return self;
 }
@@ -57,12 +65,12 @@
 {
     [self updateLayerBounds];
     [self updateLayerTransform];
-    [self.tileLayer setNeedsDisplay];
 }
 
 - (void)updateLayerBounds
 {
     self.tileLayer.bounds = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    self.overlayLayer.bounds = self.tileLayer.bounds;
 }
 
 - (void)updateLayerTransform
@@ -72,11 +80,11 @@
     CGAffineTransform t = CGAffineTransformIdentity;
 
     t = CGAffineTransformTranslate(t, self.layer.bounds.size.width / 2.0, self.layer.bounds.size.height / 2.0);
+    self.overlayLayer.affineTransform = t;
+    
     t = CGAffineTransformScale(t, scale, scale);
-
     self.tileLayer.affineTransform = t;
 }
-
 
 // ################################################################################
 // Properties
@@ -108,6 +116,41 @@
     }
     else
         [self updateLayerTransform];
+
+    [self.overlayLayer setNeedsDisplay];
+}
+
+- (void)setCenterCoordinate:(GMCoordinate)coordinate
+{
+    [self willChangeValueForKey:@"centerLatitude"];
+    [self willChangeValueForKey:@"centerLongitude"];
+    _centerCoordinate = coordinate;
+    [self didChangeValueForKey:@"centerLongitude"];
+    [self didChangeValueForKey:@"centerLatitude"];
+
+    [self willChangeValueForKey:@"centerPoint"];
+    _centerPoint = GMCoordinateToPoint(self.centerCoordinate);
+    [self didChangeValueForKey:@"centerPoint"];
+
+    [self.tileLayer setNeedsDisplay];
+    [self.overlayLayer setNeedsDisplay];
+}
+
+- (void)setCenterPoint:(CGPoint)point
+{
+    _centerPoint.x = MAX(0, MIN(1.0, point.x));
+    _centerPoint.y = MAX(0, MIN(1.0, point.y));
+
+    [self willChangeValueForKey:@"centerCoordinate"];
+    [self willChangeValueForKey:@"centerLatitude"];
+    [self willChangeValueForKey:@"centerLongitude"];
+    _centerCoordinate = GMPointToCoordinate(_centerPoint);
+    [self didChangeValueForKey:@"centerLongitude"];
+    [self didChangeValueForKey:@"centerLatitude"];
+    [self didChangeValueForKey:@"centerCoordinate"];
+
+    [self.tileLayer setNeedsDisplay];
+    [self.overlayLayer setNeedsDisplay];
 }
 
 - (void)setCenterLatitude:(CGFloat)latitude
@@ -130,49 +173,24 @@
     return self.centerCoordinate.longitude;
 }
 
-- (void)setCenterCoordinate:(GMCoordinate)coordinate
-{
-    [self willChangeValueForKey:@"centerLatitude"];
-    [self willChangeValueForKey:@"centerLongitude"];
-    _centerCoordinate = coordinate;
-    [self didChangeValueForKey:@"centerLongitude"];
-    [self didChangeValueForKey:@"centerLatitude"];
-
-    [self willChangeValueForKey:@"centerPoint"];
-    _centerPoint = GMCoordinateToPoint(self.centerCoordinate);
-    [self didChangeValueForKey:@"centerPoint"];
-
-    [self.tileLayer setNeedsDisplay];
-}
-
-- (void)setCenterPoint:(CGPoint)point
-{
-    _centerPoint.x = MAX(0, MIN(1.0, point.x));
-    _centerPoint.y = MAX(0, MIN(1.0, point.y));
-
-    [self willChangeValueForKey:@"centerCoordinate"];
-    [self willChangeValueForKey:@"centerLatitude"];
-    [self willChangeValueForKey:@"centerLongitude"];
-    _centerCoordinate = GMPointToCoordinate(_centerPoint);
-    [self didChangeValueForKey:@"centerLongitude"];
-    [self didChangeValueForKey:@"centerLatitude"];
-    [self didChangeValueForKey:@"centerCoordinate"];
-
-    [self.tileLayer setNeedsDisplay];
-}
-
-
-
 // ################################################################################
 // Drawing
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx
 {
+    if (layer == self.tileLayer)
+        [self drawTilesInContext:ctx];
+    else if (layer == self.overlayLayer)
+        [self drawOverlaysInContext:ctx];
+}
+
+- (void)drawTilesInContext:(CGContextRef)ctx
+{
     CGRect rect = CGContextGetClipBoundingBox(ctx);
 
     CGPoint center = self.centerPoint;
 
-    CGSize size = layer.bounds.size;
+    CGSize size = self.tileLayer.bounds.size;
     NSInteger level = floor(self.zoomLevel);
     NSInteger n = 1 << level;
 
@@ -243,14 +261,64 @@
     }
 }
 
-// ################################################################################
-// Events
-
-- (void)mouseDown:(NSEvent *)evt
+- (void)drawOverlaysInContext:(CGContextRef)ctx
 {
+    CGPoint topLeft = [self convertViewLocationToPoint:CGPointMake(0, self.frame.size.height)];
+    CGPoint bottomRight = [self convertViewLocationToPoint:CGPointMake(self.frame.size.width, 0)];
+    CGRect bounds = CGRectMake(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+
+    NSArray *overlays = [self.overlayManager overlaysWithinBounds:bounds];
+    
+    CGPoint center = self.centerPoint;
+    CGFloat scale = pow(2, self.zoomLevel);
+
+    CGSize size = self.tileLayer.bounds.size;
+    NSInteger level = floor(self.zoomLevel);
+    NSInteger n = 1 << level;
+
+    CGFloat worldSize = kTileSize * n;
+
+    CGPoint centerPoint = CGPointMake(center.x * scale, center.y * scale);
+
+    CGPoint worldOffset = CGPointMake(centerPoint.x * kTileSize - size.width / 2.0,
+                                      centerPoint.y * kTileSize - size.height / 2.0);
+
+
+    for (GMOverlay *overlay in overlays)
+    {
+        [overlay drawInContext:ctx offset:worldOffset scale:scale * kTileSize];
+    }
 
 }
 
+// ################################################################################
+// Events
+/*
+#import <Foundation/NSJSONSerialization.h>
+static NSMutableArray *currentPath;
+
+- (void)rightMouseDown:(NSEvent *)evt
+{
+    if (currentPath)
+    {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:currentPath options:NSJSONWritingPrettyPrinted error:nil];
+    [data writeToFile:[NSString stringWithFormat:@"/Users/kuon/Projects/GMap/DemoApp/DemoApp/Tracks/%ld.json", time(NULL)] atomically:NO];
+    }
+
+
+    currentPath = NSMutableArray.new;
+}
+
+- (void)mouseDown:(NSEvent *)evt
+{
+    CGPoint relativeCenter = [self convertPoint:evt.locationInWindow fromView:nil];
+
+    GMCoordinate coord = GMPointToCoordinate([self convertViewLocationToPoint:relativeCenter]);
+
+    [currentPath addObject:@{@"latitude":[NSNumber numberWithDouble:coord.latitude], @"longitude":[NSNumber numberWithDouble:coord.longitude]}];
+
+}
+*/
 - (void)mouseDragged:(NSEvent *)evt
 {
     if (!self.panningEnabled)
@@ -279,7 +347,8 @@
     relativeCenter.x -= self.frame.size.width / 2.0;
     relativeCenter.y -= self.frame.size.height / 2.0;
 
-    CGPoint offset = CGPointMake(relativeCenter.x * scale - relativeCenter.x, relativeCenter.y * scale - relativeCenter.y );
+    CGPoint offset = CGPointMake(relativeCenter.x * scale - relativeCenter.x,
+                                 relativeCenter.y * scale - relativeCenter.y );
 
     CGFloat previousZoomLevel = self.zoomLevel;
     self.zoomLevel += zoomDelta;
@@ -298,6 +367,19 @@
 - (void)mouseUp:(NSEvent *)evt
 {
 
+}
+
+// ################################################################################
+// Utilities
+
+- (CGPoint)convertViewLocationToPoint:(CGPoint)locationInView
+{
+    locationInView.x -= self.frame.size.width / 2.0;
+    locationInView.y -= self.frame.size.height / 2.0;
+
+    CGFloat scale = pow(2, self.zoomLevel);
+    return CGPointMake(self.centerPoint.x + locationInView.x / scale / kTileSize,
+                       self.centerPoint.y - locationInView.y / scale / kTileSize);
 }
 
 @end

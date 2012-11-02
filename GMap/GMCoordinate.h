@@ -10,7 +10,6 @@ typedef struct
     CGFloat longitude;
 } GMCoordinate;
 
-
 static inline GMCoordinate GMCoordinateMake(CGFloat latitude, CGFloat longitude)
 {
     GMCoordinate result;
@@ -54,3 +53,54 @@ static inline GMCoordinate GMPointToCoordinate(CGPoint point)
 {
     return GMCoordinateMake(GMYToLatitude(point.y), GMXToLongitude(point.x));
 }
+
+static inline NSString *NSStringFromGMCoordinate(GMCoordinate coordinate)
+{
+    return [NSString stringWithFormat:@"%.10f - %.10f", coordinate.latitude, coordinate.longitude];
+}
+
+@interface NSValue (GMCoordinate)
+
+- (GMCoordinate)coordinateValue;
+
++ (NSValue *)valueWithCoordinate:(GMCoordinate)coordinate;
+- (id)initWithCoordinate:(GMCoordinate)coordinate;
+
+@end
+
+
+typedef struct
+{
+    GMCoordinate southWest;
+    GMCoordinate northEast;
+} GMCoordinateBounds;
+
+
+static inline GMCoordinateBounds GMCoordinateBoundsMake(CGFloat southWestLatitude, CGFloat southWestLongitude, CGFloat northEastLatitude, CGFloat northEastLongitude)
+{
+    GMCoordinateBounds result;
+
+    result.southWest.latitude = southWestLatitude;
+    result.southWest.longitude = southWestLongitude;
+    result.northEast.latitude = northEastLatitude;
+    result.northEast.longitude = northEastLongitude;
+
+    return result;
+}
+
+static inline CGRect GMCoordinateBoundsToRect(GMCoordinateBounds bounds)
+{
+    CGPoint southWest = GMCoordinateToPoint(bounds.southWest);
+    CGPoint northEast = GMCoordinateToPoint(bounds.northEast);
+
+    return CGRectMake(southWest.x, northEast.y, northEast.x - southWest.x, southWest.y - northEast.y);
+}
+
+@interface NSValue (GMCoordinateBounds)
+
+- (GMCoordinateBounds)coordinateBoundsValue;
+
++ (NSValue *)valueWithCoordinateBounds:(GMCoordinateBounds)bounds;
+- (id)initWithCoordinateBounds:(GMCoordinateBounds)bounds;
+
+@end

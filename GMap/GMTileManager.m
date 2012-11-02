@@ -188,7 +188,9 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
                     rect.origin = CGPointMake(fmod((CGFloat)x / factor, 1.0) * kTileSize, fmod((CGFloat)y / factor, 1.0) * kTileSize);
                     rect.size = CGSizeMake(kTileSize / factor, kTileSize / factor);
 
-                    tile.image = CGImageCreateWithImageInRect(parentTile.image, rect);
+                    CGImageRef parentImage = CGImageCreateWithImageInRect(parentTile.image, rect);
+                    tile.image = parentImage;
+                    CGImageRelease(parentImage);
                     break;
                 }
             }

@@ -3,7 +3,7 @@
 
 @interface GMPolygon : GMOverlay
 
-- (void)addPoint:(GMCoordinate)coordinate;
+- (void)addPointAtCoordinate:(GMCoordinate)coordinate;
 
 @property (nonatomic) NSMutableArray *points;
 

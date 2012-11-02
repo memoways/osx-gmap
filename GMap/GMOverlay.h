@@ -4,6 +4,8 @@
 
 @interface GMOverlay : NSObject
 
-- (void)drawOnMapView:(GMMapView *)mapView inContext:(CGContextRef)ctx;
+@property (nonatomic) CGRect bounds;
+
+- (void)drawInContext:(CGContextRef)ctx offset:(CGPoint)offset scale:(CGFloat)scale;
 
 @end

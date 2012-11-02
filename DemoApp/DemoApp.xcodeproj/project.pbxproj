@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		364E2B1616440E5C0065D5DB /* Tracks in Resources */ = {isa = PBXBuildFile; fileRef = 364E2B1516440E5C0065D5DB /* Tracks */; };
 		36B440DA163DEC1D000B8281 /* GMap.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 36B440D8163DEC10000B8281 /* GMap.framework */; };
 		36B440DB163DEC43000B8281 /* GMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B440D8163DEC10000B8281 /* GMap.framework */; };
 		36D68A14162D8F240072667D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D68A13162D8F240072667D /* Cocoa.framework */; };
@@ -48,6 +49,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		364E2B1516440E5C0065D5DB /* Tracks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Tracks; sourceTree = "<group>"; };
 		36B440D8163DEC10000B8281 /* GMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = GMap.framework; path = "/Users/kuon/Library/Developer/Xcode/DerivedData/GMap-dtmegwabjswcauhkkhcpgrrfdpto/Build/Products/Debug/GMap.framework"; sourceTree = "<absolute>"; };
 		36B440E0163DECEE000B8281 /* GMap.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GMap.xcodeproj; path = ../GMap.xcodeproj; sourceTree = "<group>"; };
 		36D68A0F162D8F240072667D /* DemoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,6 +142,7 @@
 		36D68A1A162D8F240072667D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				364E2B1516440E5C0065D5DB /* Tracks */,
 				36D68A1B162D8F240072667D /* DemoApp-Info.plist */,
 				36D68A1C162D8F240072667D /* InfoPlist.strings */,
 				36D68A1F162D8F240072667D /* main.m */,
@@ -222,6 +225,7 @@
 				36D68A1E162D8F240072667D /* InfoPlist.strings in Resources */,
 				36D68A24162D8F240072667D /* Credits.rtf in Resources */,
 				36D68A2A162D8F250072667D /* MainMenu.xib in Resources */,
+				364E2B1616440E5C0065D5DB /* Tracks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

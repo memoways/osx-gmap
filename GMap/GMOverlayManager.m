@@ -18,6 +18,8 @@
     if (sqlite3_open(":memory:", &_db))
         return nil;
 
+    self.overlays = NSMutableArray.new;
+
     return self;
 }
 
@@ -28,12 +30,17 @@
 
 - (void)addOverlay:(GMOverlay *)anOverlay
 {
-    
+    [self.overlays addObject:anOverlay];
 }
 
 - (void)removeOverlay:(GMOverlay *)anOverlay
 {
-    
+    [self.overlays removeObject:anOverlay];    
+}
+
+- (NSArray *)overlaysWithinBounds:(CGRect)bounds
+{
+    return self.overlays;
 }
 
 @end
