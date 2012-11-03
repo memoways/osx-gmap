@@ -27,7 +27,7 @@
 {
     if (!(self = [super initWithFrame:frame]))
         return nil;
-
+    
     self.panningEnabled = YES;
     self.scrollZoomEnabled = YES;
 
@@ -45,7 +45,6 @@
     self.overlayLayer = CALayer.new;
     self.overlayLayer.delegate = self;
     self.overlayLayer.needsDisplayOnBoundsChange = YES;
-        //self.overlayLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
     [self.layer addSublayer:self.overlayLayer];
 
     [self updateLayerBounds];
@@ -267,28 +266,22 @@
     CGPoint bottomRight = [self convertViewLocationToPoint:CGPointMake(self.frame.size.width, 0)];
     CGRect bounds = CGRectMake(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
 
-    NSArray *overlays = [self.overlayManager overlaysWithinBounds:bounds];
+
+    
     
     CGPoint center = self.centerPoint;
-    CGFloat scale = pow(2, self.zoomLevel);
+    CGFloat scale = pow(2, self.zoomLevel) * kTileSize;
 
     CGSize size = self.tileLayer.bounds.size;
-    NSInteger level = floor(self.zoomLevel);
-    NSInteger n = 1 << level;
 
-    CGFloat worldSize = kTileSize * n;
+    CGPoint worldOffset = CGPointMake(center.x * scale - size.width / 2.0,
+                                      center.y * scale - size.height / 2.0);
 
-    CGPoint centerPoint = CGPointMake(center.x * scale, center.y * scale);
-
-    CGPoint worldOffset = CGPointMake(centerPoint.x * kTileSize - size.width / 2.0,
-                                      centerPoint.y * kTileSize - size.height / 2.0);
-
+    NSArray *overlays = [self.overlayManager overlaysWithinBounds:bounds minSize:10.0 / scale];
 
     for (GMOverlay *overlay in overlays)
-    {
-        [overlay drawInContext:ctx offset:worldOffset scale:scale * kTileSize];
-    }
-
+        [overlay drawInContext:ctx offset:worldOffset scale:scale];
+    
 }
 
 // ################################################################################
@@ -302,7 +295,7 @@ static NSMutableArray *currentPath;
     if (currentPath)
     {
         NSData *data = [NSJSONSerialization dataWithJSONObject:currentPath options:NSJSONWritingPrettyPrinted error:nil];
-    [data writeToFile:[NSString stringWithFormat:@"/Users/kuon/Projects/GMap/DemoApp/DemoApp/Tracks/%ld.json", time(NULL)] atomically:NO];
+    [data writeToFile:[NSString stringWithFormat:@"/Users/kuon/Projects/GMap/DemoApp/DemoApp/Circles/%ld.json", time(NULL)] atomically:NO];
     }
 
 
@@ -315,7 +308,7 @@ static NSMutableArray *currentPath;
 
     GMCoordinate coord = GMPointToCoordinate([self convertViewLocationToPoint:relativeCenter]);
 
-    [currentPath addObject:@{@"latitude":[NSNumber numberWithDouble:coord.latitude], @"longitude":[NSNumber numberWithDouble:coord.longitude]}];
+    [currentPath addObject:@{@"latitude":[NSNumber numberWithDouble:coord.latitude], @"longitude":[NSNumber numberWithDouble:coord.longitude], @"radius":[NSNumber numberWithDouble:(CGFloat)rand() / (CGFloat)RAND_MAX * 500 + 10]}];
 
 }
 */

@@ -8,10 +8,10 @@
 
 @property (nonatomic) NSColor *fillColor;
 
-@property (nonatomic) CGFloat strokeWidth;
+@property (nonatomic) CGFloat lineWidth;
 @property (nonatomic) NSColor *strokeColor;
 
-@property (nonatomic) CGFloat centerPointWidth;
+@property (nonatomic) CGFloat centerPointSize;
 @property (nonatomic) NSColor *centerPointColor;
 
 

@@ -64,6 +64,8 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     self.tileURLFormat = self.defaultTileURLFormat;
     self.cacheDirectoryPath = self.defaultCacheDirectoryPath;
 
+    self.diskCacheEnabled = YES;
+
     self.tileCache = NSMutableDictionary.new;
 
     self.tileLoadQueue = NSOperationQueue.new;

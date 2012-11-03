@@ -7,7 +7,7 @@
 - (void)addOverlay:(GMOverlay *)anOverlay;
 - (void)removeOverlay:(GMOverlay *)anOverlay;
 
-- (NSArray *)overlaysWithinBounds:(CGRect)bounds;
+- (NSArray *)overlaysWithinBounds:(CGRect)bounds minSize:(CGFloat)minSize;
 
 @end
 

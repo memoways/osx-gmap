@@ -1,7 +1,8 @@
 #import <Foundation/Foundation.h>
 
 
-static const CGFloat kTileSize = 256.0;
+static const CGFloat kTileSize = 256.0; // in pixel
+static const CGFloat kEquatorLength = 40075016.686; // in meters
 
 
 typedef struct

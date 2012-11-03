@@ -10,7 +10,7 @@
 @property (nonatomic) BOOL shouldClose;
 @property (nonatomic) NSColor *fillColor;
 
-@property (nonatomic) CGFloat strokeWidth;
+@property (nonatomic) CGFloat lineWidth;
 @property (nonatomic) NSColor *strokeColor;
 
 @end

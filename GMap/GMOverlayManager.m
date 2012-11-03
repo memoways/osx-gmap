@@ -4,7 +4,6 @@
 @interface GMOverlayManager ()
 
 @property (nonatomic) NSMutableArray *overlays;
-@property (nonatomic) sqlite3 *db;
 
 @end
 
@@ -15,17 +14,10 @@
     if (!(self = super.init))
         return nil;
 
-    if (sqlite3_open(":memory:", &_db))
-        return nil;
 
     self.overlays = NSMutableArray.new;
 
     return self;
-}
-
-- (void)dealloc
-{
-    sqlite3_close(_db);
 }
 
 - (void)addOverlay:(GMOverlay *)anOverlay
@@ -35,12 +27,27 @@
 
 - (void)removeOverlay:(GMOverlay *)anOverlay
 {
-    [self.overlays removeObject:anOverlay];    
+    [self.overlays removeObject:anOverlay];
 }
 
-- (NSArray *)overlaysWithinBounds:(CGRect)bounds
+
+- (NSArray *)overlaysWithinBounds:(CGRect)bounds minSize:(CGFloat)minSize
 {
-    return self.overlays;
+    NSMutableArray *overlays = NSMutableArray.new;
+
+    for (GMOverlay *overlay in self.overlays)
+    {
+        if (overlay.bounds.size.width +overlay.bounds.size.height > minSize &&
+            ! (overlay.bounds.origin.x + overlay.bounds.size.width < bounds.origin.x
+               || overlay.bounds.origin.y + overlay.bounds.size.height < bounds.origin.y
+               || overlay.bounds.origin.x > bounds.origin.x + bounds.size.width
+               || overlay.bounds.origin.y > bounds.origin.y + bounds.size.height))
+            [overlays addObject:overlay];
+    }
+
+    return overlays;
 }
+
+
 
 @end
