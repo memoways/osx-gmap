@@ -10,8 +10,6 @@
 		361CDF431643223C009BF877 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 361CDF421643223C009BF877 /* libsqlite3.dylib */; };
 		363AE2CD16342C4800970D21 /* GMTile.h in Headers */ = {isa = PBXBuildFile; fileRef = 363AE2CB16342C4800970D21 /* GMTile.h */; };
 		363AE2CE16342C4800970D21 /* GMTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 363AE2CC16342C4800970D21 /* GMTile.m */; };
-		3660FBE71641CEB900C9CFF7 /* GMOverlayManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 3660FBE51641CEB900C9CFF7 /* GMOverlayManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3660FBE81641CEB900C9CFF7 /* GMOverlayManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3660FBE61641CEB900C9CFF7 /* GMOverlayManager.m */; };
 		3660FBEC1641CEC300C9CFF7 /* GMOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = 3660FBEA1641CEC300C9CFF7 /* GMOverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3660FBED1641CEC300C9CFF7 /* GMOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 3660FBEB1641CEC300C9CFF7 /* GMOverlay.m */; };
 		3660FBF01641CED100C9CFF7 /* GMCircle.h in Headers */ = {isa = PBXBuildFile; fileRef = 3660FBEE1641CED100C9CFF7 /* GMCircle.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -30,16 +28,14 @@
 		36D68A3C162D91520072667D /* GMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 36D689FC162D8EDD0072667D /* GMap.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		36D68A58162E0C930072667D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D68A57162E0C930072667D /* QuartzCore.framework */; };
 		36D68A5A162E10F30072667D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D68A59162E10F30072667D /* Quartz.framework */; };
-		36D68A61162EBD660072667D /* GMTileManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 36D68A5F162EBD660072667D /* GMTileManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		36D68A62162EBD660072667D /* GMTileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 36D68A60162EBD660072667D /* GMTileManager.m */; };
+		36DE8E1C1645D5FF00EFE607 /* GMConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 36DE8E1A1645D5FF00EFE607 /* GMConnection.h */; };
+		36DE8E1D1645D5FF00EFE607 /* GMConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 36DE8E1B1645D5FF00EFE607 /* GMConnection.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		361CDF421643223C009BF877 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		363AE2CB16342C4800970D21 /* GMTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMTile.h; sourceTree = "<group>"; };
 		363AE2CC16342C4800970D21 /* GMTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMTile.m; sourceTree = "<group>"; };
-		3660FBE51641CEB900C9CFF7 /* GMOverlayManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMOverlayManager.h; sourceTree = "<group>"; };
-		3660FBE61641CEB900C9CFF7 /* GMOverlayManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMOverlayManager.m; sourceTree = "<group>"; };
 		3660FBEA1641CEC300C9CFF7 /* GMOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMOverlay.h; sourceTree = "<group>"; };
 		3660FBEB1641CEC300C9CFF7 /* GMOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMOverlay.m; sourceTree = "<group>"; };
 		3660FBEE1641CED100C9CFF7 /* GMCircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMCircle.h; sourceTree = "<group>"; };
@@ -64,8 +60,8 @@
 		36D68A37162D902F0072667D /* GMMapView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMMapView.m; sourceTree = "<group>"; };
 		36D68A57162E0C930072667D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		36D68A59162E10F30072667D /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
-		36D68A5F162EBD660072667D /* GMTileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMTileManager.h; sourceTree = "<group>"; };
-		36D68A60162EBD660072667D /* GMTileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMTileManager.m; sourceTree = "<group>"; };
+		36DE8E1A1645D5FF00EFE607 /* GMConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMConnection.h; sourceTree = "<group>"; };
+		36DE8E1B1645D5FF00EFE607 /* GMConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMConnection.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,8 +83,6 @@
 		364E2B181644155D0065D5DB /* Overlays */ = {
 			isa = PBXGroup;
 			children = (
-				3660FBE51641CEB900C9CFF7 /* GMOverlayManager.h */,
-				3660FBE61641CEB900C9CFF7 /* GMOverlayManager.m */,
 				3660FBEA1641CEC300C9CFF7 /* GMOverlay.h */,
 				3660FBEB1641CEC300C9CFF7 /* GMOverlay.m */,
 				3660FBF21641CEEB00C9CFF7 /* GMPolygon.h */,
@@ -104,8 +98,8 @@
 		364E2B19164415650065D5DB /* Tiles */ = {
 			isa = PBXGroup;
 			children = (
-				36D68A5F162EBD660072667D /* GMTileManager.h */,
-				36D68A60162EBD660072667D /* GMTileManager.m */,
+				36DE8E1A1645D5FF00EFE607 /* GMConnection.h */,
+				36DE8E1B1645D5FF00EFE607 /* GMConnection.m */,
 				363AE2CB16342C4800970D21 /* GMTile.h */,
 				363AE2CC16342C4800970D21 /* GMTile.m */,
 			);
@@ -184,16 +178,15 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				36D68A38162D902F0072667D /* GMMapView.h in Headers */,
 				36D68A3C162D91520072667D /* GMap.h in Headers */,
-				36D68A61162EBD660072667D /* GMTileManager.h in Headers */,
+				36D68A38162D902F0072667D /* GMMapView.h in Headers */,
+				3660FBFC1641D07200C9CFF7 /* GMCoordinate.h in Headers */,
 				3660FBEC1641CEC300C9CFF7 /* GMOverlay.h in Headers */,
-				3660FBE71641CEB900C9CFF7 /* GMOverlayManager.h in Headers */,
 				3660FBF01641CED100C9CFF7 /* GMCircle.h in Headers */,
 				3660FBF41641CEEB00C9CFF7 /* GMPolygon.h in Headers */,
 				3660FBF81641CF0900C9CFF7 /* GMMarker.h in Headers */,
-				3660FBFC1641D07200C9CFF7 /* GMCoordinate.h in Headers */,
 				363AE2CD16342C4800970D21 /* GMTile.h in Headers */,
+				36DE8E1C1645D5FF00EFE607 /* GMConnection.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,14 +254,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				36D68A39162D902F0072667D /* GMMapView.m in Sources */,
-				36D68A62162EBD660072667D /* GMTileManager.m in Sources */,
 				363AE2CE16342C4800970D21 /* GMTile.m in Sources */,
-				3660FBE81641CEB900C9CFF7 /* GMOverlayManager.m in Sources */,
 				3660FBED1641CEC300C9CFF7 /* GMOverlay.m in Sources */,
 				3660FBF11641CED100C9CFF7 /* GMCircle.m in Sources */,
 				3660FBF51641CEEB00C9CFF7 /* GMPolygon.m in Sources */,
 				3660FBF91641CF0900C9CFF7 /* GMMarker.m in Sources */,
 				3660FBFD1641D07200C9CFF7 /* GMCoordinate.m in Sources */,
+				36DE8E1D1645D5FF00EFE607 /* GMConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

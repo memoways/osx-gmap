@@ -40,7 +40,7 @@ static NSColor *randomColor(void)
             [polygon addPointAtCoordinate:GMCoordinateMake(latitude, longitude)];
         }
 
-        [self.mapView.overlayManager addOverlay:polygon];
+        [self.mapView.overlays addObject:polygon];
     }
 
     directoryPath = [NSBundle.mainBundle pathForResource:@"Circles" ofType:nil];
@@ -66,7 +66,8 @@ static NSColor *randomColor(void)
             CGFloat radius = [[coord objectForKey:@"radius"] doubleValue];
             circle.radius = radius;
             circle.centerCoordinate = GMCoordinateMake(latitude, longitude);
-            [self.mapView.overlayManager addOverlay:circle];
+            
+            [self.mapView.overlays addObject:circle];
         }
     }
 }

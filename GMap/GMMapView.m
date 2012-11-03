@@ -1,16 +1,25 @@
 #import <QuartzCore/QuartzCore.h>
 #import "GMMapView.h"
-#import "GMTileManager.h"
-#import "GMOverlayManager.h"
+#import "GMOverlay.h"
+#import "GMConnection.h"
+#import "GMTile.h"
+#import <curl/curl.h>
+
+const NSString *kCacheArrayKey = @"cacheArray";
+const NSInteger kMaxHTTPConnectionCount = 16;
+const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
 
 @interface GMMapView ()
+
+
+// ################################################################################
+// Drawing properties
 
 @property (nonatomic) NSInteger renderedZoomLevel;
 @property (nonatomic) CALayer *tileLayer;
 @property (nonatomic) CALayer *overlayLayer;
 @property (nonatomic) CGPoint centerPoint;
-
 
 - (void)updateLayerTransform;
 - (void)updateLayerBounds;
@@ -18,21 +27,100 @@
 - (void)drawTilesInContext:(CGContextRef)ctx;
 - (void)drawOverlaysInContext:(CGContextRef)ctx;
 
+// ################################################################################
+// Tiles
+
+@property NSMutableDictionary *tileCache;
+@property NSOperationQueue *tileLoadQueue;
+@property NSMutableArray *tileConnections;
+@property NSInteger tileConnectionIndex;
+
+- (NSString *)cachePathForTile:(GMTile *)tile;
+
+- (void)loadTileFromDiskCache:(GMTile *)tile;
+- (void)queueTileDownload:(GMTile *)tile;
+- (void)downloadTile:(GMTile *)tile;
+- (const CFStringRef)fetchTileImageAtURL:(NSString *)urlString writeInData:(NSMutableData *)data;
+- (CGImageRef)createTileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel completion:(void (^)(void))completion;
+
+// ################################################################################
+// Overlays
+
+@property (nonatomic) NSMutableArray *visibleOverlays;
+
+- (void)updateVisibleOverlays;
+
 @end
 
 @implementation GMMapView
-
 
 - (id)initWithFrame:(NSRect)frame
 {
     if (!(self = [super initWithFrame:frame]))
         return nil;
-    
+
+// ################################################################################
+// Tile download
+
+    self.tileConnections = NSMutableArray.new;
+
+    for (int i = 0; i < kMaxHTTPConnectionCount; i++)
+    {
+        GMConnection *con = GMConnection.new;
+
+        if (!con)
+        {
+            self.tileConnections = nil;
+            return nil;
+        }
+
+        [self.tileConnections addObject:con];
+    }
+
+    self.tileURLFormat = [NSBundle.mainBundle objectForInfoDictionaryKey:@"GMTileURLFormat"];
+
+    if (!self.tileURLFormat)
+        self.tileURLFormat = [[NSBundle bundleForClass:GMMapView.class] objectForInfoDictionaryKey:@"GMTileURLFormat"];
+
+// ################################################################################
+// Tile disk cache
+
+    {
+        NSString *path = nil;
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+
+        if (paths.count)
+        {
+            NSString *bundleName = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleIdentifier"];
+            path = [[paths objectAtIndex:0] stringByAppendingPathComponent:bundleName];
+        }
+
+        assert(path);
+        path = [path stringByAppendingPathComponent:@"GMapTiles/"];
+
+        if (![NSFileManager.defaultManager fileExistsAtPath:path])
+            [NSFileManager.defaultManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+
+        self.tileCacheDirectoryPath = path;
+    }
+
+    self.tileCache = NSMutableDictionary.new;
+
+// ################################################################################
+// Overlays
+
+    self.overlays = NSMutableArray.new;
+    self.shouldDrawOverlays = YES;
+
+// ################################################################################
+// General properties
+
+    self.cacheTilesOnDisk = YES;
     self.panningEnabled = YES;
     self.scrollZoomEnabled = YES;
 
-    self.tileManager = GMTileManager.new;
-    self.overlayManager = GMOverlayManager.new;
+// ################################################################################
+// Drawing
 
     self.layer = CALayer.new;
     self.wantsLayer = YES;
@@ -49,7 +137,6 @@
 
     [self updateLayerBounds];
     [self updateLayerTransform];
-
 
     return self;
 }
@@ -80,7 +167,7 @@
 
     t = CGAffineTransformTranslate(t, self.layer.bounds.size.width / 2.0, self.layer.bounds.size.height / 2.0);
     self.overlayLayer.affineTransform = t;
-    
+
     t = CGAffineTransformScale(t, scale, scale);
     self.tileLayer.affineTransform = t;
 }
@@ -180,7 +267,10 @@
     if (layer == self.tileLayer)
         [self drawTilesInContext:ctx];
     else if (layer == self.overlayLayer)
+    {
+        [self updateVisibleOverlays];
         [self drawOverlaysInContext:ctx];
+    }
 }
 
 - (void)drawTilesInContext:(CGContextRef)ctx
@@ -242,7 +332,7 @@
             [self.tileLayer setNeedsDisplayInRect:tileRect];
         };
 
-        if ((image = [self.tileManager createTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
+        if ((image = [self createTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
         {
             CGContextDrawImage (ctx, tileRect, image);
             CGImageRelease (image);
@@ -262,13 +352,6 @@
 
 - (void)drawOverlaysInContext:(CGContextRef)ctx
 {
-    CGPoint topLeft = [self convertViewLocationToPoint:CGPointMake(0, self.frame.size.height)];
-    CGPoint bottomRight = [self convertViewLocationToPoint:CGPointMake(self.frame.size.width, 0)];
-    CGRect bounds = CGRectMake(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
-
-
-    
-    
     CGPoint center = self.centerPoint;
     CGFloat scale = pow(2, self.zoomLevel) * kTileSize;
 
@@ -277,11 +360,8 @@
     CGPoint worldOffset = CGPointMake(center.x * scale - size.width / 2.0,
                                       center.y * scale - size.height / 2.0);
 
-    NSArray *overlays = [self.overlayManager overlaysWithinBounds:bounds minSize:10.0 / scale];
-
-    for (GMOverlay *overlay in overlays)
+    for (GMOverlay *overlay in self.visibleOverlays)
         [overlay drawInContext:ctx offset:worldOffset scale:scale];
-    
 }
 
 // ################################################################################
@@ -373,6 +453,262 @@ static NSMutableArray *currentPath;
     CGFloat scale = pow(2, self.zoomLevel);
     return CGPointMake(self.centerPoint.x + locationInView.x / scale / kTileSize,
                        self.centerPoint.y - locationInView.y / scale / kTileSize);
+}
+
+// ################################################################################
+// Tiles
+
+- (CGImageRef)createTileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel completion:(void (^)(void))completion
+{
+    NSString *tileKey = [GMTile tileKeyForX:x y:y zoomLevel:zoomLevel];
+
+    NSMutableDictionary *cacheDictionary = [self.tileCache objectForKey:[NSNumber numberWithInteger:zoomLevel]];
+    NSMutableArray *cacheArray;
+
+    if (!cacheDictionary)
+    {
+        cacheDictionary = NSMutableDictionary.new;
+        [self.tileCache setObject:cacheDictionary forKey:[NSNumber numberWithInteger:zoomLevel]];
+        cacheArray = NSMutableArray.new;
+        [cacheDictionary setObject:cacheArray forKey:kCacheArrayKey];
+    }
+    else
+        cacheArray = [cacheDictionary objectForKey:kCacheArrayKey];
+
+    GMTile *tile;
+
+    tile = [cacheDictionary objectForKey:tileKey];
+
+    if (!tile)
+    {
+        tile = [GMTile.alloc initWithX:x y:y zoomLevel:zoomLevel];
+        [self loadTileFromDiskCache:tile];
+        [cacheDictionary setObject:tile forKey:tileKey];
+    }
+
+    if (tile.zoomLevel > 4)
+    {
+        [cacheArray removeObject:tile];
+        [cacheArray insertObject:tile atIndex:0];
+    }
+
+    if (cacheArray.count > kNumberOfCachedTilesPerZoomLevel)
+    {
+        GMTile *tileToFlush = cacheArray.lastObject;
+        [cacheArray removeLastObject];
+        [cacheDictionary removeObjectForKey:tileToFlush.key];
+    }
+
+    CGImageRef image;
+
+    if (!tile.loaded)
+    {
+        tile.completion = completion;
+
+        if (!tile.image)
+        {
+            CGFloat factor = 1;
+
+            for (NSInteger parentZoomLevel = zoomLevel - 1; parentZoomLevel >= 0; parentZoomLevel--)
+            {
+                factor *= 2;
+
+                NSInteger parentX = floor((CGFloat)x / factor);
+                NSInteger parentY = floor((CGFloat)y / factor);
+                NSString *parentTileKey = [GMTile tileKeyForX:parentX y:parentY zoomLevel:parentZoomLevel];
+
+                GMTile *parentTile = [[self.tileCache objectForKey:[NSNumber numberWithInteger:parentZoomLevel]] objectForKey:parentTileKey];
+
+                if (parentTile.loaded)
+                {
+                    CGRect rect;
+
+                    rect.origin = CGPointMake(fmod((CGFloat)x / factor, 1.0) * kTileSize, fmod((CGFloat)y / factor, 1.0) * kTileSize);
+                    rect.size = CGSizeMake(kTileSize / factor, kTileSize / factor);
+
+                    CGImageRef parentImage = CGImageCreateWithImageInRect(parentTile.image, rect);
+                    tile.image = parentImage;
+                    CGImageRelease(parentImage);
+                    break;
+                }
+            }
+        }
+
+        if (!tile.loading)
+        {
+            tile.loading = YES;
+
+            [self.tileLoadQueue addOperationWithBlock:^{
+                 [self queueTileDownload:tile];
+             }];
+        }
+    }
+
+    image = CGImageRetain(tile.image);
+
+    return image;
+}
+
+- (NSString *)cachePathForTile:(GMTile *)tile
+{
+    return [self.tileCacheDirectoryPath stringByAppendingPathComponent:(NSString *)tile.key];
+}
+
+- (void)loadTileFromDiskCache:(GMTile *)tile
+{
+    NSString *path = [self cachePathForTile:tile];
+
+    if (!self.cacheTilesOnDisk || ![NSFileManager.defaultManager fileExistsAtPath:path])
+        return;
+
+    NSURL *fileURL = [NSURL fileURLWithPath:path];
+
+    CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)fileURL, NULL);
+
+    tile.image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
+    CFRelease(source);
+    tile.loaded = YES;
+}
+
+- (void)queueTileDownload:(GMTile *)tile
+{
+    if (tile.zoomLevel != self.renderedZoomLevel)
+    {
+        tile.loading = NO;
+        return;
+    }
+
+    [self.tileLoadQueue addOperationWithBlock:^{
+         @autoreleasepool {
+             [self downloadTile:tile];
+         }
+     }];
+}
+
+
+static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
+{
+    size_t len = size * nmemb;
+    NSMutableData *data = (__bridge NSMutableData *)userdata;
+
+    [data appendBytes:ptr length:len];
+
+    return len;
+}
+
+- (const CFStringRef)fetchTileImageAtURL:(NSString *)urlString writeInData:(NSMutableData *)data
+{
+    CFStringRef type = NULL;
+
+    GMConnection *con;
+
+    @synchronized(self.tileConnections)
+    {
+        self.tileConnectionIndex = (self.tileConnectionIndex + 1) % self.tileConnections.count;
+        con = self.tileConnections[self.tileConnectionIndex];
+    }
+
+    @synchronized(con)
+    {
+        CURL *handle = con.CURLHandle;
+
+        curl_easy_setopt(handle, CURLOPT_URL, [urlString cStringUsingEncoding:NSUTF8StringEncoding]);
+        curl_easy_setopt(handle, CURLOPT_WRITEDATA, data);
+        curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, writeData);
+        curl_easy_setopt(handle, CURLOPT_TIMEOUT, 5);
+
+        if (!curl_easy_perform(handle))
+        {
+            char *contentType;
+            curl_easy_getinfo(handle, CURLINFO_CONTENT_TYPE, &contentType);
+
+            if (contentType)
+            {
+                CFStringRef MIMEType = CFStringCreateWithCStringNoCopy(NULL, contentType, kCFStringEncodingUTF8, kCFAllocatorNull);
+                CFStringRef UTType = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, MIMEType, kUTTypeImage);
+
+                if (UTType && UTTypeEqual(UTType, kUTTypeJPEG))
+                    type = kUTTypeJPEG;
+                else if (UTType && UTTypeEqual(UTType, kUTTypePNG))
+                    type = kUTTypePNG;
+
+                CFRelease(UTType);
+                CFRelease(MIMEType);
+            }
+        }
+    }
+
+    return type;
+}
+
+
+- (void)downloadTile:(GMTile *)tile
+{
+    CGImageRef image = NULL;
+
+    if (tile.zoomLevel != self.renderedZoomLevel)
+    {
+        tile.loading = NO;
+        return;
+    }
+
+    NSString *path = [self cachePathForTile:tile];
+    NSString *url = [NSString stringWithFormat:self.tileURLFormat, (long)tile.zoomLevel, (long)tile.x, (long)tile.y];
+
+    NSMutableData *data = NSMutableData.new;
+    const CFStringRef imageType = [self fetchTileImageAtURL:url writeInData:data];
+
+    if (imageType && data.length)
+    {
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+
+        if (provider)
+        {
+            if (imageType == kUTTypePNG)
+                image = CGImageCreateWithPNGDataProvider(provider, NULL, NO, kCGRenderingIntentDefault);
+            else
+                image = CGImageCreateWithJPEGDataProvider(provider, NULL, NO, kCGRenderingIntentDefault);
+
+            CFRelease(provider);
+        }
+
+        if (image && self.cacheTilesOnDisk)
+            [data writeToFile:path atomically:YES];
+    }
+
+    [NSOperationQueue.mainQueue addOperationWithBlock:^{
+         tile.image = image;
+         CGImageRelease (image);
+         tile.loaded = image != NULL;
+         tile.loading = NO;
+
+         if (image)
+             tile.completion ();
+     }];
+
+}
+
+// ################################################################################
+// Overlays
+
+- (void)updateVisibleOverlays
+{
+    CGPoint topLeft = [self convertViewLocationToPoint:CGPointMake(0, self.overlayLayer.bounds.size.height)];
+    CGPoint bottomRight = [self convertViewLocationToPoint:CGPointMake(self.overlayLayer.bounds.size.width, 0)];
+    CGRect bounds = CGRectMake(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+
+    CGFloat scale = pow(2, self.zoomLevel) * kTileSize;
+    CGFloat minSize = 10.0 / scale;
+
+    self.visibleOverlays = NSMutableArray.new;
+
+    for (GMOverlay *overlay in self.overlays)
+    {
+        if (overlay.bounds.size.width + overlay.bounds.size.height > minSize &&
+            CGRectIntersectsRect(overlay.bounds, bounds))
+            [self.visibleOverlays addObject:overlay];
+    }
+
 }
 
 @end

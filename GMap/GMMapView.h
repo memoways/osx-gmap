@@ -1,33 +1,52 @@
 #import <Cocoa/Cocoa.h>
-#import "GMOverlay.h"
 
-@class GMTileManager, GMOverlayManager;
 
 /**
  `GMMapView` is the base of GMap. It renders the map and manage it's overlays.
-
- ## Tile Manager
-
- Each instance of `GMMapView` uses it's own tile manager by default.
- You should not share a single `tileManager` instance between multiple `GMMapView` instances except if
- the map instances are displaying the same map point
- (same `zoomLevel` and `centerCoordinate`, overlays doesn't need to be in sync).
  */
 
 @interface GMMapView : NSView
 
-///-------------------------
-/// @name Base configuration
-///-------------------------
+///--------------------------
+/// @name Tiles configuration
+///--------------------------
 
 /**
- The tile manager instance providing tile to this map view.
+ The tile URL format.
 
- You usually do not need to override this.
+ You may set it globally in your application Info.plist with the key `GMTileURLFormat`.
+
+ The default uses Mapnik CDN.
+
+ It must contain 3 long integer substitutions, in this order: zoomLevel, x and y.
+
+ Only PNG and JPEG are supported. The server must return image/png or image/jpeg
+ as Content-Type header.
+
+ You may reorder the substitutions with NSString reorderable arguments (second example).
+
+ Examples:
+
+ - http://otile1.mqcdn.com/tiles/1.0.0/osm/%ld/%ld/%ld.jpg
+ - http://mydomain.com/tiles/%2$ld/%3$ld/%1$ld.png
  */
-@property (nonatomic) GMTileManager *tileManager;
+@property NSString *tileURLFormat;
 
-@property (nonatomic) GMOverlayManager *overlayManager;
+/**
+ The absolute path of the directory where tiles will be cached on disk.
+
+ If the directory doesn't exist, it will be created.
+
+ The default is ~/Library/Caches/<yourapp bundle identifier>/GMapTiles.
+ */
+@property NSString *tileCacheDirectoryPath;
+
+/**
+ If YES, all downloaded tiles will be cached on disk.
+
+ FIXME: AT PRESENT THERE IS NO CACHE CLEANING MECHANISM
+ */
+@property BOOL cacheTilesOnDisk;
 
 ///----------------
 /// @name Behaviour
@@ -80,11 +99,18 @@
  */
 @property (nonatomic) CGFloat zoomLevel;
 
-
 ///---------------
 /// @name Overlays
 ///---------------
 
 @property (nonatomic) BOOL shouldDrawOverlays;
+
+@property (nonatomic) NSMutableArray *overlays;
+
+///---------------
+/// @name Utilities
+///---------------
+
+- (CGPoint)convertViewLocationToPoint:(CGPoint)locationInView;
 
 @end
