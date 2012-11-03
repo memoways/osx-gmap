@@ -37,7 +37,7 @@
 
     for (GMOverlay *overlay in self.overlays)
     {
-        if (overlay.bounds.size.width +overlay.bounds.size.height > minSize &&
+        if (overlay.bounds.size.width + overlay.bounds.size.height > minSize &&
             ! (overlay.bounds.origin.x + overlay.bounds.size.width < bounds.origin.x
                || overlay.bounds.origin.y + overlay.bounds.size.height < bounds.origin.y
                || overlay.bounds.origin.x > bounds.origin.x + bounds.size.width

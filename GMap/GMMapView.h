@@ -85,7 +85,6 @@
 /// @name Overlays
 ///---------------
 
-
 @property (nonatomic) BOOL shouldDrawOverlays;
 
 @end

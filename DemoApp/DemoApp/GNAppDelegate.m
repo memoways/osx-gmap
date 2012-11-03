@@ -14,7 +14,7 @@ static NSColor *randomColor(void)
     self.mapView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     [self.wrapperView addSubview:self.mapView];
     // self.mapView.roundZoomLevel = YES;
-    
+
     self.mapView.zoomLevel = 14;
     self.mapView.centerCoordinate = GMCoordinateMake(46.536264571, 6.599329227);
 
@@ -53,12 +53,12 @@ static NSColor *randomColor(void)
 
         for (NSDictionary *coord in circles)
         {
-        GMCircle *circle = GMCircle.new;
+            GMCircle *circle = GMCircle.new;
 
-        circle.lineWidth = 2;
-        circle.strokeColor = [NSColor redColor];
-        circle.fillColor = [NSColor colorWithCalibratedRed:1 green:0 blue:0 alpha:0.5];
-circle.centerPointColor = [NSColor blueColor];
+            circle.lineWidth = 2;
+            circle.strokeColor = [NSColor redColor];
+            circle.fillColor = [NSColor colorWithCalibratedRed:1 green:0 blue:0 alpha:0.5];
+            circle.centerPointColor = [NSColor blueColor];
             circle.centerPointSize = 6;
 
             CGFloat latitude = [[coord objectForKey:@"latitude"] doubleValue];
@@ -68,7 +68,6 @@ circle.centerPointColor = [NSColor blueColor];
             circle.centerCoordinate = GMCoordinateMake(latitude, longitude);
             [self.mapView.overlayManager addOverlay:circle];
         }
-
     }
 }
 
