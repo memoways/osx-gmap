@@ -4,15 +4,19 @@
 @class GMOverlay;
 
 /**
- `GMMapView` is the base of GMap. It renders the map and manage it's overlays.
+ GMMapView is the base of GMap. It renders the map and manage it's overlays.
  */
-
 @interface GMMapView : NSView
 
 ///---------------
 /// @name Delegate
 ///---------------
 
+/**
+ The receiver’s delegate.
+
+ A map view sends messages to its delegate regarding user events and overlays.
+ */
 @property (nonatomic, assign) id<GMMapViewDelegate> delegate;
 
 ///--------------------------
@@ -52,7 +56,7 @@
 /**
  If YES, all downloaded tiles will be cached on disk.
 
- FIXME: AT PRESENT THERE IS NO CACHE CLEANING MECHANISM
+ @warning FIXME: AT PRESENT THERE IS NO CACHE CLEANING MECHANISM
  */
 @property (nonatomic) BOOL cacheTilesOnDisk;
 
@@ -107,43 +111,175 @@
  */
 @property (nonatomic) BOOL scrollZoomEnabled;
 
+/**
+ If set to `YES`, overlays will be draggable.
+
+ `YES` by default.
+ */
 @property (nonatomic) BOOL overlaysDraggable;
+
+/**
+ If set to `YES`, overlays will be clickable.
+
+ Clickable overlays does nothing except calling [GMMapViewDelegate mapView:overlayClicked:] on the delegate when
+ an overlay is clicked.
+
+ A click is defined by a `mouseDown` followed by a `mouseUp` with no movement between the two.
+
+ `YES` by default.
+ */
 @property (nonatomic) BOOL overlaysClickable;
 
 ///---------------
 /// @name Overlays
 ///---------------
 
+
+/**
+ The overlay objects currently associated with the map view. (read-only)
+
+ All objects in this array must be subclasses of GMOverlay.
+
+ The z-ordering of the overlays is determined by the order in this array. Thus, the overlay at index 1 is
+ drawn above the overlay at index 0.
+ */
 @property (nonatomic, readonly) NSArray *overlays;
 
+/**
+ Add an overlay.
+
+ The overlay is added at the end of the overlays array.
+
+ @see overlays
+ */
 - (void)addOverlay:(GMOverlay *)overlay;
+
+/**
+ Add an array of overlays.
+
+ All objects in the array must be subclass of GMOverlay.
+
+ @see overlays
+ */
 - (void)addOverlays:(NSArray *)overlays;
 
+/**
+ Remove an overlay.
+
+ @see overlays
+ */
 - (void)removeOverlay:(GMOverlay *)overlay;
+
+/**
+ Remove overlays.
+
+ @see overlays
+ */
 - (void)removeOverlays:(NSArray *)overlays;
 
+/**
+ Change the ordering of two overlays.
+
+ @see overlays
+ */
 - (void)exchangeOverlayAtIndex:(NSUInteger)index1 withOverlayAtIndex:(NSUInteger)index2;
 
+/**
+ Insert an overlay above another one.
+
+ @see overlays
+ */
 - (void)insertOverlay:(GMOverlay *)overlay aboveOverlay:(GMOverlay *)sibling;
+
+/**
+ Insert an overlay below another one.
+
+ @see overlays
+ */
 - (void)insertOverlay:(GMOverlay *)overlay belowOverlay:(GMOverlay *)sibling;
+
+/**
+ Insert an overlay at a specific index.
+
+ @see overlays
+ */
 - (void)insertOverlay:(GMOverlay *)overlay atIndex:(NSUInteger)index;
 
 ///---------------
 /// @name Utilities
 ///---------------
 
+/**
+ Convert a point from the receiver to the map coordinate system.
+ */
 - (GMMapPoint)convertViewLocationToMapPoint:(CGPoint)locationInView;
 
 @end
 
+/**
+ The `GMMapViewDelegate` protocol defines a set of optional methods that you can use to receive map-related messages.
+
+ Before releasing a GMMapView object for which you have a set a delegate, set that object's `delegate` property to `nil`.
+ */
 @protocol GMMapViewDelegate <NSObject>
 @optional
 
+
+/**
+ Called when the view is panned with the mouse.
+
+ This is not called when the centerCoordinate is set programatically.
+
+ You may override the `proposedCenter` by returning another value.
+
+ @param mapView The mapView for which the centerPoint is about to change.
+ @param proposedCenter The new centerPoint.
+
+ @return The centerPoint that will be set on the mapView.
+ */
 - (GMMapPoint)mapView:(GMMapView *)mapView willPanCenterToMapPoint:(GMMapPoint)proposedCenter;
+
+/**
+ Called when the view zoomed with the scrollwheel.
+
+ This is not called when the zoomLevel is set programatically.
+
+ You may override the `proposedZoomLevel` by returning another value.
+
+ @param mapView The mapView for which the zoom level is about to change.
+ @param proposedZoomLevel The new zoomLevel.
+
+ @return The zoomLevel that will be set on the mapView.
+ */
 - (GMFloat)mapView:(GMMapView *)mapView willScrollZoomToLevel:(GMFloat)proposedZoomLevel;
 
+/**
+ Called when a click occurs within an overlay bounds.
+
+ @param mapView The mapView containing the overlay.
+ @param overlay The overlay that was clicked.
+ */
 - (void)mapView:(GMMapView *)mapView overlayClicked:(GMOverlay *)overlay;
+
+/**
+ Called when an overlay is about to be dragged.
+
+ @param mapView The mapView containing the overlay.
+ @param overlay The overlay for which dragging is about to start.
+
+ @return `YES` to allow the drag, `NO` to cancel it.
+ */
 - (BOOL)mapView:(GMMapView *)mapView shouldDragOverlay:(GMOverlay *)overlay;
+
+/**
+ Called when an overlay is dragged.
+
+ @param mapView The mapView containing the overlay.
+ @param overlay The overlay being dragged.
+ @param proposedPoint The mapPoint to where this overlay will be dragged.
+
+ @return The new mapPoint of the overlay.
+ */
 - (GMMapPoint)mapView:(GMMapView *)mapView willDragOverlay:(GMOverlay *)overlay toMapPoint:(GMMapPoint)proposedPoint;
 
 @end
