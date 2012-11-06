@@ -55,12 +55,6 @@
     }
 }
 
-- (void)setCenterCoordinate:(GMCoordinate)centerCoordinate
-{
-    _centerCoordinate = centerCoordinate;
-    [self updateBounds];
-}
-
 - (void)setRadius:(CGFloat)radius
 {
     _radius = radius;
@@ -69,7 +63,7 @@
 
 - (void)updateBounds
 {
-    CGPoint centerPoint = GMCoordinateToPoint(self.centerCoordinate);
+    CGPoint centerPoint = self.mapPoint;
     CGFloat normalizedRadius = self.radius / kEquatorLength;
     self.bounds = CGRectMake(centerPoint.x - normalizedRadius / 2.0, centerPoint.y - normalizedRadius / 2.0,
                              normalizedRadius, normalizedRadius);

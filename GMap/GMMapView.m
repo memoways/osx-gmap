@@ -46,9 +46,13 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 // ################################################################################
 // Overlays
 
+@property (nonatomic) NSMutableArray *overlays;
 @property (nonatomic) NSMutableArray *visibleOverlays;
 
 - (void)updateVisibleOverlays;
+
+@property (nonatomic) GMOverlay *clickedOverlay;
+@property (nonatomic) BOOL draggingOccured;
 
 @end
 
@@ -110,7 +114,6 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 // Overlays
 
     self.overlays = NSMutableArray.new;
-    self.shouldDrawOverlays = YES;
 
 // ################################################################################
 // General properties
@@ -189,7 +192,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 {
     _zoomLevel = MAX(0, MIN(18, zoomLevel));
 
-    if (self.shouldRoundZoomLevel)
+    if (self.roundZoomLevel)
         _zoomLevel = round(_zoomLevel);
 
     NSInteger renderZoomLevel = floor(_zoomLevel);
@@ -352,6 +355,9 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
 - (void)drawOverlaysInContext:(CGContextRef)ctx
 {
+    if (!self.visibleOverlays.count)
+        return;
+
     CGPoint center = self.centerPoint;
     CGFloat scale = pow(2, self.zoomLevel) * kTileSize;
 
@@ -366,41 +372,73 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
 // ################################################################################
 // Events
-/*
-#import <Foundation/NSJSONSerialization.h>
-static NSMutableArray *currentPath;
-
-- (void)rightMouseDown:(NSEvent *)evt
-{
-    if (currentPath)
-    {
-        NSData *data = [NSJSONSerialization dataWithJSONObject:currentPath options:NSJSONWritingPrettyPrinted error:nil];
-    [data writeToFile:[NSString stringWithFormat:@"/Users/kuon/Projects/GMap/DemoApp/DemoApp/Circles/%ld.json", time(NULL)] atomically:NO];
-    }
-
-
-    currentPath = NSMutableArray.new;
-}
 
 - (void)mouseDown:(NSEvent *)evt
 {
     CGPoint relativeCenter = [self convertPoint:evt.locationInWindow fromView:nil];
 
-    GMCoordinate coord = GMPointToCoordinate([self convertViewLocationToPoint:relativeCenter]);
+    CGPoint clickedPoint = [self convertViewLocationToPoint:relativeCenter];
 
-    [currentPath addObject:@{@"latitude":[NSNumber numberWithDouble:coord.latitude], @"longitude":[NSNumber numberWithDouble:coord.longitude], @"radius":[NSNumber numberWithDouble:(CGFloat)rand() / (CGFloat)RAND_MAX * 500 + 10]}];
+    self.clickedOverlay = nil;
+    self.draggingOccured = NO;
 
+    if (self.overlaysClickable || self.overlaysDraggable)
+    {
+        for (GMOverlay *overlay in self.visibleOverlays.reverseObjectEnumerator)
+        {
+            if (CGRectContainsPoint(overlay.bounds, clickedPoint))
+            {
+                self.clickedOverlay = overlay;
+                break;
+            }
+        }
+    }
 }
-*/
+
+
+- (void)mouseUp:(NSEvent *)evt
+{
+    CGPoint relativeCenter = [self convertPoint:evt.locationInWindow fromView:nil];
+
+    CGPoint clickedPoint = [self convertViewLocationToPoint:relativeCenter];
+
+    if (self.clickedOverlay && self.overlaysClickable && !self.draggingOccured
+        && [self.delegate respondsToSelector:@selector(mapView:overlayClicked:)]
+        && CGRectContainsPoint(self.clickedOverlay.bounds, clickedPoint))
+        [self.delegate mapView:self overlayClicked:self.clickedOverlay];
+
+    self.clickedOverlay = nil;
+}
+
 - (void)mouseDragged:(NSEvent *)evt
 {
-    if (!self.panningEnabled)
+    self.draggingOccured = YES;
+
+    if (!self.panningEnabled && !self.overlaysDraggable)
         return;
 
     CGFloat scale = pow(2, self.zoomLevel);
-    CGPoint point = CGPointMake(evt.deltaX / scale / kTileSize, evt.deltaY / scale / kTileSize);
+    CGPoint offset = CGPointMake(evt.deltaX / scale / kTileSize, evt.deltaY / scale / kTileSize);
 
-    self.centerPoint = CGPointMake(self.centerPoint.x - point.x, self.centerPoint.y - point.y);
+    if (self.overlaysDraggable && self.clickedOverlay)
+    {
+        if ([delegate respondsToSelector:@selector(mapView:shouldDragOverlay:)]
+            && ![delegate mapView:self shouldDragOverlay:self.clickedOverlay])
+            return;
+
+        CGPoint newPoint = CGPointMake(self.clickedOverlay.mapPoint.x + offset.x, self.clickedOverlay.mapPoint.y + offset.y);
+
+        if ([delegate respondsToSelector:@selector(mapView:willDragOverlay:toCoordinate)])
+        {
+            GMCoordinate coord = [delegate mapView:self willDragOverlay:self.clickedOverlay toCoordinate:GMPointToCoordinate(newPoint)];
+            newPoint = GMCoordinateToPoint(newPoint);
+        }
+
+        self.clickedOverlay.mapPoint = newPoint;
+        [self.overlayLayer setNeedsDisplay];
+    }
+    else if (self.panningEnabled)
+        self.centerPoint = CGPointMake(self.centerPoint.x - offset.x, self.centerPoint.y - offset.y);
 }
 
 - (void)scrollWheel:(NSEvent *)evt
@@ -410,7 +448,7 @@ static NSMutableArray *currentPath;
 
     CGFloat zoomDelta = evt.scrollingDeltaY / 10.0;
 
-    if (self.shouldRoundZoomLevel)
+    if (self.roundZoomLevel)
         zoomDelta = zoomDelta > 0 ? ceil(zoomDelta) : floor(zoomDelta);
 
     CGFloat scale = pow(2, zoomDelta);
@@ -435,11 +473,6 @@ static NSMutableArray *currentPath;
     offset.y = offset.y / scale / kTileSize;
 
     self.centerPoint = CGPointMake(self.centerPoint.x + offset.x, self.centerPoint.y - offset.y);
-}
-
-- (void)mouseUp:(NSEvent *)evt
-{
-
 }
 
 // ################################################################################
@@ -691,11 +724,72 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 // ################################################################################
 // Overlays
 
+
+- (void)addOverlay:(GMOverlay *)overlay
+{
+    [(NSMutableArray *) _overlays addObject:overlay];
+    [self.overlayLayer setNeedsDisplay];
+}
+
+- (void)addOverlays:(NSArray *)overlays
+{
+    [(NSMutableArray *) _overlays addObjectsFromArray:overlays];
+    [self.overlayLayer setNeedsDisplay];
+}
+
+- (void)removeOverlay:(GMOverlay *)overlay
+{
+    [(NSMutableArray *) _overlays removeObject:overlay];
+    [self.overlayLayer setNeedsDisplay];
+}
+
+- (void)removeOverlays:(NSArray *)overlays
+{
+    [(NSMutableArray *) _overlays removeObjectsInArray:overlays];
+    [self.overlayLayer setNeedsDisplay];
+}
+
+- (void)exchangeOverlayAtIndex:(NSUInteger)index1 withOverlayAtIndex:(NSUInteger)index2
+{
+    [(NSMutableArray *) _overlays exchangeObjectAtIndex:index1 withObjectAtIndex:index2];
+    [self.overlayLayer setNeedsDisplay];
+}
+
+- (void)insertOverlay:(GMOverlay *)overlay aboveOverlay:(GMOverlay *)sibling
+{
+    NSUInteger idx = [_overlays indexOfObject:sibling];
+
+    [(NSMutableArray *) _overlays insertObject:overlay atIndex:idx];
+    [self.overlayLayer setNeedsDisplay];
+}
+
+- (void)insertOverlay:(GMOverlay *)overlay belowOverlay:(GMOverlay *)sibling
+{
+    NSUInteger idx = [_overlays indexOfObject:sibling] + 1;
+
+    [(NSMutableArray *) _overlays insertObject:overlay atIndex:idx];
+    [self.overlayLayer setNeedsDisplay];
+}
+
+- (void)insertOverlay:(GMOverlay *)overlay atIndex:(NSUInteger)index
+{
+    index = MIN(index, _overlays.count);
+    [(NSMutableArray *) _overlays insertObject:overlay atIndex:index];
+    [self.overlayLayer setNeedsDisplay];
+}
+
 - (void)updateVisibleOverlays
 {
+    if (!self.overlays.count)
+    {
+        self.visibleOverlays = nil;
+        return;
+    }
+
     CGPoint topLeft = [self convertViewLocationToPoint:CGPointMake(0, self.overlayLayer.bounds.size.height)];
     CGPoint bottomRight = [self convertViewLocationToPoint:CGPointMake(self.overlayLayer.bounds.size.width, 0)];
     CGRect bounds = CGRectMake(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+
 
     CGFloat scale = pow(2, self.zoomLevel) * kTileSize;
     CGFloat minSize = 10.0 / scale;
@@ -708,7 +802,6 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
             CGRectIntersectsRect(overlay.bounds, bounds))
             [self.visibleOverlays addObject:overlay];
     }
-
 }
 
 @end

@@ -8,4 +8,23 @@
 
 }
 
+- (void)setCoordinate:(GMCoordinate)coordinate
+{
+    _coordinate = coordinate;
+    _mapPoint = GMCoordinateToPoint(coordinate);
+    [self updateBounds];
+}
+
+- (void)setMapPoint:(CGPoint)mapPoint
+{
+    _coordinate = GMPointToCoordinate(mapPoint);
+    _mapPoint = mapPoint;
+    [self updateBounds];
+}
+
+- (void)updateBounds
+{
+    self.bounds = CGRectMake(_mapPoint.x, _mapPoint.y, 0, 0);
+}
+
 @end

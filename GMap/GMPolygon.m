@@ -1,5 +1,13 @@
 #import "GMPolygon.h"
 
+
+@interface GMPolygon ()
+
+@property (nonatomic) NSMutableArray *points;
+
+@end
+
+
 @implementation GMPolygon
 
 - (id)init
@@ -17,14 +25,24 @@
 {
     CGPoint pt = GMCoordinateToPoint(coordinate);
 
-    CGRect rect = CGRectMake(pt.x, pt.y, 0, 0);
+    if (!self.points.count)
+        self.coordinate = coordinate;
 
-    if (self.points.count)
+    [self.points addObject:[NSValue valueWithPoint:CGPointMake(pt.x - self.mapPoint.x, pt.y - self.mapPoint.y)]];
+    [self updateBounds];
+}
+
+- (void)updateBounds
+{
+    [super updateBounds];
+    
+    for (NSValue *pointValue in self.points)
+    {
+        CGPoint pt;
+        [pointValue getValue:&pt];
+        CGRect rect = CGRectMake(pt.x + self.mapPoint.x, pt.y + self.mapPoint.y, 0, 0);
         self.bounds = CGRectUnion(self.bounds, rect);
-    else
-        self.bounds = rect;
-
-    [self.points addObject:[NSValue valueWithPoint:pt]];
+    }
 }
 
 
@@ -39,11 +57,13 @@
 
     BOOL first = YES;
 
-    for (NSValue *point in self.points)
+    for (NSValue *pointValue in self.points)
     {
         CGPoint pt;
-        [point getValue:&pt];
+        [pointValue getValue:&pt];
 
+        pt.x += self.mapPoint.x;
+        pt.y += self.mapPoint.y;
 
         pt.x *= scale;
         pt.y *= scale;

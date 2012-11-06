@@ -3,7 +3,6 @@
 
 @interface GMCircle : GMOverlay
 
-@property (nonatomic) GMCoordinate centerCoordinate;
 @property (nonatomic) CGFloat radius;
 
 @property (nonatomic) NSColor *fillColor;

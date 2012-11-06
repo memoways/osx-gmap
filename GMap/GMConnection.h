@@ -3,6 +3,6 @@
 
 @interface GMConnection : NSObject
 
-@property CURL *CURLHandle;
+@property (nonatomic) CURL *CURLHandle;
 
 @end

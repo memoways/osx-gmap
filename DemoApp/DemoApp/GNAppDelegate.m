@@ -13,10 +13,13 @@ static NSColor *randomColor(void)
     self.mapView = [GMMapView.alloc initWithFrame:(CGRect) {CGPointZero, self.wrapperView.frame.size}];
     self.mapView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     [self.wrapperView addSubview:self.mapView];
-    // self.mapView.roundZoomLevel = YES;
+    
 
     self.mapView.zoomLevel = 14;
     self.mapView.centerCoordinate = GMCoordinateMake(46.536264571, 6.599329227);
+    self.mapView.overlaysDraggable = YES;
+    self.mapView.overlaysClickable = YES;
+    self.mapView.delegate = self;
 
     sranddev();
 
@@ -40,7 +43,7 @@ static NSColor *randomColor(void)
             [polygon addPointAtCoordinate:GMCoordinateMake(latitude, longitude)];
         }
 
-        [self.mapView.overlays addObject:polygon];
+        [self.mapView addOverlay:polygon];
     }
 
     directoryPath = [NSBundle.mainBundle pathForResource:@"Circles" ofType:nil];
@@ -65,12 +68,16 @@ static NSColor *randomColor(void)
             CGFloat longitude = [[coord objectForKey:@"longitude"] doubleValue];
             CGFloat radius = [[coord objectForKey:@"radius"] doubleValue];
             circle.radius = radius;
-            circle.centerCoordinate = GMCoordinateMake(latitude, longitude);
+            circle.coordinate = GMCoordinateMake(latitude, longitude);
             
-            [self.mapView.overlays addObject:circle];
+            [self.mapView addOverlay:circle];
         }
     }
 }
 
+- (void)mapView:(GMMapView *)mapView overlayClicked:(GMOverlay *)overlay
+{
+    NSLog(@"Clicked an overlay, yeah");
+}
 
 @end
