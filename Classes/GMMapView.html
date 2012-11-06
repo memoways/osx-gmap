@@ -1,0 +1,1567 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="html/html; charset=utf-8" />
+		<title>GMMapView Class Reference</title>
+		<meta id="xcode-display" name="xcode-display" content="render"/>
+		<meta name="viewport" content="width=550" />
+		<link rel="stylesheet" type="text/css" href="../css/styles.css" media="all" />
+		<link rel="stylesheet" type="text/css" media="print" href="../css/stylesPrint.css" />
+		<meta name="generator" content="appledoc 2.1 (build 840)" />
+	</head>
+	<body>
+		<header id="top_header">
+			<div id="library" class="hideInXcode">
+				<h1><a id="libraryTitle" href="../index.html">GMap </a></h1>
+				<a id="developerHome" href="../index.html">Goyman SA</a>
+			</div>
+			
+			<div id="title" role="banner">
+				<h1 class="hideInXcode">GMMapView Class Reference</h1>
+			</div>
+			<ul id="headerButtons" role="toolbar">
+				<li id="toc_button">
+					<button aria-label="Show Table of Contents" role="checkbox" class="open" id="table_of_contents"><span class="disclosure"></span>Table of Contents</button>
+				</li>
+				<li id="jumpto_button" role="navigation">
+					<select id="jumpTo">
+	<option value="top">Jump To&#133;</option>
+	
+	<option value="overview">Overview</option>
+	
+	
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+	
+	
+	
+	<option value="properties">Properties</option>
+	
+	<option value="//api/name/cacheTilesOnDisk">&nbsp;&nbsp;&nbsp;&nbsp;cacheTilesOnDisk</option>
+	
+	<option value="//api/name/centerCoordinate">&nbsp;&nbsp;&nbsp;&nbsp;centerCoordinate</option>
+	
+	<option value="//api/name/centerLatitude">&nbsp;&nbsp;&nbsp;&nbsp;centerLatitude</option>
+	
+	<option value="//api/name/centerLongitude">&nbsp;&nbsp;&nbsp;&nbsp;centerLongitude</option>
+	
+	<option value="//api/name/delegate">&nbsp;&nbsp;&nbsp;&nbsp;delegate</option>
+	
+	<option value="//api/name/overlays">&nbsp;&nbsp;&nbsp;&nbsp;overlays</option>
+	
+	<option value="//api/name/overlaysClickable">&nbsp;&nbsp;&nbsp;&nbsp;overlaysClickable</option>
+	
+	<option value="//api/name/overlaysDraggable">&nbsp;&nbsp;&nbsp;&nbsp;overlaysDraggable</option>
+	
+	<option value="//api/name/panningEnabled">&nbsp;&nbsp;&nbsp;&nbsp;panningEnabled</option>
+	
+	<option value="//api/name/roundZoomLevel">&nbsp;&nbsp;&nbsp;&nbsp;roundZoomLevel</option>
+	
+	<option value="//api/name/scrollZoomEnabled">&nbsp;&nbsp;&nbsp;&nbsp;scrollZoomEnabled</option>
+	
+	<option value="//api/name/tileCacheDirectoryPath">&nbsp;&nbsp;&nbsp;&nbsp;tileCacheDirectoryPath</option>
+	
+	<option value="//api/name/tileURLFormat">&nbsp;&nbsp;&nbsp;&nbsp;tileURLFormat</option>
+	
+	<option value="//api/name/zoomLevel">&nbsp;&nbsp;&nbsp;&nbsp;zoomLevel</option>
+	
+	
+	
+	
+	
+	
+	<option value="instance_methods">Instance Methods</option>
+	
+	<option value="//api/name/addOverlay:">&nbsp;&nbsp;&nbsp;&nbsp;- addOverlay:</option>
+	
+	<option value="//api/name/addOverlays:">&nbsp;&nbsp;&nbsp;&nbsp;- addOverlays:</option>
+	
+	<option value="//api/name/convertViewLocationToMapPoint:">&nbsp;&nbsp;&nbsp;&nbsp;- convertViewLocationToMapPoint:</option>
+	
+	<option value="//api/name/exchangeOverlayAtIndex:withOverlayAtIndex:">&nbsp;&nbsp;&nbsp;&nbsp;- exchangeOverlayAtIndex:withOverlayAtIndex:</option>
+	
+	<option value="//api/name/insertOverlay:aboveOverlay:">&nbsp;&nbsp;&nbsp;&nbsp;- insertOverlay:aboveOverlay:</option>
+	
+	<option value="//api/name/insertOverlay:atIndex:">&nbsp;&nbsp;&nbsp;&nbsp;- insertOverlay:atIndex:</option>
+	
+	<option value="//api/name/insertOverlay:belowOverlay:">&nbsp;&nbsp;&nbsp;&nbsp;- insertOverlay:belowOverlay:</option>
+	
+	<option value="//api/name/removeOverlay:">&nbsp;&nbsp;&nbsp;&nbsp;- removeOverlay:</option>
+	
+	<option value="//api/name/removeOverlays:">&nbsp;&nbsp;&nbsp;&nbsp;- removeOverlays:</option>
+	
+	
+	
+</select>
+				</li>
+			</ul>
+		</header>
+		<nav id="tocContainer" class="isShowingTOC">
+			<ul id="toc" role="tree">
+				
+<li role="treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#overview">Overview</a></span></li>
+
+
+
+
+<li role="treeitem" id="task_treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#tasks">Tasks</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Delegate">Delegate</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Tiles configuration">Tiles configuration</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_State">State</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Behaviour">Behaviour</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Overlays">Overlays</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Utilities">Utilities</a></span></li>
+	
+</ul></li>
+
+
+
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#properties">Properties</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/cacheTilesOnDisk">cacheTilesOnDisk</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/centerCoordinate">centerCoordinate</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/centerLatitude">centerLatitude</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/centerLongitude">centerLongitude</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/delegate">delegate</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/overlays">overlays</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/overlaysClickable">overlaysClickable</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/overlaysDraggable">overlaysDraggable</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/panningEnabled">panningEnabled</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/roundZoomLevel">roundZoomLevel</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/scrollZoomEnabled">scrollZoomEnabled</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/tileCacheDirectoryPath">tileCacheDirectoryPath</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/tileURLFormat">tileURLFormat</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/zoomLevel">zoomLevel</a></span></li>
+	
+</ul></li>
+
+
+
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#instance_methods">Instance Methods</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/addOverlay:">addOverlay:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/addOverlays:">addOverlays:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/convertViewLocationToMapPoint:">convertViewLocationToMapPoint:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/exchangeOverlayAtIndex:withOverlayAtIndex:">exchangeOverlayAtIndex:withOverlayAtIndex:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/insertOverlay:aboveOverlay:">insertOverlay:aboveOverlay:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/insertOverlay:atIndex:">insertOverlay:atIndex:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/insertOverlay:belowOverlay:">insertOverlay:belowOverlay:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/removeOverlay:">removeOverlay:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/removeOverlays:">removeOverlays:</a></span></li>
+	
+</ul></li>
+
+
+			</ul>
+		</nav>
+		<article>
+			<div id="contents" class="isShowingTOC" role="main">
+				<a title="GMMapView Class Reference" name="top"></a>
+				<div class="main-navigation navigation-top">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="header">
+					<div class="section-header">
+						<h1 class="title title-header">GMMapView Class Reference</h1>
+					</div>		
+				</div>
+				<div id="container">	
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<td class="specification-title">Inherits from</td>
+	<td class="specification-value">NSView</td>
+</tr><tr>
+	<td class="specification-title">Declared in</td>
+	<td class="specification-value">GMMapView.h<br />GMMapView.m</td>
+</tr>
+						</tbody></table></div>
+					
+					
+					
+					
+					<div class="section section-overview">
+						<a title="Overview" name="overview"></a>
+						<h2 class="subtitle subtitle-overview">Overview</h2>
+						<p>GMMapView is the base of GMap. It renders the map and manage it&rsquo;s <a href="#//api/name/overlays">overlays</a>.</p>
+					</div>
+					
+					
+					
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						<h2 class="subtitle subtitle-tasks">Tasks</h2>
+						
+						
+						<a title="Delegate" name="task_Delegate"></a>
+						<h3 class="subsubtitle task-title">Delegate</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/delegate">&nbsp;&nbsp;delegate</a></code>
+		<span class="tooltip"><p>The receiver’s delegate.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li>
+						</ul>
+						
+						
+						<a title="Tiles configuration" name="task_Tiles configuration"></a>
+						<h3 class="subsubtitle task-title">Tiles configuration</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/tileURLFormat">&nbsp;&nbsp;tileURLFormat</a></code>
+		<span class="tooltip"><p>The tile URL format.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/tileCacheDirectoryPath">&nbsp;&nbsp;tileCacheDirectoryPath</a></code>
+		<span class="tooltip"><p>The absolute path of the directory where tiles will be cached on disk.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/cacheTilesOnDisk">&nbsp;&nbsp;cacheTilesOnDisk</a></code>
+		<span class="tooltip"><p>If YES, all downloaded tiles will be cached on disk.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li>
+						</ul>
+						
+						
+						<a title="State" name="task_State"></a>
+						<h3 class="subsubtitle task-title">State</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/centerCoordinate">&nbsp;&nbsp;centerCoordinate</a></code>
+		<span class="tooltip"><p>The coordinate of the center point of the map view.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/centerLatitude">&nbsp;&nbsp;centerLatitude</a></code>
+		<span class="tooltip"><p>Convenience property to manage latitude.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/centerLongitude">&nbsp;&nbsp;centerLongitude</a></code>
+		<span class="tooltip"><p>Convenience property to manage longitude.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/zoomLevel">&nbsp;&nbsp;zoomLevel</a></code>
+		<span class="tooltip"><p>The zoom level between 0 and 18, inclusive.
+If you set a value outside those bounds it will be clamped.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li>
+						</ul>
+						
+						
+						<a title="Behaviour" name="task_Behaviour"></a>
+						<h3 class="subsubtitle task-title">Behaviour</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/roundZoomLevel">&nbsp;&nbsp;roundZoomLevel</a></code>
+		<span class="tooltip"><p>If set to <code>YES</code>, <a href="#//api/name/zoomLevel">zoomLevel</a> will be rounded to the nearest integer.
+This is usefull if you want to provide a map that is never interpolated.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/panningEnabled">&nbsp;&nbsp;panningEnabled</a></code>
+		<span class="tooltip"><p>If set to <code>YES</code>, panning will be enabled by dragging the map.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/scrollZoomEnabled">&nbsp;&nbsp;scrollZoomEnabled</a></code>
+		<span class="tooltip"><p>If set to <code>YES</code>, zooming with the mouse scroll will be enabled.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/overlaysDraggable">&nbsp;&nbsp;overlaysDraggable</a></code>
+		<span class="tooltip"><p>If set to <code>YES</code>, <a href="#//api/name/overlays">overlays</a> will be draggable.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/overlaysClickable">&nbsp;&nbsp;overlaysClickable</a></code>
+		<span class="tooltip"><p>If set to <code>YES</code>, <a href="#//api/name/overlays">overlays</a> will be clickable.</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li>
+						</ul>
+						
+						
+						<a title="Overlays" name="task_Overlays"></a>
+						<h3 class="subsubtitle task-title">Overlays</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/overlays">&nbsp;&nbsp;overlays</a></code>
+		<span class="tooltip"><p>The overlay objects currently associated with the map view. (read-only)</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/addOverlay:">&ndash;&nbsp;addOverlay:</a></code>
+		<span class="tooltip"><p>Add an overlay.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/addOverlays:">&ndash;&nbsp;addOverlays:</a></code>
+		<span class="tooltip"><p>Add an array of <a href="#//api/name/overlays">overlays</a>.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/removeOverlay:">&ndash;&nbsp;removeOverlay:</a></code>
+		<span class="tooltip"><p>Remove an overlay.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/removeOverlays:">&ndash;&nbsp;removeOverlays:</a></code>
+		<span class="tooltip"><p>Remove <a href="#//api/name/overlays">overlays</a>.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/exchangeOverlayAtIndex:withOverlayAtIndex:">&ndash;&nbsp;exchangeOverlayAtIndex:withOverlayAtIndex:</a></code>
+		<span class="tooltip"><p>Change the ordering of two <a href="#//api/name/overlays">overlays</a>.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/insertOverlay:aboveOverlay:">&ndash;&nbsp;insertOverlay:aboveOverlay:</a></code>
+		<span class="tooltip"><p>Insert an overlay above another one.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/insertOverlay:belowOverlay:">&ndash;&nbsp;insertOverlay:belowOverlay:</a></code>
+		<span class="tooltip"><p>Insert an overlay below another one.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/insertOverlay:atIndex:">&ndash;&nbsp;insertOverlay:atIndex:</a></code>
+		<span class="tooltip"><p>Insert an overlay at a specific index.</p></span>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+						
+						<a title="Utilities" name="task_Utilities"></a>
+						<h3 class="subsubtitle task-title">Utilities</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/convertViewLocationToMapPoint:">&ndash;&nbsp;convertViewLocationToMapPoint:</a></code>
+		<span class="tooltip"><p>Convert a point from the receiver to the map coordinate system.</p></span>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+					</div>
+					
+					
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Properties" name="properties"></a>
+						<h2 class="subtitle subtitle-methods">Properties</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/cacheTilesOnDisk" title="cacheTilesOnDisk"></a>
+	<h3 class="subsubtitle method-title">cacheTilesOnDisk</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If YES, all downloaded tiles will be cached on disk.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) BOOL cacheTilesOnDisk</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<div class="warning"><p><strong>Warning:</strong> FIXME: AT PRESENT THERE IS NO CACHE CLEANING MECHANISM</p></div>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/centerCoordinate" title="centerCoordinate"></a>
+	<h3 class="subsubtitle method-title">centerCoordinate</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>The coordinate of the center point of the map view.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) GMCoordinate centerCoordinate</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/centerLatitude" title="centerLatitude"></a>
+	<h3 class="subsubtitle method-title">centerLatitude</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience property to manage latitude.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) GMFloat centerLatitude</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/centerLongitude" title="centerLongitude"></a>
+	<h3 class="subsubtitle method-title">centerLongitude</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience property to manage longitude.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) GMFloat centerLongitude</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/delegate" title="delegate"></a>
+	<h3 class="subsubtitle method-title">delegate</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>The receiver’s delegate.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic, assign) id&lt;GMMapViewDelegate&gt; delegate</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>A map view sends messages to its delegate regarding user events and <a href="#//api/name/overlays">overlays</a>.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/overlays" title="overlays"></a>
+	<h3 class="subsubtitle method-title">overlays</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>The overlay objects currently associated with the map view. (read-only)</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly) NSArray *overlays</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>All objects in this array must be subclasses of <a href="../Classes/GMOverlay.html">GMOverlay</a>.</p>
+
+<p>The z-ordering of the overlays is determined by the order in this array. Thus, the overlay at index 1 is
+drawn above the overlay at index 0.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/overlaysClickable" title="overlaysClickable"></a>
+	<h3 class="subsubtitle method-title">overlaysClickable</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If set to <code>YES</code>, <a href="#//api/name/overlays">overlays</a> will be clickable.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) BOOL overlaysClickable</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Clickable overlays does nothing except calling <a href="../Protocols/GMMapViewDelegate.html#//api/name/mapView:overlayClicked:">[GMMapViewDelegate mapView:overlayClicked:]</a> on the <a href="#//api/name/delegate">delegate</a> when
+an overlay is clicked.</p>
+
+<p>A click is defined by a <code>mouseDown</code> followed by a <code>mouseUp</code> with no movement between the two.</p>
+
+<p><code>YES</code> by default.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/overlaysDraggable" title="overlaysDraggable"></a>
+	<h3 class="subsubtitle method-title">overlaysDraggable</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If set to <code>YES</code>, <a href="#//api/name/overlays">overlays</a> will be draggable.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) BOOL overlaysDraggable</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p><code>YES</code> by default.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/panningEnabled" title="panningEnabled"></a>
+	<h3 class="subsubtitle method-title">panningEnabled</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If set to <code>YES</code>, panning will be enabled by dragging the map.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) BOOL panningEnabled</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p><code>YES</code> by default.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/roundZoomLevel" title="roundZoomLevel"></a>
+	<h3 class="subsubtitle method-title">roundZoomLevel</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If set to <code>YES</code>, <a href="#//api/name/zoomLevel">zoomLevel</a> will be rounded to the nearest integer.
+This is usefull if you want to provide a map that is never interpolated.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) BOOL roundZoomLevel</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p><code>NO</code> by default.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/scrollZoomEnabled" title="scrollZoomEnabled"></a>
+	<h3 class="subsubtitle method-title">scrollZoomEnabled</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If set to <code>YES</code>, zooming with the mouse scroll will be enabled.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) BOOL scrollZoomEnabled</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p><code>YES</code> by default.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/tileCacheDirectoryPath" title="tileCacheDirectoryPath"></a>
+	<h3 class="subsubtitle method-title">tileCacheDirectoryPath</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>The absolute path of the directory where tiles will be cached on disk.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) NSString *tileCacheDirectoryPath</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>If the directory doesn&rsquo;t exist, it will be created.</p>
+
+<p>The default is ~/Library/Caches/<yourapp bundle identifier>/GMapTiles.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/tileURLFormat" title="tileURLFormat"></a>
+	<h3 class="subsubtitle method-title">tileURLFormat</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>The tile URL format.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) NSString *tileURLFormat</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>You may set it globally in your application Info.plist with the key <code>GMTileURLFormat</code>.</p>
+
+<p>The default uses Mapnik CDN.</p>
+
+<p>It must contain 3 long integer substitutions, in this order: zoomLevel, x and y.</p>
+
+<p>Only PNG and JPEG are supported. The server must return image/png or image/jpeg
+as Content-Type header.</p>
+
+<p>You may reorder the substitutions with NSString reorderable arguments (second example).</p>
+
+<p>Examples:</p>
+
+<ul>
+<li><a href="http://otile1.mqcdn.com/tiles/1.0.0/osm/%ld/%ld/%ld.jpg">http://otile1.mqcdn.com/tiles/1.0.0/osm/%ld/%ld/%ld.jpg</a></li>
+<li><a href="http://mydomain.com/tiles/%2$ld/%3$ld/%1$ld.png">http://mydomain.com/tiles/%2$ld/%3$ld/%1$ld.png</a></li>
+</ul>
+
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/zoomLevel" title="zoomLevel"></a>
+	<h3 class="subsubtitle method-title">zoomLevel</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>The zoom level between 0 and 18, inclusive.
+If you set a value outside those bounds it will be clamped.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) GMFloat zoomLevel</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Instance Methods" name="instance_methods"></a>
+						<h2 class="subtitle subtitle-methods">Instance Methods</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/addOverlay:" title="addOverlay:"></a>
+	<h3 class="subsubtitle method-title">addOverlay:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Add an overlay.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)addOverlay:(GMOverlay *)<em>overlay</em></code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>The overlay is added at the end of the <a href="#//api/name/overlays">overlays</a> array.</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection see-also-section">
+		<h4 class="method-subtitle">See Also</h4>
+		<ul>
+			
+			<li><code><p><a href="#//api/name/overlays">@property overlays</a></p></code></li>
+			
+		</ul>
+	</div>
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/addOverlays:" title="addOverlays:"></a>
+	<h3 class="subsubtitle method-title">addOverlays:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Add an array of <a href="#//api/name/overlays">overlays</a>.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)addOverlays:(NSArray *)<em>overlays</em></code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>All objects in the array must be subclass of <a href="../Classes/GMOverlay.html">GMOverlay</a>.</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection see-also-section">
+		<h4 class="method-subtitle">See Also</h4>
+		<ul>
+			
+			<li><code><p><a href="#//api/name/overlays">@property overlays</a></p></code></li>
+			
+		</ul>
+	</div>
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/convertViewLocationToMapPoint:" title="convertViewLocationToMapPoint:"></a>
+	<h3 class="subsubtitle method-title">convertViewLocationToMapPoint:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convert a point from the receiver to the map coordinate system.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (GMMapPoint)convertViewLocationToMapPoint:(CGPoint)<em>locationInView</em></code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/exchangeOverlayAtIndex:withOverlayAtIndex:" title="exchangeOverlayAtIndex:withOverlayAtIndex:"></a>
+	<h3 class="subsubtitle method-title">exchangeOverlayAtIndex:withOverlayAtIndex:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Change the ordering of two <a href="#//api/name/overlays">overlays</a>.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)exchangeOverlayAtIndex:(NSUInteger)<em>index1</em> withOverlayAtIndex:(NSUInteger)<em>index2</em></code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection see-also-section">
+		<h4 class="method-subtitle">See Also</h4>
+		<ul>
+			
+			<li><code><p><a href="#//api/name/overlays">@property overlays</a></p></code></li>
+			
+		</ul>
+	</div>
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/insertOverlay:aboveOverlay:" title="insertOverlay:aboveOverlay:"></a>
+	<h3 class="subsubtitle method-title">insertOverlay:aboveOverlay:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Insert an overlay above another one.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)insertOverlay:(GMOverlay *)<em>overlay</em> aboveOverlay:(GMOverlay *)<em>sibling</em></code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection see-also-section">
+		<h4 class="method-subtitle">See Also</h4>
+		<ul>
+			
+			<li><code><p><a href="#//api/name/overlays">@property overlays</a></p></code></li>
+			
+		</ul>
+	</div>
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/insertOverlay:atIndex:" title="insertOverlay:atIndex:"></a>
+	<h3 class="subsubtitle method-title">insertOverlay:atIndex:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Insert an overlay at a specific index.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)insertOverlay:(GMOverlay *)<em>overlay</em> atIndex:(NSUInteger)<em>index</em></code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection see-also-section">
+		<h4 class="method-subtitle">See Also</h4>
+		<ul>
+			
+			<li><code><p><a href="#//api/name/overlays">@property overlays</a></p></code></li>
+			
+		</ul>
+	</div>
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/insertOverlay:belowOverlay:" title="insertOverlay:belowOverlay:"></a>
+	<h3 class="subsubtitle method-title">insertOverlay:belowOverlay:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Insert an overlay below another one.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)insertOverlay:(GMOverlay *)<em>overlay</em> belowOverlay:(GMOverlay *)<em>sibling</em></code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection see-also-section">
+		<h4 class="method-subtitle">See Also</h4>
+		<ul>
+			
+			<li><code><p><a href="#//api/name/overlays">@property overlays</a></p></code></li>
+			
+		</ul>
+	</div>
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/removeOverlay:" title="removeOverlay:"></a>
+	<h3 class="subsubtitle method-title">removeOverlay:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Remove an overlay.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)removeOverlay:(GMOverlay *)<em>overlay</em></code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection see-also-section">
+		<h4 class="method-subtitle">See Also</h4>
+		<ul>
+			
+			<li><code><p><a href="#//api/name/overlays">@property overlays</a></p></code></li>
+			
+		</ul>
+	</div>
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/removeOverlays:" title="removeOverlays:"></a>
+	<h3 class="subsubtitle method-title">removeOverlays:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Remove <a href="#//api/name/overlays">overlays</a>.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)removeOverlays:(NSArray *)<em>overlays</em></code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection see-also-section">
+		<h4 class="method-subtitle">See Also</h4>
+		<ul>
+			
+			<li><code><p><a href="#//api/name/overlays">@property overlays</a></p></code></li>
+			
+		</ul>
+	</div>
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">GMMapView.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+				</div>
+				<div class="main-navigation navigation-bottom">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="footer">
+					<hr />
+					<div class="footer-copyright">
+						<p><span class="copyright">&copy; 2012 Goyman SA. All rights reserved. (Last updated: 2012-11-06)</span><br />
+						
+						<span class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.1 (build 840)</a>.</span></p>
+						
+					</div>
+				</div>
+			</div>
+		</article>
+		<script type="text/javascript">
+			function jumpToChange()
+			{
+				window.location.hash = this.options[this.selectedIndex].value;
+			}
+			
+			function toggleTOC()
+			{
+				var contents = document.getElementById('contents');
+				var tocContainer = document.getElementById('tocContainer');
+				
+				if (this.getAttribute('class') == 'open')
+				{
+					this.setAttribute('class', '');
+					contents.setAttribute('class', '');
+					tocContainer.setAttribute('class', '');
+					
+					window.name = "hideTOC";
+				}
+				else
+				{
+					this.setAttribute('class', 'open');
+					contents.setAttribute('class', 'isShowingTOC');
+					tocContainer.setAttribute('class', 'isShowingTOC');
+					
+					window.name = "";
+				}
+				return false;
+			}
+			
+			function toggleTOCEntryChildren(e)
+			{
+				e.stopPropagation();
+				var currentClass = this.getAttribute('class');
+				if (currentClass == 'children') {
+					this.setAttribute('class', 'children open');
+				}
+				else if (currentClass == 'children open') {
+					this.setAttribute('class', 'children');
+				}
+				return false;
+			}
+			
+			function tocEntryClick(e)
+			{
+				e.stopPropagation();
+				return true;
+			}
+			
+			function init()
+			{
+				var selectElement = document.getElementById('jumpTo');
+				selectElement.addEventListener('change', jumpToChange, false);
+				
+				var tocButton = document.getElementById('table_of_contents');
+				tocButton.addEventListener('click', toggleTOC, false);
+				
+				var taskTreeItem = document.getElementById('task_treeitem');
+				if (taskTreeItem.getElementsByTagName('li').length > 0)
+				{
+					taskTreeItem.setAttribute('class', 'children');
+					taskTreeItem.firstChild.setAttribute('class', 'disclosure');
+				}
+				
+				var tocList = document.getElementById('toc');
+				
+				var tocEntries = tocList.getElementsByTagName('li');
+				for (var i = 0; i < tocEntries.length; i++) {
+					tocEntries[i].addEventListener('click', toggleTOCEntryChildren, false);
+				}
+				
+				var tocLinks = tocList.getElementsByTagName('a');
+				for (var i = 0; i < tocLinks.length; i++) {
+					tocLinks[i].addEventListener('click', tocEntryClick, false);
+				}
+				
+				if (window.name == "hideTOC") {
+					toggleTOC.call(tocButton);
+				}
+			}
+			
+			window.onload = init;
+			
+			// If showing in Xcode, hide the TOC and Header
+			if (navigator.userAgent.match(/xcode/i)) {
+				document.getElementById("contents").className = "hideInXcode"
+				document.getElementById("tocContainer").className = "hideInXcode"
+				document.getElementById("top_header").className = "hideInXcode"
+			}
+			
+		</script>
+	</body>
+</html>
