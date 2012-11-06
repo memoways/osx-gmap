@@ -15,24 +15,27 @@
     if (!self.strokeColor && !self.fillColor)
         return;
 
-    CGRect bounds = self.bounds;
+    GMMapBounds bounds = self.mapBounds;
 
-    bounds.origin.x *= scale;
-    bounds.origin.y *= scale;
+    CGRect rect = CGRectMake(bounds.topLeft.x, bounds.topLeft.y,
+                             bounds.bottomRight.x - bounds.topLeft.x, bounds.bottomRight.y - bounds.topLeft.y);
 
-    bounds.size.width *= scale;
-    bounds.size.height *= scale;
+    rect.origin.x *= scale;
+    rect.origin.y *= scale;
 
-    bounds.origin.x -= offset.x;
-    bounds.origin.y -= offset.y;
+    rect.size.width *= scale;
+    rect.size.height *= scale;
 
-    bounds.origin.y = ctxRect.size.height - bounds.origin.y - bounds.size.height;
+    rect.origin.x -= offset.x;
+    rect.origin.y -= offset.y;
+
+    rect.origin.y = ctxRect.size.height - rect.origin.y - rect.size.height;
 
     if (self.fillColor)
     {
         CGContextSetFillColorWithColor(ctx, self.fillColor.CGColor);
 
-        CGContextFillEllipseInRect(ctx, bounds);
+        CGContextFillEllipseInRect(ctx, rect);
     }
 
     if (self.strokeColor && self.lineWidth > 0)
@@ -40,14 +43,14 @@
         CGContextSetLineWidth(ctx, self.lineWidth);
         CGContextSetStrokeColorWithColor(ctx, self.strokeColor.CGColor);
 
-        CGContextStrokeEllipseInRect(ctx, bounds);
+        CGContextStrokeEllipseInRect(ctx, rect);
     }
 
     if (self.centerPointColor && self.centerPointSize > 0)
     {
         CGFloat w = self.centerPointSize;
-        CGRect centerRect = CGRectMake(bounds.origin.x + bounds.size.width / 2 - w / 2.0,
-                                       bounds.origin.y + bounds.size.height / 2 - w / 2.0,
+        CGRect centerRect = CGRectMake(rect.origin.x + rect.size.width / 2 - w / 2.0,
+                                       rect.origin.y + rect.size.height / 2 - w / 2.0,
                                        w, w);
         CGContextSetFillColorWithColor(ctx, self.centerPointColor.CGColor);
 
@@ -63,10 +66,10 @@
 
 - (void)updateBounds
 {
-    CGPoint centerPoint = self.mapPoint;
-    CGFloat normalizedRadius = self.radius / kEquatorLength;
-    self.bounds = CGRectMake(centerPoint.x - normalizedRadius / 2.0, centerPoint.y - normalizedRadius / 2.0,
-                             normalizedRadius, normalizedRadius);
+    GMMapPoint centerPoint = self.mapPoint;
+    CGFloat normalizedHalfRadius = self.radius / kEquatorLength / 2.0;
+    self.mapBounds = GMMapBoundsMake(centerPoint.x - normalizedHalfRadius, centerPoint.y - normalizedHalfRadius,
+                                     centerPoint.x + normalizedHalfRadius, centerPoint.y + normalizedHalfRadius);
 }
 
 @end

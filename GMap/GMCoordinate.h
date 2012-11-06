@@ -1,5 +1,8 @@
 #import <Foundation/Foundation.h>
 
+#ifndef GM_INLINE
+#define GM_INLINE NS_INLINE
+#endif
 
 static const double kTileSize = 256.0; // in pixel
 static const double kEquatorLength = 40075016.686; // in meters
@@ -12,9 +15,101 @@ typedef struct
     GMFloat y;
 } GMMapPoint;
 
-static inline GMMapPoint GMMapPointMake(GMFloat x, GMFloat y)
+GM_INLINE GMMapPoint GMMapPointMake(GMFloat x, GMFloat y)
 {
+    GMMapPoint pt;
+    pt.x = x;
+    pt.y = y;
+    return pt;
 }
+
+GM_INLINE NSString *NSStringFromMapPoint(GMMapPoint point)
+{
+    return [NSString stringWithFormat:@"{%.10f, %.10f}", point.x, point.y];
+}
+
+@interface NSValue (GMMapPoint)
+
+- (GMMapPoint)mapPointValue;
+
++ (NSValue *)valueWithMapPoint:(GMMapPoint)mapPoint;
+- (id)initWithMapPoint:(GMMapPoint)mapPoint;
+
+@end
+
+typedef struct
+{
+    GMMapPoint topLeft;
+    GMMapPoint bottomRight;
+} GMMapBounds;
+
+GM_INLINE GMMapBounds GMMapBoundsMake(GMFloat topLeftX, GMFloat topLeftY,
+                                      GMFloat bottomRightX, GMFloat bottomRightY)
+{
+    GMMapBounds bounds;
+    bounds.topLeft.x = topLeftX;
+    bounds.topLeft.y = topLeftY;
+    bounds.bottomRight.x = bottomRightX;
+    bounds.bottomRight.y = bottomRightY;
+    return bounds;
+}
+
+GM_INLINE GMMapBounds GMMapBoundsMakeWithMapPoints(GMMapPoint topLeft, GMMapPoint bottomRight)
+{
+    GMMapBounds bounds;
+    bounds.topLeft = topLeft;
+    bounds.bottomRight = bottomRight;
+    return bounds;
+}
+
+GM_INLINE NSString *NSStringFromMapBounds(GMMapBounds bounds)
+{
+    return [NSString stringWithFormat:@"{{%.10f, %.10f}, {%.10f, %.10f}}", bounds.topLeft.x, bounds.topLeft.x,
+           bounds.bottomRight.x, bounds.bottomRight.y];
+}
+
+GM_INLINE GMMapBounds GMMapBoundsAddMapPoint(GMMapBounds bounds, GMMapPoint pt)
+{
+    if (bounds.topLeft.x > pt.x)
+        bounds.topLeft.x = pt.x;
+    else if (bounds.bottomRight.x < pt.x)
+        bounds.bottomRight.x = pt.x;
+
+    if (bounds.topLeft.y > pt.y)
+        bounds.topLeft.y = pt.y;
+    else if (bounds.bottomRight.y < pt.y)
+        bounds.bottomRight.y = pt.y;
+
+    return bounds;
+}
+
+GM_INLINE BOOL GMMapBoundsContainsMapPoint(GMMapBounds bounds, GMMapPoint pt)
+{
+    return (bounds.topLeft.x <= pt.x && bounds.bottomRight.x >= pt.x
+            && bounds.topLeft.y <= pt.y && bounds.bottomRight.y >= pt.y);
+}
+
+GM_INLINE BOOL GMMapBoundsInterectsMapBounds(GMMapBounds a, GMMapBounds b)
+{
+    return !(b.bottomRight.x < a.topLeft.x
+             || b.topLeft.x > a.bottomRight.x
+             || b.bottomRight.y < a.topLeft.y
+             || b.topLeft.y > a.bottomRight.y);
+}
+
+GM_INLINE GMFloat GMMapBoundsSemiPerimeter(GMMapBounds bounds)
+{
+    return bounds.bottomRight.x - bounds.topLeft.x + bounds.bottomRight.y - bounds.topLeft.y;
+}
+
+@interface NSValue (GMMapBounds)
+
+- (GMMapBounds)mapBoundsValue;
+
++ (NSValue *)valueWithMapBounds:(GMMapBounds)mapBounds;
+- (id)initWithMapBounds:(GMMapBounds)mapBounds;
+
+@end
 
 typedef struct
 {
@@ -22,7 +117,7 @@ typedef struct
     GMFloat longitude;
 } GMCoordinate;
 
-static inline GMCoordinate GMCoordinateMake(GMFloat latitude, GMFloat longitude)
+GM_INLINE GMCoordinate GMCoordinateMake(GMFloat latitude, GMFloat longitude)
 {
     GMCoordinate result;
 
@@ -32,43 +127,43 @@ static inline GMCoordinate GMCoordinateMake(GMFloat latitude, GMFloat longitude)
     return result;
 }
 
-static inline GMFloat GMLongitudeToX(GMFloat longitude)
+GM_INLINE GMFloat GMLongitudeToX(GMFloat longitude)
 {
     return (longitude + 180.0) / 360.0;
 }
 
-static inline GMFloat GMLatitudeToY(GMFloat latitude)
+GM_INLINE GMFloat GMLatitudeToY(GMFloat latitude)
 {
     GMFloat lat = latitude * M_PI / 180.0;
 
     return (1.0 - log(tan(lat) + 1.0 / cos(lat)) / M_PI) / 2.0;
 }
 
-static inline GMFloat GMXToLongitude(GMFloat x)
+GM_INLINE GMFloat GMXToLongitude(GMFloat x)
 {
     return x * 360.0 - 180.0;
 }
 
-static inline GMFloat GMYToLatitude(GMFloat y)
+GM_INLINE GMFloat GMYToLatitude(GMFloat y)
 {
     GMFloat n = M_PI - 2.0 * M_PI * y;
 
     return (180.0 / M_PI) * atan(0.5 * (exp(n) - exp(-n)));
 }
 
-static inline GMMapPoint GMCoordinateToPoint(GMCoordinate coordinates)
+GM_INLINE GMMapPoint GMCoordinateToMapPoint(GMCoordinate coordinates)
 {
     return GMMapPointMake(GMLongitudeToX(coordinates.longitude), GMLatitudeToY(coordinates.latitude));
 }
 
-static inline GMCoordinate GMMapPointToCoordinate(GMMapPoint point)
+GM_INLINE GMCoordinate GMMapPointToCoordinate(GMMapPoint point)
 {
     return GMCoordinateMake(GMYToLatitude(point.y), GMXToLongitude(point.x));
 }
 
-static inline NSString *NSStringFromGMCoordinate(GMCoordinate coordinate)
+GM_INLINE NSString *NSStringFromCoordinate(GMCoordinate coordinate)
 {
-    return [NSString stringWithFormat:@"%.10f - %.10f", coordinate.latitude, coordinate.longitude];
+    return [NSString stringWithFormat:@"{%.10f, %.10f}", coordinate.latitude, coordinate.longitude];
 }
 
 @interface NSValue (GMCoordinate)
@@ -88,7 +183,7 @@ typedef struct
 } GMCoordinateBounds;
 
 
-static inline GMCoordinateBounds GMCoordinateBoundsMake(GMFloat southWestLatitude, GMFloat southWestLongitude, GMFloat northEastLatitude, GMFloat northEastLongitude)
+GM_INLINE GMCoordinateBounds GMCoordinateBoundsMake(GMFloat southWestLatitude, GMFloat southWestLongitude, GMFloat northEastLatitude, GMFloat northEastLongitude)
 {
     GMCoordinateBounds result;
 
@@ -100,12 +195,12 @@ static inline GMCoordinateBounds GMCoordinateBoundsMake(GMFloat southWestLatitud
     return result;
 }
 
-static inline GMMapRect GMCoordinateBoundsToRect(GMCoordinateBounds bounds)
+GM_INLINE GMMapBounds GMCoordinateBoundsToMapBounds(GMCoordinateBounds bounds)
 {
-    GMMapPoint southWest = GMCoordinateToPoint(bounds.southWest);
-    GMMapPoint northEast = GMCoordinateToPoint(bounds.northEast);
+    GMMapPoint southWest = GMCoordinateToMapPoint(bounds.southWest);
+    GMMapPoint northEast = GMCoordinateToMapPoint(bounds.northEast);
 
-    return GMMapRectMake(southWest.x, northEast.y, northEast.x - southWest.x, southWest.y - northEast.y);
+    return GMMapBoundsMake(southWest.x, northEast.y, northEast.x - southWest.x, southWest.y - northEast.y);
 }
 
 @interface NSValue (GMCoordinateBounds)

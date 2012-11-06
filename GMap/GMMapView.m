@@ -19,7 +19,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 @property (nonatomic) NSInteger renderedZoomLevel;
 @property (nonatomic) CALayer *tileLayer;
 @property (nonatomic) CALayer *overlayLayer;
-@property (nonatomic) CGPoint centerPoint;
+@property (nonatomic) GMMapPoint centerPoint;
 
 - (void)updateLayerTransform;
 - (void)updateLayerBounds;
@@ -66,6 +66,8 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 // ################################################################################
 // Tile download
 
+    self.tileLoadQueue = NSOperationQueue.new;
+    self.tileLoadQueue.maxConcurrentOperationCount = 16;
     self.tileConnections = NSMutableArray.new;
 
     for (int i = 0; i < kMaxHTTPConnectionCount; i++)
@@ -218,14 +220,14 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     [self didChangeValueForKey:@"centerLatitude"];
 
     [self willChangeValueForKey:@"centerPoint"];
-    _centerPoint = GMCoordinateToPoint(self.centerCoordinate);
+    _centerPoint = GMCoordinateToMapPoint(self.centerCoordinate);
     [self didChangeValueForKey:@"centerPoint"];
 
     [self.tileLayer setNeedsDisplay];
     [self.overlayLayer setNeedsDisplay];
 }
 
-- (void)setCenterPoint:(CGPoint)point
+- (void)setCenterPoint:(GMMapPoint)point
 {
     _centerPoint.x = MAX(0, MIN(1.0, point.x));
     _centerPoint.y = MAX(0, MIN(1.0, point.y));
@@ -233,7 +235,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     [self willChangeValueForKey:@"centerCoordinate"];
     [self willChangeValueForKey:@"centerLatitude"];
     [self willChangeValueForKey:@"centerLongitude"];
-    _centerCoordinate = GMPointToCoordinate(_centerPoint);
+    _centerCoordinate = GMMapPointToCoordinate(_centerPoint);
     [self didChangeValueForKey:@"centerLongitude"];
     [self didChangeValueForKey:@"centerLatitude"];
     [self didChangeValueForKey:@"centerCoordinate"];
@@ -280,7 +282,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 {
     CGRect rect = CGContextGetClipBoundingBox(ctx);
 
-    CGPoint center = self.centerPoint;
+    GMMapPoint center = self.centerPoint;
 
     CGSize size = self.tileLayer.bounds.size;
     NSInteger level = floor(self.zoomLevel);
@@ -358,7 +360,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     if (!self.visibleOverlays.count)
         return;
 
-    CGPoint center = self.centerPoint;
+    GMMapPoint center = self.centerPoint;
     CGFloat scale = pow(2, self.zoomLevel) * kTileSize;
 
     CGSize size = self.tileLayer.bounds.size;
@@ -377,7 +379,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 {
     CGPoint relativeCenter = [self convertPoint:evt.locationInWindow fromView:nil];
 
-    CGPoint clickedPoint = [self convertViewLocationToPoint:relativeCenter];
+    GMMapPoint clickedPoint = [self convertViewLocationToMapPoint:relativeCenter];
 
     self.clickedOverlay = nil;
     self.draggingOccured = NO;
@@ -386,7 +388,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     {
         for (GMOverlay *overlay in self.visibleOverlays.reverseObjectEnumerator)
         {
-            if (CGRectContainsPoint(overlay.bounds, clickedPoint))
+            if (GMMapBoundsContainsMapPoint(overlay.mapBounds, clickedPoint))
             {
                 self.clickedOverlay = overlay;
                 break;
@@ -400,11 +402,11 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 {
     CGPoint relativeCenter = [self convertPoint:evt.locationInWindow fromView:nil];
 
-    CGPoint clickedPoint = [self convertViewLocationToPoint:relativeCenter];
+    GMMapPoint clickedPoint = [self convertViewLocationToMapPoint:relativeCenter];
 
     if (self.clickedOverlay && self.overlaysClickable && !self.draggingOccured
         && [self.delegate respondsToSelector:@selector(mapView:overlayClicked:)]
-        && CGRectContainsPoint(self.clickedOverlay.bounds, clickedPoint))
+        && GMMapBoundsContainsMapPoint(self.clickedOverlay.mapBounds, clickedPoint))
         [self.delegate mapView:self overlayClicked:self.clickedOverlay];
 
     self.clickedOverlay = nil;
@@ -422,23 +424,27 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
     if (self.overlaysDraggable && self.clickedOverlay)
     {
-        if ([delegate respondsToSelector:@selector(mapView:shouldDragOverlay:)]
-            && ![delegate mapView:self shouldDragOverlay:self.clickedOverlay])
+        if ([self.delegate respondsToSelector:@selector(mapView:shouldDragOverlay:)]
+            && ![self.delegate mapView:self shouldDragOverlay:self.clickedOverlay])
             return;
 
-        CGPoint newPoint = CGPointMake(self.clickedOverlay.mapPoint.x + offset.x, self.clickedOverlay.mapPoint.y + offset.y);
+        GMMapPoint newPoint = GMMapPointMake(self.clickedOverlay.mapPoint.x + offset.x, self.clickedOverlay.mapPoint.y + offset.y);
 
-        if ([delegate respondsToSelector:@selector(mapView:willDragOverlay:toCoordinate)])
-        {
-            GMCoordinate coord = [delegate mapView:self willDragOverlay:self.clickedOverlay toCoordinate:GMPointToCoordinate(newPoint)];
-            newPoint = GMCoordinateToPoint(newPoint);
-        }
+        if ([self.delegate respondsToSelector:@selector(mapView:willDragOverlay:toMapPoint:)])
+            newPoint = [self.delegate mapView:self willDragOverlay:self.clickedOverlay toMapPoint:newPoint];
 
         self.clickedOverlay.mapPoint = newPoint;
         [self.overlayLayer setNeedsDisplay];
     }
     else if (self.panningEnabled)
-        self.centerPoint = CGPointMake(self.centerPoint.x - offset.x, self.centerPoint.y - offset.y);
+    {
+        GMMapPoint newPoint = GMMapPointMake(self.centerPoint.x - offset.x, self.centerPoint.y - offset.y);
+
+        if ([self.delegate respondsToSelector:@selector(mapView:willPanCenterToMapPoint:)])
+            newPoint = [self.delegate mapView:self willPanCenterToMapPoint:newPoint];
+
+        self.centerPoint = newPoint;
+    }
 }
 
 - (void)scrollWheel:(NSEvent *)evt
@@ -462,7 +468,12 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
                                  relativeCenter.y * scale - relativeCenter.y );
 
     CGFloat previousZoomLevel = self.zoomLevel;
-    self.zoomLevel += zoomDelta;
+    CGFloat newZoomLevel = self.zoomLevel + zoomDelta;
+
+    if ([self.delegate respondsToSelector:@selector(mapView:willScrollZoomToLevel:)])
+        newZoomLevel = [self.delegate mapView:self willScrollZoomToLevel:newZoomLevel];
+
+    self.zoomLevel = newZoomLevel;
 
     if (previousZoomLevel == self.zoomLevel)
         return;
@@ -472,20 +483,20 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     offset.x = offset.x / scale / kTileSize;
     offset.y = offset.y / scale / kTileSize;
 
-    self.centerPoint = CGPointMake(self.centerPoint.x + offset.x, self.centerPoint.y - offset.y);
+    self.centerPoint = GMMapPointMake(self.centerPoint.x + offset.x, self.centerPoint.y - offset.y);
 }
 
 // ################################################################################
 // Utilities
 
-- (CGPoint)convertViewLocationToPoint:(CGPoint)locationInView
+- (GMMapPoint)convertViewLocationToMapPoint:(CGPoint)locationInView;
 {
     locationInView.x -= self.frame.size.width / 2.0;
     locationInView.y -= self.frame.size.height / 2.0;
 
     CGFloat scale = pow(2, self.zoomLevel);
-    return CGPointMake(self.centerPoint.x + locationInView.x / scale / kTileSize,
-                       self.centerPoint.y - locationInView.y / scale / kTileSize);
+    return GMMapPointMake(self.centerPoint.x + locationInView.x / scale / kTileSize,
+                          self.centerPoint.y - locationInView.y / scale / kTileSize);
 }
 
 // ################################################################################
@@ -786,9 +797,9 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
         return;
     }
 
-    CGPoint topLeft = [self convertViewLocationToPoint:CGPointMake(0, self.overlayLayer.bounds.size.height)];
-    CGPoint bottomRight = [self convertViewLocationToPoint:CGPointMake(self.overlayLayer.bounds.size.width, 0)];
-    CGRect bounds = CGRectMake(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+    GMMapPoint topLeft = [self convertViewLocationToMapPoint:CGPointMake(0, self.overlayLayer.bounds.size.height)];
+    GMMapPoint bottomRight = [self convertViewLocationToMapPoint:CGPointMake(self.overlayLayer.bounds.size.width, 0)];
+    GMMapBounds bounds = GMMapBoundsMakeWithMapPoints(topLeft, bottomRight);
 
 
     CGFloat scale = pow(2, self.zoomLevel) * kTileSize;
@@ -798,8 +809,8 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 
     for (GMOverlay *overlay in self.overlays)
     {
-        if (overlay.bounds.size.width + overlay.bounds.size.height > minSize &&
-            CGRectIntersectsRect(overlay.bounds, bounds))
+        if (GMMapBoundsSemiPerimeter(overlay.mapBounds) > minSize &&
+            GMMapBoundsInterectsMapBounds(overlay.mapBounds, bounds))
             [self.visibleOverlays addObject:overlay];
     }
 }

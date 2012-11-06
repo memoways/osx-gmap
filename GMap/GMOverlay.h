@@ -6,8 +6,8 @@
 
 @property (nonatomic) GMCoordinate coordinate;
 
-@property (nonatomic) CGPoint mapPoint;
-@property (nonatomic) CGRect bounds;
+@property (nonatomic) GMMapPoint mapPoint;
+@property (nonatomic) GMMapBounds mapBounds;
 
 - (void)drawInContext:(CGContextRef)ctx offset:(CGPoint)offset scale:(CGFloat)scale;
 - (void)updateBounds;

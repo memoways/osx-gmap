@@ -1,6 +1,50 @@
 #import "GMCoordinate.h"
 
 
+@implementation NSValue (GMMapPoint)
+
++ (NSValue *)valueWithMapPoint:(GMMapPoint)mapPoint
+{
+    return [NSValue valueWithBytes:&mapPoint objCType:@encode(GMMapPoint)];
+}
+
+- (id)initWithMapPoint:(GMMapPoint)mapPoint
+{
+    return [self initWithBytes:&mapPoint objCType:@encode(GMMapPoint)];
+}
+
+- (GMMapPoint)mapPointValue
+{
+    GMMapPoint res;
+
+    [self getValue:&res];
+    return res;
+}
+
+@end
+
+@implementation NSValue (GMMapBounds)
+
++ (NSValue *)valueWithMapBounds:(GMMapBounds)mapBounds
+{
+    return [NSValue valueWithBytes:&mapBounds objCType:@encode(GMMapBounds)];
+}
+
+- (id)initWithMapBounds:(GMMapBounds)mapBounds
+{
+    return [self initWithBytes:&mapBounds objCType:@encode(GMMapBounds)];
+}
+
+- (GMMapBounds)mapBoundsValue
+{
+    GMMapBounds res;
+
+    [self getValue:&res];
+    return res;
+}
+
+@end
+
 @implementation NSValue (GMCoordinate)
 
 + (NSValue *)valueWithCoordinate:(GMCoordinate)coordinate
@@ -16,12 +60,12 @@
 - (GMCoordinate)coordinateValue
 {
     GMCoordinate res;
+
     [self getValue:&res];
     return res;
 }
 
 @end
-
 
 @implementation NSValue (GMCoordinateBounds)
 
@@ -38,6 +82,7 @@
 - (GMCoordinateBounds)coordinateBoundsValue
 {
     GMCoordinateBounds res;
+
     [self getValue:&res];
     return res;
 }

@@ -11,20 +11,20 @@
 - (void)setCoordinate:(GMCoordinate)coordinate
 {
     _coordinate = coordinate;
-    _mapPoint = GMCoordinateToPoint(coordinate);
+    _mapPoint = GMCoordinateToMapPoint(coordinate);
     [self updateBounds];
 }
 
-- (void)setMapPoint:(CGPoint)mapPoint
+- (void)setMapPoint:(GMMapPoint)mapPoint
 {
-    _coordinate = GMPointToCoordinate(mapPoint);
+    _coordinate = GMMapPointToCoordinate(mapPoint);
     _mapPoint = mapPoint;
     [self updateBounds];
 }
 
 - (void)updateBounds
 {
-    self.bounds = CGRectMake(_mapPoint.x, _mapPoint.y, 0, 0);
+    self.mapBounds = GMMapBoundsMakeWithMapPoints(_mapPoint, _mapPoint);
 }
 
 @end

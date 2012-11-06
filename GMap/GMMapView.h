@@ -68,18 +68,18 @@
 /**
  Convenience property to manage latitude.
  */
-@property (nonatomic) CGFloat centerLatitude;
+@property (nonatomic) GMFloat centerLatitude;
 
 /**
  Convenience property to manage longitude.
  */
-@property (nonatomic) CGFloat centerLongitude;
+@property (nonatomic) GMFloat centerLongitude;
 
 /**
  The zoom level between 0 and 18, inclusive.
  If you set a value outside those bounds it will be clamped.
  */
-@property (nonatomic) CGFloat zoomLevel;
+@property (nonatomic) GMFloat zoomLevel;
 
 ///----------------
 /// @name Behaviour
@@ -128,23 +128,22 @@
 - (void)insertOverlay:(GMOverlay *)overlay belowOverlay:(GMOverlay *)sibling;
 - (void)insertOverlay:(GMOverlay *)overlay atIndex:(NSUInteger)index;
 
-
 ///---------------
 /// @name Utilities
 ///---------------
 
-- (CGPoint)convertViewLocationToPoint:(CGPoint)locationInView;
+- (GMMapPoint)convertViewLocationToMapPoint:(CGPoint)locationInView;
 
 @end
 
 @protocol GMMapViewDelegate <NSObject>
 @optional
 
-- (GMCoordinate)mapView:(GMMapView *)mapView willPanToCoordinate:(GMCoordinate)proposedCoordinate;
-- (CGFloat)mapView:(GMMapView *)mapView willScrollZoomToLevel:(CGFloat)proposedZoomLevel;
+- (GMMapPoint)mapView:(GMMapView *)mapView willPanCenterToMapPoint:(GMMapPoint)proposedCenter;
+- (GMFloat)mapView:(GMMapView *)mapView willScrollZoomToLevel:(GMFloat)proposedZoomLevel;
 
 - (void)mapView:(GMMapView *)mapView overlayClicked:(GMOverlay *)overlay;
 - (BOOL)mapView:(GMMapView *)mapView shouldDragOverlay:(GMOverlay *)overlay;
-- (GMCoordinate)mapView:(GMMapView *)mapView willDragOverlay:(GMOverlay *)overlay toCoordinate:(GMCoordinate)proposedCoordinate;
+- (GMMapPoint)mapView:(GMMapView *)mapView willDragOverlay:(GMOverlay *)overlay toMapPoint:(GMMapPoint)proposedPoint;
 
 @end

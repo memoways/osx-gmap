@@ -23,25 +23,25 @@
 
 - (void)addPointAtCoordinate:(GMCoordinate)coordinate
 {
-    CGPoint pt = GMCoordinateToPoint(coordinate);
+    GMMapPoint pt = GMCoordinateToMapPoint(coordinate);
 
     if (!self.points.count)
         self.coordinate = coordinate;
 
-    [self.points addObject:[NSValue valueWithPoint:CGPointMake(pt.x - self.mapPoint.x, pt.y - self.mapPoint.y)]];
+    [self.points addObject:[NSValue valueWithMapPoint:GMMapPointMake(pt.x - self.mapPoint.x, pt.y - self.mapPoint.y)]];
     [self updateBounds];
 }
 
 - (void)updateBounds
 {
     [super updateBounds];
-    
+
     for (NSValue *pointValue in self.points)
     {
-        CGPoint pt;
-        [pointValue getValue:&pt];
-        CGRect rect = CGRectMake(pt.x + self.mapPoint.x, pt.y + self.mapPoint.y, 0, 0);
-        self.bounds = CGRectUnion(self.bounds, rect);
+        GMMapPoint pt = [pointValue mapPointValue];
+        pt.x += self.mapPoint.x;
+        pt.y += self.mapPoint.y;
+        self.mapBounds = GMMapBoundsAddMapPoint(self.mapBounds, pt);
     }
 }
 
