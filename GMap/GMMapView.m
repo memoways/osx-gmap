@@ -5,7 +5,9 @@
 #import "GMTile.h"
 #import <curl/curl.h>
 
-const NSString *kCacheArrayKey = @"cacheArray";
+void *kOverlayObserverContext = (__bridge void *)@"kOverlayObserverContext";
+
+const NSString *kCacheArrayKey = @"kCacheArrayKey";
 const NSInteger kMaxHTTPConnectionCount = 16;
 const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
@@ -49,6 +51,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 @property (nonatomic) NSMutableArray *overlays;
 @property (nonatomic) NSMutableArray *visibleOverlays;
 
+- (void)redisplayOverlays;
 - (void)updateVisibleOverlays;
 
 @property (nonatomic) GMOverlay *clickedOverlay;
@@ -377,9 +380,9 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
 - (void)mouseDown:(NSEvent *)evt
 {
-    CGPoint relativeCenter = [self convertPoint:evt.locationInWindow fromView:nil];
+    CGPoint location = [self convertPoint:evt.locationInWindow fromView:nil];
 
-    GMMapPoint clickedPoint = [self convertViewLocationToMapPoint:relativeCenter];
+    GMMapPoint clickedPoint = [self convertViewLocationToMapPoint:location];
 
     self.clickedOverlay = nil;
     self.draggingOccured = NO;
@@ -400,9 +403,9 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
 - (void)mouseUp:(NSEvent *)evt
 {
-    CGPoint relativeCenter = [self convertPoint:evt.locationInWindow fromView:nil];
+    CGPoint location = [self convertPoint:evt.locationInWindow fromView:nil];
 
-    GMMapPoint clickedPoint = [self convertViewLocationToMapPoint:relativeCenter];
+    GMMapPoint clickedPoint = [self convertViewLocationToMapPoint:location];
 
     if (self.clickedOverlay && self.overlaysClickable && !self.draggingOccured
         && [self.delegate respondsToSelector:@selector(mapView:overlayClicked:)]
@@ -410,6 +413,9 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
         [self.delegate mapView:self overlayClicked:self.clickedOverlay];
 
     self.clickedOverlay = nil;
+
+    if ([self.delegate respondsToSelector:@selector(mapView:clickedAtPoint:locationInView:)])
+        [self.delegate mapView:self clickedAtPoint:clickedPoint locationInView:location];
 }
 
 - (void)mouseDragged:(NSEvent *)evt
@@ -735,35 +741,50 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 // ################################################################################
 // Overlays
 
+- (void)addedOverlay:(GMOverlay *)overlay
+{
+    [overlay addObserver:self forKeyPath:@"version" options:0 context:kOverlayObserverContext];
+    [self redisplayOverlays];
+}
+
+- (void)removedOverlay:(GMOverlay *)overlay
+{
+    [overlay removeObserver:self forKeyPath:@"version" context:kOverlayObserverContext];
+    [self redisplayOverlays];
+}
 
 - (void)addOverlay:(GMOverlay *)overlay
 {
     [(NSMutableArray *) _overlays addObject:overlay];
-    [self.overlayLayer setNeedsDisplay];
+    [self addedOverlay:overlay];
 }
 
 - (void)addOverlays:(NSArray *)overlays
 {
     [(NSMutableArray *) _overlays addObjectsFromArray:overlays];
-    [self.overlayLayer setNeedsDisplay];
+    
+    for (GMOverlay *overlay in overlays)
+        [self addedOverlay:overlay];
 }
 
 - (void)removeOverlay:(GMOverlay *)overlay
 {
     [(NSMutableArray *) _overlays removeObject:overlay];
-    [self.overlayLayer setNeedsDisplay];
+    [self removedOverlay:overlay];
 }
 
 - (void)removeOverlays:(NSArray *)overlays
 {
     [(NSMutableArray *) _overlays removeObjectsInArray:overlays];
-    [self.overlayLayer setNeedsDisplay];
+
+    for (GMOverlay *overlay in overlays)
+        [self removedOverlay:overlay];
 }
 
 - (void)exchangeOverlayAtIndex:(NSUInteger)index1 withOverlayAtIndex:(NSUInteger)index2
 {
     [(NSMutableArray *) _overlays exchangeObjectAtIndex:index1 withObjectAtIndex:index2];
-    [self.overlayLayer setNeedsDisplay];
+    [self redisplayOverlays];
 }
 
 - (void)insertOverlay:(GMOverlay *)overlay aboveOverlay:(GMOverlay *)sibling
@@ -771,7 +792,7 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
     NSUInteger idx = [_overlays indexOfObject:sibling];
 
     [(NSMutableArray *) _overlays insertObject:overlay atIndex:idx];
-    [self.overlayLayer setNeedsDisplay];
+    [self addedOverlay:overlay];
 }
 
 - (void)insertOverlay:(GMOverlay *)overlay belowOverlay:(GMOverlay *)sibling
@@ -779,13 +800,18 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
     NSUInteger idx = [_overlays indexOfObject:sibling] + 1;
 
     [(NSMutableArray *) _overlays insertObject:overlay atIndex:idx];
-    [self.overlayLayer setNeedsDisplay];
+    [self addedOverlay:overlay];
 }
 
 - (void)insertOverlay:(GMOverlay *)overlay atIndex:(NSUInteger)index
 {
     index = MIN(index, _overlays.count);
     [(NSMutableArray *) _overlays insertObject:overlay atIndex:index];
+    [self addedOverlay:overlay];
+}
+
+- (void)redisplayOverlays
+{
     [self.overlayLayer setNeedsDisplay];
 }
 
@@ -814,5 +840,15 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
             [self.visibleOverlays addObject:overlay];
     }
 }
+
+// ################################################################################
+// Key value observing
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (context == kOverlayObserverContext)
+        [self redisplayOverlays];
+}
+
 
 @end

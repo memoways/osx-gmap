@@ -224,6 +224,15 @@
 @protocol GMMapViewDelegate <NSObject>
 @optional
 
+/**
+ Called when the map is clicked.
+
+ @param mapView The mapView containing the overlay.
+ @param mapPoint The mapPoint where the mapView was clicked.
+ @param location The location in view of the click event.
+
+ */
+- (void)mapView:(GMMapView *)mapView clickedAtPoint:(GMMapPoint)mapPoint locationInView:(CGPoint)location;
 
 /**
  Called when the view is panned with the mouse.

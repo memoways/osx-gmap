@@ -4,6 +4,8 @@
 
 @interface GMOverlay : NSObject
 
+@property (nonatomic) NSUInteger version;
+
 @property (nonatomic) GMCoordinate coordinate;
 
 @property (nonatomic) GMMapPoint mapPoint;

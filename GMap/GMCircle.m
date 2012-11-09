@@ -8,6 +8,12 @@
 
 @implementation GMCircle
 
++ (NSSet *)keyPathsForValuesAffectingVersion
+{
+    NSMutableSet *set = [NSMutableSet setWithSet:super.keyPathsForValuesAffectingVersion];
+    return [set setByAddingObjectsFromArray:@[@"radius", @"fillColor", @"lineWidth", @"strokeColor", @"centerPointSize", @"centerPointColor"]];
+}
+
 - (void)drawInContext:(CGContextRef)ctx offset:(CGPoint)offset scale:(CGFloat)scale
 {
     CGRect ctxRect = CGContextGetClipBoundingBox(ctx);
