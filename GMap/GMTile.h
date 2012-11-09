@@ -13,13 +13,7 @@
 @property (nonatomic) BOOL loading;
 @property (nonatomic) CGImageRef image;
 
-
-@property (nonatomic) NSURLResponse *loadResponse;
-@property (nonatomic) NSMutableData *loadData;
-@property (nonatomic) CFStringRef UTType;
-
 @property (nonatomic, copy) void (^completion)(void);
-
 
 - (id)initWithX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel;
 
