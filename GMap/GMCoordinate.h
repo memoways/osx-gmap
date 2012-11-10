@@ -18,6 +18,7 @@ typedef struct
 GM_INLINE GMMapPoint GMMapPointMake(GMFloat x, GMFloat y)
 {
     GMMapPoint pt;
+
     pt.x = x;
     pt.y = y;
     return pt;
@@ -43,10 +44,10 @@ typedef struct
     GMMapPoint bottomRight;
 } GMMapBounds;
 
-GM_INLINE GMMapBounds GMMapBoundsMake(GMFloat topLeftX, GMFloat topLeftY,
-                                      GMFloat bottomRightX, GMFloat bottomRightY)
+GM_INLINE GMMapBounds GMMapBoundsMake(GMFloat topLeftX, GMFloat topLeftY, GMFloat bottomRightX, GMFloat bottomRightY)
 {
     GMMapBounds bounds;
+
     bounds.topLeft.x = topLeftX;
     bounds.topLeft.y = topLeftY;
     bounds.bottomRight.x = bottomRightX;
@@ -57,6 +58,7 @@ GM_INLINE GMMapBounds GMMapBoundsMake(GMFloat topLeftX, GMFloat topLeftY,
 GM_INLINE GMMapBounds GMMapBoundsMakeWithMapPoints(GMMapPoint topLeft, GMMapPoint bottomRight)
 {
     GMMapBounds bounds;
+
     bounds.topLeft = topLeft;
     bounds.bottomRight = bottomRight;
     return bounds;
@@ -65,7 +67,7 @@ GM_INLINE GMMapBounds GMMapBoundsMakeWithMapPoints(GMMapPoint topLeft, GMMapPoin
 GM_INLINE NSString *NSStringFromMapBounds(GMMapBounds bounds)
 {
     return [NSString stringWithFormat:@"{{%.10f, %.10f}, {%.10f, %.10f}}", bounds.topLeft.x, bounds.topLeft.x,
-           bounds.bottomRight.x, bounds.bottomRight.y];
+            bounds.bottomRight.x, bounds.bottomRight.y];
 }
 
 GM_INLINE GMMapBounds GMMapBoundsAddMapPoint(GMMapBounds bounds, GMMapPoint pt)

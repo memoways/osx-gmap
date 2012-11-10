@@ -779,7 +779,7 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 - (void)addOverlays:(NSArray *)overlays
 {
     [(NSMutableArray *) _overlays addObjectsFromArray:overlays];
-    
+
     for (GMOverlay *overlay in overlays)
         [self addedOverlay:overlay];
 }

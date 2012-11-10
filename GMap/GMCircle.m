@@ -11,6 +11,7 @@
 + (NSSet *)keyPathsForValuesAffectingVersion
 {
     NSMutableSet *set = [NSMutableSet setWithSet:super.keyPathsForValuesAffectingVersion];
+
     return [set setByAddingObjectsFromArray:@[@"radius", @"fillColor", @"lineWidth", @"strokeColor", @"centerPointSize", @"centerPointColor"]];
 }
 
@@ -74,6 +75,7 @@
 {
     GMMapPoint centerPoint = self.mapPoint;
     CGFloat normalizedHalfRadius = self.radius / kEquatorLength / 2.0;
+
     self.mapBounds = GMMapBoundsMake(centerPoint.x - normalizedHalfRadius, centerPoint.y - normalizedHalfRadius,
                                      centerPoint.x + normalizedHalfRadius, centerPoint.y + normalizedHalfRadius);
 }

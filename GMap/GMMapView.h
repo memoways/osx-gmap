@@ -13,7 +13,7 @@
 ///---------------
 
 /**
- The receiver’s delegate.
+ The receiver's delegate.
 
  A map view sends messages to its delegate regarding user events and overlays.
  */
@@ -273,7 +273,7 @@
  @param mapView The mapView containing the overlay.
  @param overlay The overlay that was clicked.
  @param location The location in view of the click event.
- 
+
  */
 - (void)mapView:(GMMapView *)mapView overlayClicked:(GMOverlay *)overlay locationInView:(CGPoint)location;
 

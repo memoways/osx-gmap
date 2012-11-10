@@ -13,6 +13,7 @@
 + (NSSet *)keyPathsForValuesAffectingVersion
 {
     NSMutableSet *set = [NSMutableSet setWithSet:super.keyPathsForValuesAffectingVersion];
+
     return [set setByAddingObjectsFromArray:@[@"lineWidth", @"shouldClose", @"fillColor", @"strokeColor"]];
 }
 

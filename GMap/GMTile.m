@@ -40,7 +40,7 @@
     if (_image == newImage)
         return;
 
-    CGImageRelease (_image);
+    CGImageRelease(_image);
     _image = CGImageRetain(newImage);
 }
 
