@@ -214,6 +214,11 @@
  */
 - (GMMapPoint)convertViewLocationToMapPoint:(CGPoint)locationInView;
 
+/**
+ Convert a point from the map coordinate system to the receiver.
+ */
+- (CGPoint)convertMapPointToViewLocation:(GMMapPoint)mapPoint;
+
 @end
 
 /**
@@ -267,8 +272,10 @@
 
  @param mapView The mapView containing the overlay.
  @param overlay The overlay that was clicked.
+ @param location The location in view of the click event.
+ 
  */
-- (void)mapView:(GMMapView *)mapView overlayClicked:(GMOverlay *)overlay;
+- (void)mapView:(GMMapView *)mapView overlayClicked:(GMOverlay *)overlay locationInView:(CGPoint)location;
 
 /**
  Called when an overlay is about to be dragged.

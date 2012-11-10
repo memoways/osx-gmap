@@ -408,13 +408,14 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     GMMapPoint clickedPoint = [self convertViewLocationToMapPoint:location];
 
     if (self.clickedOverlay && self.overlaysClickable && !self.draggingOccured
-        && [self.delegate respondsToSelector:@selector(mapView:overlayClicked:)]
+        && [self.delegate respondsToSelector:@selector(mapView:overlayClicked:locationInView:)]
         && GMMapBoundsContainsMapPoint(self.clickedOverlay.mapBounds, clickedPoint))
-        [self.delegate mapView:self overlayClicked:self.clickedOverlay];
+        [self.delegate mapView:self overlayClicked:self.clickedOverlay locationInView:location];
 
     self.clickedOverlay = nil;
 
-    if ([self.delegate respondsToSelector:@selector(mapView:clickedAtPoint:locationInView:)])
+    if (!self.draggingOccured
+        && [self.delegate respondsToSelector:@selector(mapView:clickedAtPoint:locationInView:)])
         [self.delegate mapView:self clickedAtPoint:clickedPoint locationInView:location];
 }
 
@@ -504,6 +505,22 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     return GMMapPointMake(self.centerPoint.x + locationInView.x / scale / kTileSize,
                           self.centerPoint.y - locationInView.y / scale / kTileSize);
 }
+
+- (CGPoint)convertMapPointToViewLocation:(GMMapPoint)mapPoint
+{
+    CGPoint location;
+
+    CGFloat scale = pow(2, self.zoomLevel);
+
+    location.x = scale * kTileSize * (mapPoint.x - self.centerPoint.x);
+    location.y = -scale * kTileSize * (mapPoint.y - self.centerPoint.y);
+
+    location.x += self.frame.size.width / 2.0;
+    location.y += self.frame.size.height / 2.0;
+
+    return location;
+}
+
 
 // ################################################################################
 // Tiles
