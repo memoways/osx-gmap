@@ -3,6 +3,7 @@
 
 static NSColor *randomColor(void)
 {
+    sranddev();
     return [NSColor colorWithCalibratedRed:(CGFloat)rand() / (CGFloat) RAND_MAX green:(CGFloat)rand() / (CGFloat) RAND_MAX blue:(CGFloat)rand() / (CGFloat) RAND_MAX alpha:1];
 }
 
@@ -10,6 +11,8 @@ static NSColor *randomColor(void)
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [NSColor setIgnoresAlpha:NO];
+
     self.mapView = [GMMapView.alloc initWithFrame:(CGRect) {CGPointZero, self.wrapperView.frame.size}];
     self.mapView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     [self.wrapperView addSubview:self.mapView];
@@ -20,8 +23,6 @@ static NSColor *randomColor(void)
     self.mapView.overlaysDraggable = YES;
     self.mapView.overlaysClickable = YES;
     self.mapView.delegate = self;
-
-    sranddev();
 
     NSString *directoryPath = [NSBundle.mainBundle pathForResource:@"Tracks" ofType:nil];
     NSArray *trackPaths = [NSFileManager.defaultManager contentsOfDirectoryAtPath:directoryPath error:nil];
@@ -75,9 +76,37 @@ static NSColor *randomColor(void)
     }
 }
 
-- (void)mapView:(GMMapView *)mapView overlayClicked:(GMOverlay *)overlay
+- (void)mapView:(GMMapView *)mapView overlayClicked:(GMOverlay *)overlay locationInView:(CGPoint)location
 {
-    NSLog(@"Clicked an overlay, yeah");
+    if (![overlay isKindOfClass:GMCircle.class])
+        return;
+
+    CGRect rect = CGRectZero;
+
+    rect.origin = [self.mapView convertPoint:location toView:nil];
+    rect = [self.window convertRectToScreen:rect];
+    self.inspectorPanel.frameOrigin = rect.origin;
+    [self.inspectorPanel makeKeyAndOrderFront:self];
+
+    self.selectedCircle = (GMCircle *)overlay;
+}
+
+- (void)mapView:(GMMapView *)mapView clickedAtPoint:(GMMapPoint)mapPoint locationInView:(CGPoint)location
+{
+    if (!self.addCircleOnClick)
+        return;
+    
+    GMCircle *circle = GMCircle.new;
+
+    circle.lineWidth = 2;
+    circle.strokeColor = [NSColor redColor];
+    circle.fillColor = [NSColor colorWithCalibratedRed:1 green:0 blue:0 alpha:0.5];
+    circle.centerPointColor = [NSColor blueColor];
+    circle.centerPointSize = 6;
+    circle.radius = 500;
+    circle.mapPoint = mapPoint;
+    [self.mapView addOverlay:circle];
+
 }
 
 @end

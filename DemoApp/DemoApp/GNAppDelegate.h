@@ -4,8 +4,13 @@
 
 @interface GNAppDelegate : NSObject <NSApplicationDelegate, GMMapViewDelegate>
 
-@property (assign) IBOutlet NSWindow *window;
-@property (assign) IBOutlet NSView *wrapperView;
-@property GMMapView *mapView;
+@property (nonatomic, assign) IBOutlet NSWindow *window;
+@property (nonatomic, assign) IBOutlet NSView *wrapperView;
+@property (nonatomic) GMMapView *mapView;
+
+@property (nonatomic) IBOutlet NSPanel *inspectorPanel;
+@property (nonatomic) GMCircle *selectedCircle;
+
+@property (nonatomic) BOOL addCircleOnClick;
 
 @end
