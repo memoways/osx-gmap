@@ -67,7 +67,6 @@
 		36D68A25162D8F240072667D /* GNAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNAppDelegate.h; sourceTree = "<group>"; };
 		36D68A26162D8F240072667D /* GNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNAppDelegate.m; sourceTree = "<group>"; };
 		36D68A29162D8F250072667D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		36D68A3A162D91460072667D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = "../../../Library/Developer/Xcode/DerivedData/MapKit-cpmupaaayiogcgfhuaxndesycjta/Build/Products/Debug/MapKit.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,7 +112,6 @@
 			isa = PBXGroup;
 			children = (
 				36B440D8163DEC10000B8281 /* GMap.framework */,
-				36D68A3A162D91460072667D /* MapKit.framework */,
 				36D68A13162D8F240072667D /* Cocoa.framework */,
 				36D68A15162D8F240072667D /* Other Frameworks */,
 			);
