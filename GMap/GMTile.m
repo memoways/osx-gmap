@@ -32,7 +32,7 @@
 
 - (void)dealloc
 {
-    CGImageRelease(self.image);
+    CGImageRelease(_image);
 }
 
 - (void)setImage:(CGImageRef)newImage
