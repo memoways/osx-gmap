@@ -178,6 +178,13 @@
 - (void)removeOverlays:(NSArray *)overlays;
 
 /**
+ Remove all overlays.
+
+ @see overlays
+ */
+- (void)removeAllOverlays;
+
+/**
  Change the ordering of two overlays.
 
  @see overlays

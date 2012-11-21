@@ -802,6 +802,12 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
         [self removedOverlay:overlay];
 }
 
+- (void)removeAllOverlays
+{
+	for (GMOverlay* overlay in [_overlays copy])
+		[self removeOverlay:overlay];
+}
+
 - (void)exchangeOverlayAtIndex:(NSUInteger)index1 withOverlayAtIndex:(NSUInteger)index2
 {
     [(NSMutableArray *) _overlays exchangeObjectAtIndex:index1 withObjectAtIndex:index2];
