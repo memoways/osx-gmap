@@ -43,7 +43,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 - (void)queueTileDownload:(GMTile *)tile;
 - (void)downloadTile:(GMTile *)tile;
 - (const CFStringRef)fetchTileImageAtURL:(NSString *)urlString writeInData:(NSMutableData *)data;
-- (CGImageRef)createTileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel completion:(void (^)(void))completion;
+- (CGImageRef)newTileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel completion:(void (^)(void))completion;
 
 // ################################################################################
 // Overlays
@@ -340,7 +340,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
             [self.tileLayer setNeedsDisplayInRect:tileRect];
         };
 
-        if ((image = [self createTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
+        if ((image = [self newTileImageForX:tileX y:tileY zoomLevel:level completion:redraw]))
         {
             CGContextDrawImage (ctx, tileRect, image);
             CGImageRelease (image);
@@ -525,7 +525,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 // ################################################################################
 // Tiles
 
-- (CGImageRef)createTileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel completion:(void (^)(void))completion
+- (CGImageRef)newTileImageForX:(NSInteger)x y:(NSInteger)y zoomLevel:(NSInteger)zoomLevel completion:(void (^)(void))completion
 {
     NSString *tileKey = [GMTile tileKeyForX:x y:y zoomLevel:zoomLevel];
 
