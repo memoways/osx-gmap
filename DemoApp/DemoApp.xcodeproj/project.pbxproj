@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C0E7D9B165CCE0500010DFD /* GMap.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 36B440E8163DECEE000B8281 /* GMap.framework */; };
+		0C0E7D9C165CCE1500010DFD /* GMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B440E8163DECEE000B8281 /* GMap.framework */; };
 		364E2B1616440E5C0065D5DB /* Tracks in Resources */ = {isa = PBXBuildFile; fileRef = 364E2B1516440E5C0065D5DB /* Tracks */; };
 		36A219511645A1D90098A352 /* Circles in Resources */ = {isa = PBXBuildFile; fileRef = 36A219501645A1D90098A352 /* Circles */; };
-		36B440DA163DEC1D000B8281 /* GMap.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 36B440D8163DEC10000B8281 /* GMap.framework */; };
-		36B440DB163DEC43000B8281 /* GMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B440D8163DEC10000B8281 /* GMap.framework */; };
 		36D68A14162D8F240072667D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D68A13162D8F240072667D /* Cocoa.framework */; };
 		36D68A1E162D8F240072667D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 36D68A1C162D8F240072667D /* InfoPlist.strings */; };
 		36D68A20162D8F240072667D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 36D68A1F162D8F240072667D /* main.m */; };
@@ -43,7 +43,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				36B440DA163DEC1D000B8281 /* GMap.framework in CopyFiles */,
+				0C0E7D9B165CCE0500010DFD /* GMap.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,7 +52,6 @@
 /* Begin PBXFileReference section */
 		364E2B1516440E5C0065D5DB /* Tracks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Tracks; sourceTree = "<group>"; };
 		36A219501645A1D90098A352 /* Circles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Circles; sourceTree = "<group>"; };
-		36B440D8163DEC10000B8281 /* GMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = GMap.framework; path = "/Users/kuon/Library/Developer/Xcode/DerivedData/GMap-dtmegwabjswcauhkkhcpgrrfdpto/Build/Products/Debug/GMap.framework"; sourceTree = "<absolute>"; };
 		36B440E0163DECEE000B8281 /* GMap.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GMap.xcodeproj; path = ../GMap.xcodeproj; sourceTree = "<group>"; };
 		36D68A0F162D8F240072667D /* DemoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36D68A13162D8F240072667D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -67,7 +66,6 @@
 		36D68A25162D8F240072667D /* GNAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNAppDelegate.h; sourceTree = "<group>"; };
 		36D68A26162D8F240072667D /* GNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNAppDelegate.m; sourceTree = "<group>"; };
 		36D68A29162D8F250072667D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		36D68A3A162D91460072667D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = "../../../Library/Developer/Xcode/DerivedData/MapKit-cpmupaaayiogcgfhuaxndesycjta/Build/Products/Debug/MapKit.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,7 +74,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				36D68A14162D8F240072667D /* Cocoa.framework in Frameworks */,
-				36B440DB163DEC43000B8281 /* GMap.framework in Frameworks */,
+				0C0E7D9C165CCE1500010DFD /* GMap.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,8 +110,6 @@
 		36D68A12162D8F240072667D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				36B440D8163DEC10000B8281 /* GMap.framework */,
-				36D68A3A162D91460072667D /* MapKit.framework */,
 				36D68A13162D8F240072667D /* Cocoa.framework */,
 				36D68A15162D8F240072667D /* Other Frameworks */,
 			);
