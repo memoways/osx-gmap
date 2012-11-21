@@ -862,7 +862,7 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 
     for (GMOverlay *overlay in self.overlays)
     {
-        if (GMMapBoundsSemiPerimeter(overlay.mapBounds) > minSize &&
+        if (((overlay.visibility > 0) || ((overlay.visibility == 0) && GMMapBoundsSemiPerimeter(overlay.mapBounds) > minSize)) &&
             GMMapBoundsInterectsMapBounds(overlay.mapBounds, bounds))
             [self.visibleOverlays addObject:overlay];
     }
