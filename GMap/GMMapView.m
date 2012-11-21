@@ -632,8 +632,12 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
     CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)fileURL, NULL);
 
-    tile.image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
+	CGImageRef image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
+    tile.image = image;
+
+	CGImageRelease(image);
     CFRelease(source);
+
     tile.loaded = YES;
 }
 
@@ -699,7 +703,7 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
                 else if (UTType && UTTypeEqual(UTType, kUTTypePNG))
                     type = kUTTypePNG;
 
-                CFRelease(UTType);
+                if (UTType != NULL) CFRelease(UTType);
                 CFRelease(MIMEType);
             }
         }
