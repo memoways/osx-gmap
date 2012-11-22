@@ -57,6 +57,11 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 @property (nonatomic) GMOverlay *clickedOverlay;
 @property (nonatomic) BOOL draggingOccured;
 
+// ################################################################################
+// System
+
+@property (nonatomic) NSInteger clickCount;
+
 @end
 
 @implementation GMMapView
@@ -145,6 +150,8 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
     [self updateLayerBounds];
     [self updateLayerTransform];
+
+	self.clickCount = 0;
 
     return self;
 }
@@ -417,6 +424,55 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     if (!self.draggingOccured
         && [self.delegate respondsToSelector:@selector(mapView:clickedAtPoint:locationInView:)])
         [self.delegate mapView:self clickedAtPoint:clickedPoint locationInView:location];
+
+	// simple / double / multi click detection
+
+	self.clickCount = evt.clickCount;
+
+	switch ( self.clickCount )
+	{
+		case 1:
+		{
+			[self simpleClickImmediate:evt];
+			[self performSelector:@selector(handleSimpleClickDelayed:) withObject:evt afterDelay:NSEvent.doubleClickInterval];
+			break;
+		}
+		case 2:
+		{
+			[self doubleClick:evt];
+			break;
+		}
+	}
+}
+
+- (void)simpleClickImmediate:(NSEvent*)evt
+{
+}
+
+-(void)handleSimpleClickDelayed:(NSEvent*)evt
+{
+	if ( self.clickCount == 1 ) [self simpleClickDelayed:evt];
+	else self.clickCount = 0;
+}
+
+-(void)simpleClickDelayed:(NSEvent*)evt
+{
+    CGPoint location = [self convertPoint:evt.locationInWindow fromView:nil];
+
+    GMMapPoint clickedPoint = [self convertViewLocationToMapPoint:location];
+
+    if (!self.draggingOccured && [self.delegate respondsToSelector:@selector(mapView:simpleClickedAtPoint:locationInView:)])
+		[self.delegate mapView:self simpleClickedAtPoint:clickedPoint locationInView:location];
+}
+
+-(void)doubleClick:(NSEvent*)evt
+{
+    CGPoint location = [self convertPoint:evt.locationInWindow fromView:nil];
+
+    GMMapPoint clickedPoint = [self convertViewLocationToMapPoint:location];
+
+    if (!self.draggingOccured && [self.delegate respondsToSelector:@selector(mapView:doubleClickedAtPoint:locationInView:)])
+		[self.delegate mapView:self doubleClickedAtPoint:clickedPoint locationInView:location];
 }
 
 - (void)mouseDragged:(NSEvent *)evt

@@ -247,6 +247,26 @@
 - (void)mapView:(GMMapView *)mapView clickedAtPoint:(GMMapPoint)mapPoint locationInView:(CGPoint)location;
 
 /**
+ Called when the map is simple clicked (called after a delay, not called if a double click is detected).
+
+ @param mapView The mapView containing the overlay.
+ @param mapPoint The mapPoint where the mapView was clicked.
+ @param location The location in view of the click event.
+
+ */
+- (void)mapView:(GMMapView *)mapView simpleClickedAtPoint:(GMMapPoint)mapPoint locationInView:(CGPoint)location;
+
+/**
+ Called when the map is double clicked.
+
+ @param mapView The mapView containing the overlay.
+ @param mapPoint The mapPoint where the mapView was clicked.
+ @param location The location in view of the click event.
+
+ */
+- (void)mapView:(GMMapView *)mapView doubleClickedAtPoint:(GMMapPoint)mapPoint locationInView:(CGPoint)location;
+
+/**
  Called when the view is panned with the mouse.
 
  This is not called when the centerCoordinate is set programatically.
