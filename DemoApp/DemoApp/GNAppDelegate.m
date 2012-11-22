@@ -109,4 +109,14 @@ static NSColor *randomColor(void)
 
 }
 
+- (void)mapView:(GMMapView *)mapView simpleClickedAtPoint:(GMMapPoint)mapPoint locationInView:(CGPoint)location
+{
+	NSLog(@"simple click @ (%@,%@)", @(mapPoint.x), @(mapPoint.y));
+}
+
+- (void)mapView:(GMMapView *)mapView doubleClickedAtPoint:(GMMapPoint)mapPoint locationInView:(CGPoint)location
+{
+	NSLog(@"double click @ (%@,%@)", @(mapPoint.x), @(mapPoint.y));
+}
+
 @end
