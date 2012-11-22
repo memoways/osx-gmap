@@ -17,7 +17,7 @@
 
  A map view sends messages to its delegate regarding user events and overlays.
  */
-@property (nonatomic, assign) id<GMMapViewDelegate> delegate;
+@property (nonatomic, assign) IBOutlet id<GMMapViewDelegate> delegate;
 
 ///--------------------------
 /// @name Tiles configuration
