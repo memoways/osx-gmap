@@ -21,7 +21,6 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 @property (nonatomic) NSInteger renderedZoomLevel;
 @property (nonatomic) CALayer *tileLayer;
 @property (nonatomic) CALayer *overlayLayer;
-@property (nonatomic) GMMapPoint centerPoint;
 
 - (void)updateLayerTransform;
 - (void)updateLayerBounds;

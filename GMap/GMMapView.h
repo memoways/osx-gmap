@@ -85,6 +85,11 @@
  */
 @property (nonatomic) GMFloat zoomLevel;
 
+/**
+ The coordinates of the center point of the map view.
+ */
+@property (nonatomic) GMMapPoint centerPoint;
+
 ///----------------
 /// @name Behaviour
 ///----------------
