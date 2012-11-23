@@ -417,7 +417,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
         && GMMapBoundsContainsMapPoint(self.clickedOverlay.mapBounds, clickedPoint))
         [self.delegate mapView:self overlayClicked:self.clickedOverlay locationInView:location];
 
-	if (self.draggingOccured && self.overlaysDraggable && [self.delegate respondsToSelector:@selector(mapView:didDragOverlay:toMapPoint:)])
+	if (self.draggingOccured && self.overlaysDraggable && (self.clickedOverlay != nil) && [self.delegate respondsToSelector:@selector(mapView:didDragOverlay:toMapPoint:)])
 		[self.delegate mapView:self didDragOverlay:self.clickedOverlay toMapPoint:self.clickedOverlay.mapPoint];
 
     self.clickedOverlay = nil;
