@@ -330,4 +330,15 @@
  */
 - (GMMapPoint)mapView:(GMMapView *)mapView willDragOverlay:(GMOverlay *)overlay toMapPoint:(GMMapPoint)proposedPoint;
 
+/**
+ Called when an overlay was dragged and released.
+
+ @param mapView The mapView containing the overlay.
+ @param overlay The overlay being dragged.
+ @param proposedPoint The mapPoint to where this overlay was dragged.
+
+ @return The new mapPoint of the overlay.
+ */
+- (void)mapView:(GMMapView *)mapView didDragOverlay:(GMOverlay *)overlay toMapPoint:(GMMapPoint)mapPoint;
+
 @end

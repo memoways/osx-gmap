@@ -406,7 +406,6 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     }
 }
 
-
 - (void)mouseUp:(NSEvent *)evt
 {
     CGPoint location = [self convertPoint:evt.locationInWindow fromView:nil];
@@ -417,6 +416,9 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
         && [self.delegate respondsToSelector:@selector(mapView:overlayClicked:locationInView:)]
         && GMMapBoundsContainsMapPoint(self.clickedOverlay.mapBounds, clickedPoint))
         [self.delegate mapView:self overlayClicked:self.clickedOverlay locationInView:location];
+
+	if (self.draggingOccured && self.overlaysDraggable && [self.delegate respondsToSelector:@selector(mapView:didDragOverlay:toMapPoint:)])
+		[self.delegate mapView:self didDragOverlay:self.clickedOverlay toMapPoint:self.clickedOverlay.mapPoint];
 
     self.clickedOverlay = nil;
 
