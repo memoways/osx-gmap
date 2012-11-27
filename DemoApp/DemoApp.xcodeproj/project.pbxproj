@@ -92,8 +92,8 @@
 		36D68A04162D8F240072667D = {
 			isa = PBXGroup;
 			children = (
-				36B440E0163DECEE000B8281 /* GMap.xcodeproj */,
 				36D68A19162D8F240072667D /* DemoApp */,
+				36B440E0163DECEE000B8281 /* GMap.xcodeproj */,
 				36D68A12162D8F240072667D /* Frameworks */,
 				36D68A10162D8F240072667D /* Products */,
 			);
