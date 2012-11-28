@@ -56,6 +56,8 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 @property (nonatomic) GMOverlay *clickedOverlay;
 @property (nonatomic) BOOL draggingOccured;
 
+@property (nonatomic) NSInteger lastSelectedOverlay;
+
 // ################################################################################
 // System
 
@@ -123,6 +125,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 // Overlays
 
     self.overlays = NSMutableArray.new;
+	self.lastSelectedOverlay = NSNotFound;
 
 // ################################################################################
 // General properties
@@ -273,6 +276,15 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     return self.centerCoordinate.longitude;
 }
 
+- (void) setOverlaysSelectable:(BOOL)selectable
+{
+	if (_overlaysSelectable == selectable) return;
+
+	_overlaysSelectable = selectable;
+
+	if (!_overlaysSelectable) [self deselectAllOverlays];
+}
+
 // ################################################################################
 // Drawing
 
@@ -319,6 +331,8 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
     NSInteger maxOffsetX = -offsetX;
     NSInteger maxOffsetY = -offsetY;
+
+	CGContextSetInterpolationQuality(ctx, kCGInterpolationHigh);
 
     CGContextSetFillColorWithColor(ctx, NSColor.windowBackgroundColor.CGColor);
 
@@ -403,7 +417,22 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
                 break;
             }
         }
-    }
+	}
+
+	if (self.overlaysSelectable && (self.clickedOverlay != nil) && (evt.clickCount == 1))
+	{
+		NSUInteger index = [self.overlays indexOfObject: self.clickedOverlay];
+		BOOL selected = self.clickedOverlay.selected;
+		BOOL extends = (NSEvent.modifierFlags & NSShiftKeyMask) || (NSEvent.modifierFlags & NSCommandKeyMask);
+		if (!selected)
+		{
+			[self selectOverlayIndexes:[[NSIndexSet alloc] initWithIndex: index] byExtendingSelection:extends];
+		}
+		else
+		{
+			if (extends) [self deselectOverlayAtIndex:index];
+		}
+	}
 }
 
 - (void)mouseUp:(NSEvent *)evt
@@ -894,6 +923,66 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
     [self addedOverlay:overlay];
 }
 
+- (NSIndexSet*)selectedOverlayIndexes
+{
+	NSMutableIndexSet* indexes = [NSMutableIndexSet new];
+
+	for (NSUInteger index = 0; index < self.overlays.count; index += 1)
+	{
+		GMOverlay* overlay = self.overlays[index];
+		if ( overlay.selected ) [indexes addIndex: index];
+	}
+
+	return [indexes copy];
+}
+
+- (NSArray*)selectedOverlays
+{
+	return [self.overlays objectsAtIndexes: [self selectedOverlayIndexes]];
+}
+
+- (void)selectOverlayIndexes:(NSIndexSet*)indexes byExtendingSelection:(BOOL)extend
+{
+	if (!extend) [self deselectAllOverlays];
+	if (!self.overlaysSelectable) return;
+
+	[indexes enumerateIndexesUsingBlock: ^(NSUInteger index, BOOL* stop)
+	{
+		if ( index >= self.overlays.count ) return;
+
+		GMOverlay* overlay = self.overlays[index];
+		overlay.selected = YES;
+
+		self.lastSelectedOverlay = index;
+	}];
+
+	[self redisplayOverlays];
+}
+
+- (void)deselectOverlayAtIndex:(NSUInteger)index
+{
+	if ( index >= self.overlays.count ) return;
+
+	GMOverlay* overlay = self.overlays[index];
+	overlay.selected = NO;
+
+	if ( self.lastSelectedOverlay == index ) self.lastSelectedOverlay = NSNotFound;
+
+	[self redisplayOverlays];
+}
+
+- (void)deselectAllOverlays
+{
+	for (GMOverlay* overlay in self.overlays)
+	{
+		overlay.selected = NO;
+	}
+
+	self.lastSelectedOverlay = NSNotFound;
+
+	[self redisplayOverlays];
+}
+
 - (void)redisplayOverlays
 {
     [self.overlayLayer setNeedsDisplay];
@@ -919,7 +1008,7 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 
     for (GMOverlay *overlay in self.overlays)
     {
-        if (((overlay.visibility > 0) || ((overlay.visibility == 0) && GMMapBoundsSemiPerimeter(overlay.mapBounds) > minSize)) &&
+        if (((overlay.visibility == GMOverlayAlwaysVisible) || ((overlay.visibility == GMOverlayVisible) && GMMapBoundsSemiPerimeter(overlay.mapBounds) > minSize)) &&
             GMMapBoundsInterectsMapBounds(overlay.mapBounds, bounds))
             [self.visibleOverlays addObject:overlay];
     }

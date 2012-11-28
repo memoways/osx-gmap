@@ -19,6 +19,8 @@
 typedef NS_ENUM(NSInteger, GMOverlayVisibility) { GMOverlayHidden = -1L, GMOverlayVisible, GMOverlayAlwaysVisible };
 @property (nonatomic) GMOverlayVisibility visibility;
 
+@property (nonatomic) BOOL selected;
+
 - (void)drawInContext:(CGContextRef)ctx offset:(CGPoint)offset scale:(CGFloat)scale;
 - (void)updateBounds;
 

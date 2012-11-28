@@ -40,7 +40,7 @@
 
     if (self.fillColor)
     {
-        CGContextSetFillColorWithColor(ctx, self.fillColor.CGColor);
+        CGContextSetFillColorWithColor(ctx, self.selected ? [self.fillColor highlightWithLevel: 0.75].CGColor : self.fillColor.CGColor);
 
         CGContextFillEllipseInRect(ctx, rect);
     }
@@ -48,7 +48,7 @@
     if (self.strokeColor && self.lineWidth > 0)
     {
         CGContextSetLineWidth(ctx, self.lineWidth);
-        CGContextSetStrokeColorWithColor(ctx, self.strokeColor.CGColor);
+        CGContextSetStrokeColorWithColor(ctx, self.selected ? [self.strokeColor highlightWithLevel: 0.25].CGColor : self.strokeColor.CGColor);
 
         CGContextStrokeEllipseInRect(ctx, rect);
     }
@@ -59,7 +59,7 @@
         CGRect centerRect = CGRectMake(rect.origin.x + rect.size.width / 2 - w / 2.0,
                                        rect.origin.y + rect.size.height / 2 - w / 2.0,
                                        w, w);
-        CGContextSetFillColorWithColor(ctx, self.centerPointColor.CGColor);
+        CGContextSetFillColorWithColor(ctx, self.selected ? [self.centerPointColor highlightWithLevel: 0.25].CGColor : self.centerPointColor.CGColor);
 
         CGContextFillEllipseInRect(ctx, centerRect);
     }

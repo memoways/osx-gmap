@@ -135,6 +135,9 @@
  */
 @property (nonatomic) BOOL overlaysClickable;
 
+@property (nonatomic) BOOL overlaysSelectable;
+
+
 ///---------------
 /// @name Overlays
 ///---------------
@@ -216,6 +219,18 @@
  @see overlays
  */
 - (void)insertOverlay:(GMOverlay *)overlay atIndex:(NSUInteger)index;
+
+///---------------
+/// @name Overlays selection
+///---------------
+
+// todo: docs, nothing hard really
+
+- (NSIndexSet*)selectedOverlayIndexes;
+- (NSArray*)selectedOverlays;
+- (void)selectOverlayIndexes:(NSIndexSet*)indexes byExtendingSelection:(BOOL)extend;
+- (void)deselectOverlayAtIndex:(NSUInteger)index;
+- (void)deselectAllOverlays;
 
 ///---------------
 /// @name Utilities
