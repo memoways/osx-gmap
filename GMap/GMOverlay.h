@@ -14,11 +14,10 @@
 /**
  Overlay visibility.
 
- +1: always visible
-  0: the map view decides when the overlay is visible (default value)
- -1: hidden
+ GMOverlayVisible: the map view decides when the overlay is visible (default value)
  */
-@property (nonatomic) int visibility;
+typedef NS_ENUM(NSInteger, GMOverlayVisibility) { GMOverlayHidden = -1L, GMOverlayVisible, GMOverlayAlwaysVisible };
+@property (nonatomic) GMOverlayVisibility visibility;
 
 - (void)drawInContext:(CGContextRef)ctx offset:(CGPoint)offset scale:(CGFloat)scale;
 - (void)updateBounds;
