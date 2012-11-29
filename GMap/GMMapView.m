@@ -133,6 +133,9 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     self.cacheTilesOnDisk = YES;
     self.panningEnabled = YES;
     self.scrollZoomEnabled = YES;
+	self.overlaysClickable = YES;
+	self.overlaysSelectable = NO;
+	self.overlaysAllowMultipleSelection = YES;
 
 // ################################################################################
 // Drawing
@@ -946,15 +949,29 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 	if (!extend) [self deselectAllOverlays];
 	if (!self.overlaysSelectable) return;
 
-	[indexes enumerateIndexesUsingBlock: ^(NSUInteger index, BOOL* stop)
+	if ( self.overlaysAllowMultipleSelection )
 	{
-		if ( index >= self.overlays.count ) return;
+		[indexes enumerateIndexesUsingBlock: ^(NSUInteger index, BOOL* stop)
+		{
+			if ( index >= self.overlays.count ) return;
+
+			GMOverlay* overlay = self.overlays[index];
+			overlay.selected = YES;
+
+			self.lastSelectedOverlay = index;
+		}];
+	}
+	else
+	{
+		if (extend) [self deselectAllOverlays];
+
+		NSUInteger index = indexes.firstIndex;
 
 		GMOverlay* overlay = self.overlays[index];
 		overlay.selected = YES;
 
 		self.lastSelectedOverlay = index;
-	}];
+	}
 
 	[self redisplayOverlays];
 }

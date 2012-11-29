@@ -136,6 +136,7 @@
 @property (nonatomic) BOOL overlaysClickable;
 
 @property (nonatomic) BOOL overlaysSelectable;
+@property (nonatomic) BOOL overlaysAllowMultipleSelection;
 
 
 ///---------------
