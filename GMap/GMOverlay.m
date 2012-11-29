@@ -8,6 +8,16 @@
     return [NSSet setWithObjects:@"bounds", @"coordinate", @"mapPoint", @"mapBounds", nil];
 }
 
+- (instancetype) copyWithZone: (NSZone*) zone
+{
+	GMOverlay* another = [self.class new];
+
+	another.coordinate = self.coordinate;
+	another.visibility = self.visibility;
+
+	return another;
+}
+
 - (void)drawInContext:(CGContextRef)ctx offset:(CGPoint)offset scale:(CGFloat)scale
 {
 

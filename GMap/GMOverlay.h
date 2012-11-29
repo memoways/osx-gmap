@@ -2,7 +2,7 @@
 
 @class GMMapView;
 
-@interface GMOverlay : NSObject
+@interface GMOverlay : NSObject < NSCopying >
 
 @property (nonatomic) NSUInteger version;
 

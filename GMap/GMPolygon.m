@@ -28,6 +28,19 @@
     return self;
 }
 
+- (instancetype) copyWithZone: (NSZone*) zone
+{
+	GMPolygon* another = [super copyWithZone: zone];
+
+	another.shouldClose = self.shouldClose;
+	another.fillColor = self.fillColor;
+	another.lineWidth = self.lineWidth;
+	another.strokeColor = self.strokeColor;
+	another.points = [self.points mutableCopy];
+
+	return another;
+}
+
 - (void)addPointAtCoordinate:(GMCoordinate)coordinate
 {
     GMMapPoint pt = GMCoordinateToMapPoint(coordinate);

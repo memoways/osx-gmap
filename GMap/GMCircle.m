@@ -15,6 +15,20 @@
     return [set setByAddingObjectsFromArray:@[@"radius", @"fillColor", @"lineWidth", @"strokeColor", @"centerPointSize", @"centerPointColor"]];
 }
 
+- (instancetype) copyWithZone: (NSZone*) zone
+{
+	GMCircle* another = [super copyWithZone: zone];
+
+	another.radius = self.radius;
+	another.fillColor = self.fillColor;
+	another.lineWidth = self.lineWidth;
+	another.strokeColor = self.strokeColor;
+	another.centerPointSize = self.centerPointSize;
+	another.centerPointColor = self.centerPointColor;
+
+	return another;
+}
+
 - (void)drawInContext:(CGContextRef)ctx offset:(CGPoint)offset scale:(CGFloat)scale
 {
     CGRect ctxRect = CGContextGetClipBoundingBox(ctx);
