@@ -16,7 +16,8 @@
 
  GMOverlayVisible: the map view decides when the overlay is visible (default value)
  */
-typedef NS_ENUM(NSInteger, GMOverlayVisibility) { GMOverlayHidden = -1L, GMOverlayVisible, GMOverlayAlwaysVisible };
+typedef NS_ENUM(NSInteger, GMOverlayVisibility) { GMOverlayHidden = -1, GMOverlayVisible = 0, GMOverlayAlwaysVisible = +1 };
+
 @property (nonatomic) GMOverlayVisibility visibility;
 
 @property (nonatomic) BOOL selected;
