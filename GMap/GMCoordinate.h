@@ -64,6 +64,16 @@ GM_INLINE GMMapBounds GMMapBoundsMakeWithMapPoints(GMMapPoint topLeft, GMMapPoin
     return bounds;
 }
 
+GM_INLINE NSRect NSRectFromMapBounds(GMMapBounds bounds)
+{
+	return NSMakeRect(bounds.topLeft.x, bounds.topLeft.y, bounds.bottomRight.x - bounds.topLeft.x, bounds.bottomRight.y - bounds.topLeft.y);
+}
+
+GM_INLINE GMMapBounds GMMapBoundsFromNSRect(NSRect rect)
+{
+	return GMMapBoundsMake(NSMinX(rect), NSMinY(rect), NSMaxX(rect), NSMaxY(rect));
+}
+
 GM_INLINE NSString *NSStringFromMapBounds(GMMapBounds bounds)
 {
     return [NSString stringWithFormat:@"{{%.10f, %.10f}, {%.10f, %.10f}}", bounds.topLeft.x, bounds.topLeft.x,
@@ -85,6 +95,13 @@ GM_INLINE GMMapBounds GMMapBoundsAddMapPoint(GMMapBounds bounds, GMMapPoint pt)
     return bounds;
 }
 
+GM_INLINE GMMapBounds GMMapBoundsAddMapBounds(GMMapBounds bounds1, GMMapBounds bounds2)
+{
+	NSRect rect = NSUnionRect(NSRectFromMapBounds(bounds1), NSRectFromMapBounds(bounds2));
+
+	return GMMapBoundsFromNSRect(rect);
+}
+
 GM_INLINE BOOL GMMapBoundsContainsMapPoint(GMMapBounds bounds, GMMapPoint pt)
 {
     return (bounds.topLeft.x <= pt.x && bounds.bottomRight.x >= pt.x
@@ -97,6 +114,11 @@ GM_INLINE BOOL GMMapBoundsInterectsMapBounds(GMMapBounds a, GMMapBounds b)
              || b.topLeft.x > a.bottomRight.x
              || b.bottomRight.y < a.topLeft.y
              || b.topLeft.y > a.bottomRight.y);
+}
+
+GM_INLINE GMMapPoint GMMapBoundsCenterPoint(GMMapBounds bounds)
+{
+	return GMMapPointMake((bounds.topLeft.x + bounds.bottomRight.x) / 2, (bounds.topLeft.y + bounds.bottomRight.y) / 2);
 }
 
 GM_INLINE GMFloat GMMapBoundsSemiPerimeter(GMMapBounds bounds)

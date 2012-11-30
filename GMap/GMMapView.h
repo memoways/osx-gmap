@@ -229,9 +229,17 @@
 
 - (NSIndexSet*)selectedOverlayIndexes;
 - (NSArray*)selectedOverlays;
+
 - (void)selectOverlayIndexes:(NSIndexSet*)indexes byExtendingSelection:(BOOL)extend;
+
 - (void)deselectOverlayAtIndex:(NSUInteger)index;
 - (void)deselectAllOverlays;
+
+///---------------
+/// @name Overlays view
+///---------------
+
+- (void)zoomToFitOverlays:(NSArray*)overlays;
 
 ///---------------
 /// @name Utilities
