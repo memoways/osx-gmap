@@ -946,7 +946,13 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 
 - (void)selectOverlayIndexes:(NSIndexSet*)indexes byExtendingSelection:(BOOL)extend
 {
-	if (!extend) [self deselectAllOverlays];
+	if (!extend)
+	{
+		for (GMOverlay* overlay in self.overlays) overlay.selected = NO;
+
+		self.lastSelectedOverlay = NSNotFound;
+	}
+
 	if (!self.overlaysSelectable) return;
 
 	if ( self.overlaysAllowMultipleSelection )
@@ -963,7 +969,10 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 	}
 	else
 	{
-		if (extend) [self deselectAllOverlays];
+		if (extend)
+		{
+			for (GMOverlay* overlay in self.overlays) overlay.selected = NO;
+		}
 
 		NSUInteger index = indexes.firstIndex;
 
@@ -974,6 +983,11 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 	}
 
 	[self redisplayOverlays];
+
+	if ([self.delegate respondsToSelector:@selector(mapView:overlaySelectionDidChange:)])
+	{
+		[self.delegate mapView: self overlaySelectionDidChange: self.selectedOverlayIndexes];
+	}
 }
 
 - (void)deselectOverlayAtIndex:(NSUInteger)index
@@ -990,14 +1004,16 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 
 - (void)deselectAllOverlays
 {
-	for (GMOverlay* overlay in self.overlays)
-	{
-		overlay.selected = NO;
-	}
+	for (GMOverlay* overlay in self.overlays) overlay.selected = NO;
 
 	self.lastSelectedOverlay = NSNotFound;
 
 	[self redisplayOverlays];
+
+	if ([self.delegate respondsToSelector:@selector(mapView:overlaySelectionDidChange:)])
+	{
+		[self.delegate mapView: self overlaySelectionDidChange: self.selectedOverlayIndexes];
+	}
 }
 
 - (void)redisplayOverlays

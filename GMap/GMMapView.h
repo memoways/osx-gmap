@@ -357,4 +357,13 @@
  */
 - (void)mapView:(GMMapView *)mapView didDragOverlay:(GMOverlay *)overlay toMapPoint:(GMMapPoint)mapPoint;
 
+/**
+ Called when the overlay selection did change.
+
+ @param mapView The mapView containing the overlay.
+ @param indexes The selected overlay indexes.
+
+ */
+- (void)mapView:(GMMapView *)mapView overlaySelectionDidChange:(NSIndexSet*)indexes;
+
 @end
