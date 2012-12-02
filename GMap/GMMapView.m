@@ -1016,7 +1016,7 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 	}
 }
 
-- (void)zoomToFitOverlays:(NSArray*)overlays
+- (void)zoomToFitOverlays:(NSArray*)overlays round:(BOOL)round
 {
 	if (overlays.count == 0) return;
 	if (![overlays[0] isKindOfClass: GMOverlay.class]) return;
@@ -1030,18 +1030,19 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
 
 	GMMapPoint desiredCenter = GMMapBoundsCenterPoint(bounds);
 
-    CGFloat scale = exp2(self.zoomLevel) * kTileSize;
-	CGFloat desiredScale = self.frame.size.width / (bounds.bottomRight.x - bounds.topLeft.x);
-	desiredScale = fmin( desiredScale, self.frame.size.height / (bounds.bottomRight.y - bounds.topLeft.y));
-
-	CGFloat desiredZoom = log2(desiredScale / kTileSize);
-
 	if ([self.delegate respondsToSelector:@selector(mapView:willPanCenterToMapPoint:)])
 	{
 		desiredCenter = [self.delegate mapView:self willPanCenterToMapPoint:desiredCenter];
 	}
 
 	self.centerPoint = GMMapBoundsCenterPoint(bounds);
+	
+    //CGFloat scale = exp2(self.zoomLevel) * kTileSize;
+	CGFloat desiredScale = self.frame.size.width / (bounds.bottomRight.x - bounds.topLeft.x);
+	desiredScale = fmin( desiredScale, self.frame.size.height / (bounds.bottomRight.y - bounds.topLeft.y));
+
+	CGFloat desiredZoom = log2(desiredScale / kTileSize);
+	if ( round ) desiredZoom = floor( desiredZoom );
 
     if ([self.delegate respondsToSelector:@selector(mapView:willScrollZoomToLevel:)])
 	{

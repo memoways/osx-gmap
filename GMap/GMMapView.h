@@ -239,7 +239,7 @@
 /// @name Overlays view
 ///---------------
 
-- (void)zoomToFitOverlays:(NSArray*)overlays;
+- (void)zoomToFitOverlays:(NSArray*)overlays round:(BOOL)round;
 
 ///---------------
 /// @name Utilities
