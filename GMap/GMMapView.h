@@ -56,7 +56,7 @@
 /**
  If YES, all downloaded tiles will be cached on disk.
 
- @warning FIXME: AT PRESENT THERE IS NO CACHE CLEANING MECHANISM
+ A maximum of 50 000 tiles will be kept on disk.
  */
 @property (nonatomic) BOOL cacheTilesOnDisk;
 
@@ -130,8 +130,8 @@
 /**
  If set to `YES`, overlays will be clickable.
 
- Clickable overlays does nothing except calling [GMMapViewDelegate mapView:overlayClicked:] on the delegate when
- an overlay is clicked.
+ Clickable overlays does nothing except calling [GMMapViewDelegate mapView:overlayClicked:]
+ on the delegate when an overlay is clicked.
 
  A click is defined by a `mouseDown` followed by a `mouseUp` with no movement between the two.
 
@@ -248,9 +248,11 @@
 @end
 
 /**
- The `GMMapViewDelegate` protocol defines a set of optional methods that you can use to receive map-related messages.
+ The `GMMapViewDelegate` protocol defines a set of optional
+ methods that you can use to receive map-related messages.
 
- Before releasing a GMMapView object for which you have a set a delegate, set that object's `delegate` property to `nil`.
+ Before releasing a GMMapView object for which you have a set
+ a delegate, set that object's `delegate` property to `nil`.
  */
 @protocol GMMapViewDelegate <NSObject>
 @optional
@@ -261,7 +263,6 @@
  @param mapView The mapView containing the overlay.
  @param mapPoint The mapPoint where the mapView was clicked.
  @param location The location in view of the click event.
-
  */
 - (void)mapView:(GMMapView *)mapView clickedAtPoint:(GMMapPoint)mapPoint locationInView:(CGPoint)location;
 
