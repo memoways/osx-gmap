@@ -3,6 +3,9 @@ GMap
 
 Simple NSView subclass to display map tiles.
 
+## Sample screenshot
+
+![Demo application screenshot](http://goyman.github.com/gmap/images/demoapp.png)
 
 ## Documentation
 
