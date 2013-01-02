@@ -42,7 +42,7 @@
  - http://otile1.mqcdn.com/tiles/1.0.0/osm/%ld/%ld/%ld.jpg
  - http://mydomain.com/tiles/%2$ld/%3$ld/%1$ld.png
  */
-@property (nonatomic) NSString *tileURLFormat;
+@property (nonatomic, copy) NSString *tileURLFormat;
 
 /**
  The absolute path of the directory where tiles will be cached on disk.
@@ -51,7 +51,7 @@
 
  The default is ~/Library/Caches/<yourapp bundle identifier>/GMapTiles.
  */
-@property (nonatomic) NSString *tileCacheDirectoryPath;
+@property (nonatomic, copy) NSString *tileCacheDirectoryPath;
 
 /**
  If YES, all downloaded tiles will be cached on disk.
