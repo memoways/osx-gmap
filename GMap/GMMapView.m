@@ -261,22 +261,22 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     [self.overlayLayer setNeedsDisplay];
 }
 
-- (void)setCenterLatitude:(CGFloat)latitude
+- (void)setCenterLatitude:(GMFloat)latitude
 {
     self.centerCoordinate = GMCoordinateMake(latitude, self.centerCoordinate.longitude);
 }
 
-- (void)setCenterLongitude:(CGFloat)longitude
+- (void)setCenterLongitude:(GMFloat)longitude
 {
     self.centerCoordinate = GMCoordinateMake(self.centerCoordinate.latitude, longitude);
 }
 
-- (CGFloat)centerLatitude
+- (GMFloat)centerLatitude
 {
     return self.centerCoordinate.latitude;
 }
 
-- (CGFloat)centerLongitude
+- (GMFloat)centerLongitude
 {
     return self.centerCoordinate.longitude;
 }
@@ -923,16 +923,25 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
     if (!overlays.count)
         return;
 
-    __block GMMapBounds bounds;
+    GMMapBounds bounds;
+    BOOL boundsSet = NO;
 
-    [overlays enumerateObjectsUsingBlock:^(GMOverlay *overlay, NSUInteger idx, BOOL *stop) {
-        if (idx == 0)
+    for (GMOverlay *overlay in overlays)
+    {
+        if (GMMapBoundsArea(overlay.mapBounds) == 0)
+            continue;
+
+        if (!boundsSet)
+        {
             bounds = overlay.mapBounds;
+            boundsSet = YES;
+        }
         else
             bounds = GMMapBoundsAddMapBounds(bounds, overlay.mapBounds);
-    }];
+    }
 
-    [self zoomToFitMapBounds:bounds];
+    if (boundsSet)
+        [self zoomToFitMapBounds:bounds];
 }
 
 - (void)redisplayOverlays
