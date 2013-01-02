@@ -90,7 +90,7 @@
 
  The `centerPoint` and `zoomLevel` will be updated to fit the bounds as best as possible.
 
- @param overlays Bounds to fit.
+ @param bounds Bounds to fit.
  */
 - (void)zoomToFitMapBounds:(GMMapBounds)bounds;
 
@@ -130,7 +130,7 @@
 /**
  If set to `YES`, overlays will be clickable.
 
- Clickable overlays does nothing except calling [GMMapViewDelegate mapView:overlayClicked:]
+ Clickable overlays does nothing except calling [GMMapViewDelegate mapView:overlayClicked:locationInView:]
  on the delegate when an overlay is clicked.
 
  A click is defined by a `mouseDown` followed by a `mouseUp` with no movement between the two.
@@ -159,6 +159,8 @@
 
  The overlay is added at the end of the overlays array.
 
+ @param overlay An overlay to add.
+
  @see overlays
  */
 - (void)addOverlay:(GMOverlay *)overlay;
@@ -168,6 +170,8 @@
 
  All objects in the array must be subclass of GMOverlay.
 
+ @param overlays An array of overlays to add.
+
  @see overlays
  */
 - (void)addOverlays:(NSArray *)overlays;
@@ -175,12 +179,16 @@
 /**
  Remove an overlay.
 
+ @param overlay An overlay to remove.
+
  @see overlays
  */
 - (void)removeOverlay:(GMOverlay *)overlay;
 
 /**
  Remove overlays.
+
+ @param overlays An array of overlays to remove.
 
  @see overlays
  */
@@ -196,12 +204,18 @@
 /**
  Change the ordering of two overlays.
 
+ @param index1 Index of first overlay.
+ @param index2 Index of second overlay.
+
  @see overlays
  */
 - (void)exchangeOverlayAtIndex:(NSUInteger)index1 withOverlayAtIndex:(NSUInteger)index2;
 
 /**
  Insert an overlay above another one.
+
+ @param overlay The overlay to add.
+ @param sibling And overlay that is already part of `overlays` above which `overlay` will be added.
 
  @see overlays
  */
@@ -210,12 +224,18 @@
 /**
  Insert an overlay below another one.
 
+ @param overlay The overlay to add.
+ @param sibling And overlay that is already part of `overlays` under which `overlay` will be added.
+
  @see overlays
  */
 - (void)insertOverlay:(GMOverlay *)overlay belowOverlay:(GMOverlay *)sibling;
 
 /**
  Insert an overlay at a specific index.
+
+ @param overlay The overlay to add.
+ @param index The index where to insert overlay.
 
  @see overlays
  */
@@ -236,14 +256,21 @@
 
 /**
  Convert a point from the receiver to the map coordinate system.
+
+ @param locationInView A point in view coordinate to convert to map point.
+
+ @return A point in map coordinate corresponding to `locationInView`.
  */
 - (GMMapPoint)convertViewLocationToMapPoint:(CGPoint)locationInView;
 
 /**
  Convert a point from the map coordinate system to the receiver.
+
+ @param mapPoint A point in map coordinate to convert to view location.
+
+ @return Location in view.
  */
 - (CGPoint)convertMapPointToViewLocation:(GMMapPoint)mapPoint;
-
 
 @end
 
