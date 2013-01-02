@@ -109,4 +109,10 @@ static NSColor *randomColor(void)
 
 }
 
+- (IBAction)fitOverlays:(id)sender
+{
+    [self.mapView zoomToFitOverlays:self.mapView.overlays];
+}
+
+
 @end

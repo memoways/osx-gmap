@@ -85,6 +85,15 @@
  */
 @property (nonatomic) GMFloat zoomLevel;
 
+/**
+ Fit the mapview to bounds
+
+ The `centerPoint` and `zoomLevel` will be updated to fit the bounds as best as possible.
+
+ @param overlays Bounds to fit.
+ */
+- (void)zoomToFitMapBounds:(GMMapBounds)bounds;
+
 ///----------------
 /// @name Behaviour
 ///----------------
@@ -212,6 +221,15 @@
  */
 - (void)insertOverlay:(GMOverlay *)overlay atIndex:(NSUInteger)index;
 
+/**
+ Fit the mapview to overlay bounds
+
+ The `centerPoint` and `zoomLevel` will be updated to fit the bounds as best as possible.
+
+ @param overlays An array of overlays to fit.
+ */
+- (void)zoomToFitOverlays:(NSArray*)overlays;
+
 ///---------------
 /// @name Utilities
 ///---------------
@@ -225,6 +243,7 @@
  Convert a point from the map coordinate system to the receiver.
  */
 - (CGPoint)convertMapPointToViewLocation:(GMMapPoint)mapPoint;
+
 
 @end
 

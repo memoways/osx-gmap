@@ -85,6 +85,17 @@ GM_INLINE GMMapBounds GMMapBoundsAddMapPoint(GMMapBounds bounds, GMMapPoint pt)
     return bounds;
 }
 
+GM_INLINE GMMapBounds GMMapBoundsAddMapBounds(GMMapBounds bounds, GMMapBounds boundsToAdd)
+{
+    bounds.topLeft.x = MIN(bounds.topLeft.x, boundsToAdd.topLeft.x);
+    bounds.topLeft.y = MIN(bounds.topLeft.y, boundsToAdd.topLeft.y);
+
+    bounds.bottomRight.x = MAX(bounds.bottomRight.x, boundsToAdd.bottomRight.x);
+    bounds.bottomRight.y = MAX(bounds.bottomRight.y, boundsToAdd.bottomRight.y);
+
+    return bounds;
+}
+
 GM_INLINE BOOL GMMapBoundsContainsMapPoint(GMMapBounds bounds, GMMapPoint pt)
 {
     return (bounds.topLeft.x <= pt.x && bounds.bottomRight.x >= pt.x
@@ -102,6 +113,11 @@ GM_INLINE BOOL GMMapBoundsInterectsMapBounds(GMMapBounds a, GMMapBounds b)
 GM_INLINE GMFloat GMMapBoundsSemiPerimeter(GMMapBounds bounds)
 {
     return bounds.bottomRight.x - bounds.topLeft.x + bounds.bottomRight.y - bounds.topLeft.y;
+}
+
+GM_INLINE GMMapPoint GMMapBoundsCenterPoint(GMMapBounds bounds)
+{
+    return GMMapPointMake(bounds.topLeft.x + (bounds.bottomRight.x - bounds.topLeft.x) / 2.0, bounds.topLeft.y + (bounds.bottomRight.y - bounds.topLeft.y) / 2.0);
 }
 
 @interface NSValue (GMMapBounds)

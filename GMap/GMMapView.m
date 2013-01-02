@@ -267,6 +267,19 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     return self.centerCoordinate.longitude;
 }
 
+- (void)zoomToFitMapBounds:(GMMapBounds)bounds
+{
+    GMMapPoint centerPoint = GMMapBoundsCenterPoint(bounds);
+
+    CGFloat scale = fmin(self.frame.size.width / (bounds.bottomRight.x - bounds.topLeft.x),
+                         self.frame.size.height / (bounds.bottomRight.y - bounds.topLeft.y));
+
+    CGFloat zoomLevel = log2(scale / kTileSize);
+
+    self.centerPoint = centerPoint;
+    self.zoomLevel = zoomLevel;
+}
+
 // ################################################################################
 // Drawing
 
@@ -836,6 +849,23 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
     index = MIN(index, _overlays.count);
     [(NSMutableArray *) _overlays insertObject:overlay atIndex:index];
     [self addedOverlay:overlay];
+}
+
+- (void)zoomToFitOverlays:(NSArray*)overlays
+{
+    if (!overlays.count)
+        return;
+
+    __block GMMapBounds bounds;
+
+    [overlays enumerateObjectsUsingBlock:^(GMOverlay *overlay, NSUInteger idx, BOOL *stop) {
+        if (idx == 0)
+            bounds = overlay.mapBounds;
+        else
+            bounds = GMMapBoundsAddMapBounds(bounds, overlay.mapBounds);
+    }];
+
+    [self zoomToFitMapBounds:bounds];
 }
 
 - (void)redisplayOverlays
