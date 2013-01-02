@@ -7,6 +7,8 @@
 
 void *kOverlayObserverContext = (__bridge void *)@"kOverlayObserverContext";
 
+const NSUInteger kMaxDiskCacheFiles = 50000;
+
 const NSString *kCacheArrayKey = @"kCacheArrayKey";
 const NSInteger kMaxHTTPConnectionCount = 16;
 const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
@@ -37,7 +39,13 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 @property NSMutableArray *tileConnections;
 @property NSInteger tileConnectionIndex;
 
+
 - (NSString *)cachePathForTile:(GMTile *)tile;
+
+- (void)flushDiskCache;
+
+@property NSTimer *flushDiskCacheTimer;
+@property NSOperationQueue *diskCacheQueue;
 
 - (void)loadTileFromDiskCache:(GMTile *)tile;
 - (void)queueTileDownload:(GMTile *)tile;
@@ -114,6 +122,8 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     }
 
     self.tileCache = NSMutableDictionary.new;
+    self.diskCacheQueue = NSOperationQueue.new;
+    self.flushDiskCacheTimer = [NSTimer scheduledTimerWithTimeInterval:20 target:self selector:@selector(scheduleDiskCacheFlush) userInfo:nil repeats:YES];
 
 // ################################################################################
 // Overlays
@@ -153,6 +163,10 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 {
     self.layer.delegate = nil;
     self.tileLayer.delegate = nil;
+    [self.tileLoadQueue cancelAllOperations];
+    [self.diskCacheQueue cancelAllOperations];
+    [self.flushDiskCacheTimer invalidate];
+    [self flushDiskCache];
 }
 
 - (void)viewDidEndLiveResize
@@ -769,6 +783,59 @@ static size_t writeData(void *ptr, size_t size, size_t nmemb, void *userdata)
          if (image)
              tile.completion ();
      }];
+}
+
+- (void)scheduleDiskCacheFlush
+{
+    if (!self.cacheTilesOnDisk)
+        return;
+
+    [self.diskCacheQueue addOperationWithBlock:^{
+        [self flushDiskCache];
+    }];
+}
+
+- (void)flushDiskCache
+{
+    NSString *dirPath = self.tileCacheDirectoryPath;
+    NSArray *tilePaths = [NSFileManager.defaultManager contentsOfDirectoryAtPath:dirPath error:nil];
+
+    if (tilePaths.count < kMaxDiskCacheFiles)
+        return;
+
+    NSMutableArray *files = NSMutableArray.new;
+
+    for (NSString *tilePath in tilePaths)
+    {
+        NSString *absolutePath = [dirPath stringByAppendingPathComponent:tilePath];
+        NSDictionary *attrs = [NSFileManager.defaultManager attributesOfItemAtPath:absolutePath error:nil];
+
+        NSMutableDictionary *file = NSMutableDictionary.new;
+        file[@"date"] = attrs[NSFileCreationDate];
+        file[@"absolutePath"] = absolutePath;
+
+        file[@"zoomLevel"] = [tilePath componentsSeparatedByString:@"-"][0];
+
+        [files addObject:file];
+    }
+
+    [files sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]]];
+
+
+    [files enumerateObjectsUsingBlock:^(NSMutableDictionary *file, NSUInteger idx, BOOL *stop) {
+        NSUInteger zoomLevel = [file[@"zoomLevel"] integerValue];
+        NSUInteger keepScore = idx;
+        keepScore += (18 - zoomLevel) * 100;
+
+        file[@"keepScore"] = [NSNumber numberWithUnsignedInteger:keepScore];
+    }];
+
+    [files sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"keepScore" ascending:YES]]];
+
+    [files removeObjectsInRange:NSMakeRange(files.count - kMaxDiskCacheFiles - 1, kMaxDiskCacheFiles)];
+
+    for (NSDictionary *file in files)
+        [NSFileManager.defaultManager removeItemAtPath:file[@"absolutePath"] error:nil];
 
 }
 

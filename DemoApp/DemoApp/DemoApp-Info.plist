@@ -30,5 +30,7 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>GMTileURLFormat</key>
+	<string>http://otile1.mqcdn.com/tiles/1.0.0/osm/%ld/%ld/%ld.jpg</string>
 </dict>
 </plist>
