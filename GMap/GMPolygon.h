@@ -4,6 +4,9 @@
 @interface GMPolygon : GMOverlay
 
 - (void)addPointAtCoordinate:(GMCoordinate)coordinate;
+- (void)addPointsAtCoordinates:(GMCoordinate *)coordinates count:(NSUInteger)coordinateCount;
+
+- (void)removeAllPoints;
 
 @property (nonatomic) BOOL shouldClose;
 @property (nonatomic) NSColor *fillColor;

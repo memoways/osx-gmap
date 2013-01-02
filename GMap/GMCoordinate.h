@@ -4,6 +4,10 @@
 #define GM_INLINE NS_INLINE
 #endif
 
+#ifndef GM_EXTERN
+#define GM_EXTERN extern
+#endif
+
 static const double kTileSize = 256.0; // in pixel
 static const double kEquatorLength = 40075016.686; // in meters
 
@@ -14,6 +18,8 @@ typedef struct
     GMFloat x;
     GMFloat y;
 } GMMapPoint;
+
+GM_EXTERN GMMapPoint GMMapPointZero;
 
 GM_INLINE GMMapPoint GMMapPointMake(GMFloat x, GMFloat y)
 {
@@ -43,6 +49,8 @@ typedef struct
     GMMapPoint topLeft;
     GMMapPoint bottomRight;
 } GMMapBounds;
+
+GM_EXTERN GMMapBounds GMMapBoundsZero;
 
 GM_INLINE GMMapBounds GMMapBoundsMake(GMFloat topLeftX, GMFloat topLeftY, GMFloat bottomRightX, GMFloat bottomRightY)
 {
@@ -118,6 +126,11 @@ GM_INLINE GMFloat GMMapBoundsSemiPerimeter(GMMapBounds bounds)
 GM_INLINE GMMapPoint GMMapBoundsCenterPoint(GMMapBounds bounds)
 {
     return GMMapPointMake(bounds.topLeft.x + (bounds.bottomRight.x - bounds.topLeft.x) / 2.0, bounds.topLeft.y + (bounds.bottomRight.y - bounds.topLeft.y) / 2.0);
+}
+
+GM_INLINE GMFloat GMMapBoundsArea(GMMapBounds bounds)
+{
+    return (bounds.bottomRight.x - bounds.topLeft.x) * (bounds.bottomRight.y - bounds.topLeft.y);
 }
 
 @interface NSValue (GMMapBounds)
