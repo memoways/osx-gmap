@@ -53,6 +53,7 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 - (void)redisplayOverlays;
 - (void)updateVisibleOverlays;
 
+@property (nonatomic) GMOverlay* hoveredOverlay;
 @property (nonatomic) GMOverlay *clickedOverlay;
 @property (nonatomic) BOOL draggingOccured;
 
@@ -506,6 +507,45 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
 
     if (!self.draggingOccured && [self.delegate respondsToSelector:@selector(mapView:doubleClickedAtPoint:locationInView:)])
 		[self.delegate mapView:self doubleClickedAtPoint:clickedPoint locationInView:location];
+}
+
+- (void)mouseMoved:(NSEvent *)evt
+{
+    CGPoint location = [self convertPoint:evt.locationInWindow fromView:nil];
+
+    GMMapPoint hoveredPoint = [self convertViewLocationToMapPoint:location];
+
+	GMOverlay* previouslyHoveredOverlay = self.hoveredOverlay;
+
+	self.hoveredOverlay = nil;
+
+	for (GMOverlay *overlay in self.visibleOverlays.reverseObjectEnumerator)
+	{
+		if (GMMapBoundsContainsMapPoint(overlay.mapBounds, hoveredPoint))
+		{
+			self.hoveredOverlay = overlay;
+			break;
+        }
+	}
+
+	if ( (previouslyHoveredOverlay != nil) && (self.hoveredOverlay != previouslyHoveredOverlay) &&
+		[self.delegate respondsToSelector:@selector(mapView:overlayExited:locationInView:)])
+	{
+		[self.delegate mapView:self overlayExited:previouslyHoveredOverlay locationInView:location];
+	}
+
+	if ( (previouslyHoveredOverlay == nil) && (self.hoveredOverlay != nil) &&
+		[self.delegate respondsToSelector:@selector(mapView:overlayEntered:locationInView:)])
+	{
+		[self.delegate mapView:self overlayEntered:self.hoveredOverlay locationInView:location];
+	}
+
+	if ((self.hoveredOverlay != nil) && !self.draggingOccured &&
+		[self.delegate respondsToSelector:@selector(mapView:overlayHovered:locationInView:)] &&
+		GMMapBoundsContainsMapPoint(self.hoveredOverlay.mapBounds, hoveredPoint))
+	{
+		[self.delegate mapView:self overlayHovered:self.hoveredOverlay locationInView:location];
+	}
 }
 
 - (void)mouseDragged:(NSEvent *)evt

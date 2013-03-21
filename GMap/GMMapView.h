@@ -324,6 +324,18 @@
 - (GMFloat)mapView:(GMMapView *)mapView willScrollZoomToLevel:(GMFloat)proposedZoomLevel;
 
 /**
+ Called when the cursor moves within an overlay bounds.
+
+ @param mapView The mapView containing the overlay.
+ @param overlay The overlay.
+ @param location The location in view.
+
+ */
+- (void)mapView:(GMMapView *)mapView overlayEntered:(GMOverlay *)overlay locationInView:(CGPoint)location;
+- (void)mapView:(GMMapView *)mapView overlayHovered:(GMOverlay *)overlay locationInView:(CGPoint)location;
+- (void)mapView:(GMMapView *)mapView overlayExited:(GMOverlay *)overlay locationInView:(CGPoint)location;
+
+/**
  Called when a click occurs within an overlay bounds.
 
  @param mapView The mapView containing the overlay.
