@@ -4,6 +4,10 @@
 #define GM_INLINE NS_INLINE
 #endif
 
+#ifndef GM_EXTERN
+#define GM_EXTERN extern
+#endif
+
 static const double kTileSize = 256.0; // in pixel
 static const double kEquatorLength = 40075016.686; // in meters
 
@@ -14,6 +18,8 @@ typedef struct
     GMFloat x;
     GMFloat y;
 } GMMapPoint;
+
+GM_EXTERN GMMapPoint GMMapPointZero;
 
 GM_INLINE GMMapPoint GMMapPointMake(GMFloat x, GMFloat y)
 {
@@ -43,6 +49,8 @@ typedef struct
     GMMapPoint topLeft;
     GMMapPoint bottomRight;
 } GMMapBounds;
+
+GM_EXTERN GMMapBounds GMMapBoundsZero;
 
 GM_INLINE GMMapBounds GMMapBoundsMake(GMFloat topLeftX, GMFloat topLeftY, GMFloat bottomRightX, GMFloat bottomRightY)
 {
@@ -95,11 +103,15 @@ GM_INLINE GMMapBounds GMMapBoundsAddMapPoint(GMMapBounds bounds, GMMapPoint pt)
     return bounds;
 }
 
-GM_INLINE GMMapBounds GMMapBoundsAddMapBounds(GMMapBounds bounds1, GMMapBounds bounds2)
+GM_INLINE GMMapBounds GMMapBoundsAddMapBounds(GMMapBounds bounds, GMMapBounds boundsToAdd)
 {
-	NSRect rect = NSUnionRect(NSRectFromMapBounds(bounds1), NSRectFromMapBounds(bounds2));
+    bounds.topLeft.x = MIN(bounds.topLeft.x, boundsToAdd.topLeft.x);
+    bounds.topLeft.y = MIN(bounds.topLeft.y, boundsToAdd.topLeft.y);
 
-	return GMMapBoundsFromNSRect(rect);
+    bounds.bottomRight.x = MAX(bounds.bottomRight.x, boundsToAdd.bottomRight.x);
+    bounds.bottomRight.y = MAX(bounds.bottomRight.y, boundsToAdd.bottomRight.y);
+
+    return bounds;
 }
 
 GM_INLINE BOOL GMMapBoundsContainsMapPoint(GMMapBounds bounds, GMMapPoint pt)
@@ -124,6 +136,16 @@ GM_INLINE GMMapPoint GMMapBoundsCenterPoint(GMMapBounds bounds)
 GM_INLINE GMFloat GMMapBoundsSemiPerimeter(GMMapBounds bounds)
 {
     return bounds.bottomRight.x - bounds.topLeft.x + bounds.bottomRight.y - bounds.topLeft.y;
+}
+
+GM_INLINE GMMapPoint GMMapBoundsCenterPoint(GMMapBounds bounds)
+{
+    return GMMapPointMake(bounds.topLeft.x + (bounds.bottomRight.x - bounds.topLeft.x) / 2.0, bounds.topLeft.y + (bounds.bottomRight.y - bounds.topLeft.y) / 2.0);
+}
+
+GM_INLINE GMFloat GMMapBoundsArea(GMMapBounds bounds)
+{
+    return (bounds.bottomRight.x - bounds.topLeft.x) * (bounds.bottomRight.y - bounds.topLeft.y);
 }
 
 @interface NSValue (GMMapBounds)

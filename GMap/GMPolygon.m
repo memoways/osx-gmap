@@ -41,6 +41,12 @@
 	return another;
 }
 
+- (void)removeAllPoints
+{
+    [self.points removeAllObjects];
+    [self updateBounds];
+}
+
 - (void)addPointAtCoordinate:(GMCoordinate)coordinate
 {
     GMMapPoint pt = GMCoordinateToMapPoint(coordinate);
@@ -49,6 +55,21 @@
         self.coordinate = coordinate;
 
     [self.points addObject:[NSValue valueWithMapPoint:GMMapPointMake(pt.x - self.mapPoint.x, pt.y - self.mapPoint.y)]];
+    [self updateBounds];
+}
+
+- (void)addPointsAtCoordinates:(GMCoordinate *)coordinates count:(NSUInteger)coordinateCount
+{
+    for (NSUInteger i = 0; i < coordinateCount; i++)
+    {
+        GMCoordinate coordinate = coordinates[i];
+        GMMapPoint pt = GMCoordinateToMapPoint(coordinate);
+
+        if (!self.points.count)
+            self.coordinate = coordinate;
+
+        [self.points addObject:[NSValue valueWithMapPoint:GMMapPointMake(pt.x - self.mapPoint.x, pt.y - self.mapPoint.y)]];
+    }
     [self updateBounds];
 }
 

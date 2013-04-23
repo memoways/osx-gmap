@@ -13,4 +13,6 @@
 
 @property (nonatomic) BOOL addCircleOnClick;
 
+- (IBAction)fitOverlays:(id)sender;
+
 @end

@@ -119,4 +119,10 @@ static NSColor *randomColor(void)
 	NSLog(@"double click @ (%@,%@)", @(mapPoint.x), @(mapPoint.y));
 }
 
+- (IBAction)fitOverlays:(id)sender
+{
+    [self.mapView zoomToFitOverlays:self.mapView.overlays];
+}
+
+
 @end

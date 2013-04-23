@@ -1,5 +1,7 @@
 #import "GMCoordinate.h"
 
+GMMapPoint GMMapPointZero = (GMMapPoint){0, 0};
+GMMapBounds GMMapBoundsZero = (GMMapBounds){{0, 0}, {0, 0}};
 
 @implementation NSValue (GMMapPoint)
 

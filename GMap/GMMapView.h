@@ -56,7 +56,7 @@
 /**
  If YES, all downloaded tiles will be cached on disk.
 
- @warning FIXME: AT PRESENT THERE IS NO CACHE CLEANING MECHANISM
+ A maximum of 50 000 tiles will be kept on disk.
  */
 @property (nonatomic) BOOL cacheTilesOnDisk;
 
@@ -89,6 +89,15 @@
  The coordinates of the center point of the map view.
  */
 @property (nonatomic) GMMapPoint centerPoint;
+
+/**
+ Fit the mapview to bounds
+
+ The `centerPoint` and `zoomLevel` will be updated to fit the bounds as best as possible.
+
+ @param bounds Bounds to fit.
+ */
+- (void)zoomToFitMapBounds:(GMMapBounds)bounds;
 
 ///----------------
 /// @name Behaviour
@@ -126,8 +135,8 @@
 /**
  If set to `YES`, overlays will be clickable.
 
- Clickable overlays does nothing except calling [GMMapViewDelegate mapView:overlayClicked:] on the delegate when
- an overlay is clicked.
+ Clickable overlays does nothing except calling [GMMapViewDelegate mapView:overlayClicked:locationInView:]
+ on the delegate when an overlay is clicked.
 
  A click is defined by a `mouseDown` followed by a `mouseUp` with no movement between the two.
 
@@ -159,6 +168,8 @@
 
  The overlay is added at the end of the overlays array.
 
+ @param overlay An overlay to add.
+
  @see overlays
  */
 - (void)addOverlay:(GMOverlay *)overlay;
@@ -168,6 +179,8 @@
 
  All objects in the array must be subclass of GMOverlay.
 
+ @param overlays An array of overlays to add.
+
  @see overlays
  */
 - (void)addOverlays:(NSArray *)overlays;
@@ -175,12 +188,16 @@
 /**
  Remove an overlay.
 
+ @param overlay An overlay to remove.
+
  @see overlays
  */
 - (void)removeOverlay:(GMOverlay *)overlay;
 
 /**
  Remove overlays.
+
+ @param overlays An array of overlays to remove.
 
  @see overlays
  */
@@ -196,12 +213,18 @@
 /**
  Change the ordering of two overlays.
 
+ @param index1 Index of first overlay.
+ @param index2 Index of second overlay.
+
  @see overlays
  */
 - (void)exchangeOverlayAtIndex:(NSUInteger)index1 withOverlayAtIndex:(NSUInteger)index2;
 
 /**
  Insert an overlay above another one.
+
+ @param overlay The overlay to add.
+ @param sibling And overlay that is already part of `overlays` above which `overlay` will be added.
 
  @see overlays
  */
@@ -210,6 +233,9 @@
 /**
  Insert an overlay below another one.
 
+ @param overlay The overlay to add.
+ @param sibling And overlay that is already part of `overlays` under which `overlay` will be added.
+
  @see overlays
  */
 - (void)insertOverlay:(GMOverlay *)overlay belowOverlay:(GMOverlay *)sibling;
@@ -217,9 +243,21 @@
 /**
  Insert an overlay at a specific index.
 
+ @param overlay The overlay to add.
+ @param index The index where to insert overlay.
+
  @see overlays
  */
 - (void)insertOverlay:(GMOverlay *)overlay atIndex:(NSUInteger)index;
+
+/**
+ Fit the mapview to overlay bounds
+
+ The `centerPoint` and `zoomLevel` will be updated to fit the bounds as best as possible.
+
+ @param overlays An array of overlays to fit.
+ */
+- (void)zoomToFitOverlays:(NSArray*)overlays;
 
 ///---------------
 /// @name Overlays selection
@@ -247,20 +285,30 @@
 
 /**
  Convert a point from the receiver to the map coordinate system.
+
+ @param locationInView A point in view coordinate to convert to map point.
+
+ @return A point in map coordinate corresponding to `locationInView`.
  */
 - (GMMapPoint)convertViewLocationToMapPoint:(CGPoint)locationInView;
 
 /**
  Convert a point from the map coordinate system to the receiver.
+
+ @param mapPoint A point in map coordinate to convert to view location.
+
+ @return Location in view.
  */
 - (CGPoint)convertMapPointToViewLocation:(GMMapPoint)mapPoint;
 
 @end
 
 /**
- The `GMMapViewDelegate` protocol defines a set of optional methods that you can use to receive map-related messages.
+ The `GMMapViewDelegate` protocol defines a set of optional
+ methods that you can use to receive map-related messages.
 
- Before releasing a GMMapView object for which you have a set a delegate, set that object's `delegate` property to `nil`.
+ Before releasing a GMMapView object for which you have a set
+ a delegate, set that object's `delegate` property to `nil`.
  */
 @protocol GMMapViewDelegate <NSObject>
 @optional
@@ -271,7 +319,6 @@
  @param mapView The mapView containing the overlay.
  @param mapPoint The mapPoint where the mapView was clicked.
  @param location The location in view of the click event.
-
  */
 - (void)mapView:(GMMapView *)mapView clickedAtPoint:(GMMapPoint)mapPoint locationInView:(CGPoint)location;
 
