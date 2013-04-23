@@ -130,17 +130,12 @@ GM_INLINE BOOL GMMapBoundsInterectsMapBounds(GMMapBounds a, GMMapBounds b)
 
 GM_INLINE GMMapPoint GMMapBoundsCenterPoint(GMMapBounds bounds)
 {
-	return GMMapPointMake((bounds.topLeft.x + bounds.bottomRight.x) / 2, (bounds.topLeft.y + bounds.bottomRight.y) / 2);
+	return GMMapPointMake((bounds.topLeft.x + bounds.bottomRight.x) / 2.0, (bounds.topLeft.y + bounds.bottomRight.y) / 2.0);
 }
 
 GM_INLINE GMFloat GMMapBoundsSemiPerimeter(GMMapBounds bounds)
 {
     return bounds.bottomRight.x - bounds.topLeft.x + bounds.bottomRight.y - bounds.topLeft.y;
-}
-
-GM_INLINE GMMapPoint GMMapBoundsCenterPoint(GMMapBounds bounds)
-{
-    return GMMapPointMake(bounds.topLeft.x + (bounds.bottomRight.x - bounds.topLeft.x) / 2.0, bounds.topLeft.y + (bounds.bottomRight.y - bounds.topLeft.y) / 2.0);
 }
 
 GM_INLINE GMFloat GMMapBoundsArea(GMMapBounds bounds)
