@@ -106,6 +106,8 @@ const NSInteger kNumberOfCachedTilesPerZoomLevel = 200;
     if (!self.tileURLFormat)
         self.tileURLFormat = [[NSBundle bundleForClass:GMMapView.class] objectForInfoDictionaryKey:@"GMTileURLFormat"];
 
+	NSAssert( self.tileURLFormat != nil , @"Expecting self.tileURLFormat != nil" );
+
 // ################################################################################
 // Tile disk cache
 
